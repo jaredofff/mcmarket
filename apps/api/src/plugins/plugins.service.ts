@@ -255,6 +255,57 @@ export class PluginsService {
   }
 
   /**
+   * Elimina un plugin y sus datos asociados
+   */
+  async deletePlugin(id: string): Promise<{ success: boolean; message: string }> {
+    const plugin = await this.prisma.plugin.findUnique({
+      where: { id },
+      include: { versions: true, snapshot: true },
+    });
+
+    if (!plugin) {
+      throw new NotFoundException(`Plugin no encontrado: ${id}`);
+    }
+
+    try {
+      // Eliminar archivos asociados si existen
+      if (plugin.coverImage) {
+        try {
+          this.pluginFileStorageService.deleteFile(plugin.coverImage);
+        } catch (err: any) {
+          this.logger.warn(
+            `No se pudo eliminar coverImage: ${err.message || err}`,
+          );
+        }
+      }
+      if (plugin.bannerImage) {
+        try {
+          this.pluginFileStorageService.deleteFile(plugin.bannerImage);
+        } catch (err: any) {
+          this.logger.warn(
+            `No se pudo eliminar bannerImage: ${err.message || err}`,
+          );
+        }
+      }
+
+      // Eliminar el plugin (cascada en BD por FK)
+      await this.prisma.plugin.delete({
+        where: { id },
+      });
+
+      this.logger.log(`Plugin eliminado: ${id} (${plugin.title})`);
+
+      return {
+        success: true,
+        message: `Plugin "${plugin.title}" eliminado exitosamente`,
+      };
+    } catch (error: any) {
+      this.logger.error(`Error eliminando plugin ${id}: ${error.message}`);
+      throw error;
+    }
+  }
+
+  /**
    * Obtiene estadísticas del marketplace
    */
   async getMarketplaceStats(): Promise<MarketplaceStatsDto> {

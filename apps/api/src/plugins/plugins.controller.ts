@@ -153,11 +153,7 @@ export class PluginsController {
   @Roles('CEO', 'ADMIN')
   @HttpCode(HttpStatus.OK)
   async deletePlugin(@Param('id') id: string) {
-    // TODO: Implementar delete en service
-    return {
-      success: true,
-      message: `Plugin ${id} eliminado`,
-    };
+    return this.pluginsService.deletePlugin(id);
   }
 
   /**
