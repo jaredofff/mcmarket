@@ -3,13 +3,22 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LayoutDashboard, Package, BookOpen, Users, Menu, X, LogOut } from 'lucide-react';
 
 const AdminSidebar = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    // Verificar que el usuario sea ADMIN o CEO
+    if (session?.user) {
+      const userRole = (session.user as any)?.role || 'user';
+      setIsAuthorized(userRole === 'admin' || userRole === 'CEO');
+    }
+  }, [session]);
 
   const menuItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -28,6 +37,10 @@ const AdminSidebar = () => {
   const handleLogout = async () => {
     await signOut({ redirectTo: '/' });
   };
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <>

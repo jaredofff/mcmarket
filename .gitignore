@@ -51,3 +51,5 @@ Thumbs.db
 
 # Project specific
 STRIPE_SERVICE_EXAMPLE.ts
+node_modules
+.vercel

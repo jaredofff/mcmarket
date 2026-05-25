@@ -1,5 +1,3 @@
-import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 import AdminSidebar from './components/AdminSidebar';
 
 export const metadata = {
@@ -7,19 +5,7 @@ export const metadata = {
   description: 'Administration panel for MC Market',
 };
 
-async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
-
-  // Protección de rutas: verificar que el usuario sea ADMIN o CEO
-  if (!session?.user) {
-    redirect('/');
-  }
-
-  const userRole = (session.user as any)?.role || 'user';
-  if (userRole !== 'admin' && userRole !== 'CEO') {
-    redirect('/');
-  }
-
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-[#141311]">
       <AdminSidebar />
@@ -40,5 +26,3 @@ async function AdminLayout({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-
-export default AdminLayout;

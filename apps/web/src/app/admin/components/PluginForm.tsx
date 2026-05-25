@@ -14,9 +14,7 @@ const pluginSchema = z.object({
   price: z.coerce.number().min(0, 'Price must be positive'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
   category: z.string().min(1, 'Category is required'),
-  tier: z.enum(['free', 'premium', 'elite'], {
-    errorMap: () => ({ message: 'Select a valid tier' }),
-  }),
+  tier: z.enum(['free', 'premium', 'elite']),
   testedVersions: z.string().min(1, 'Tested versions required'),
   coverImage: z.instanceof(FileList).optional(),
   bannerImage: z.instanceof(FileList).optional(),
