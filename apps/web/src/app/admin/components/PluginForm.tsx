@@ -47,6 +47,7 @@ export default function PluginForm({
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<PluginFormData>({
     resolver: zodResolver(pluginSchema),
     defaultValues: {
@@ -54,7 +55,7 @@ export default function PluginForm({
       version: initialData?.version || '1.0.0',
       price: initialData?.price ?? 0,
       category: initialData?.category || '',
-      tier: initialData?.tier || 'free',
+      tier: (initialData?.tier as 'free' | 'premium' | 'elite') || 'free',
       testedVersions: initialData?.testedVersions || '',
       isVipOnly: initialData?.isVipOnly ?? false,
       published: initialData?.published ?? false,
@@ -64,6 +65,9 @@ export default function PluginForm({
       pluginFile: undefined,
     },
   });
+
+  const isVipOnly = watch('isVipOnly');
+  const published = watch('published');
 
   const handleImagePreview = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -281,6 +285,7 @@ export default function PluginForm({
             {...register('isVipOnly')}
             type="checkbox"
             id="vip-only"
+            checked={isVipOnly}
             className="w-4 h-4 bg-amber-500/20 border border-amber-500/30 rounded cursor-pointer accent-amber-500"
           />
           <label htmlFor="vip-only" className="text-[#a89968] cursor-pointer">
@@ -293,6 +298,7 @@ export default function PluginForm({
             {...register('published')}
             type="checkbox"
             id="published"
+            checked={published}
             className="w-4 h-4 bg-amber-500/20 border border-amber-500/30 rounded cursor-pointer accent-amber-500"
           />
           <label htmlFor="published" className="text-[#a89968] cursor-pointer">
