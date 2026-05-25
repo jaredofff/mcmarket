@@ -36,6 +36,7 @@ model User {
   plugins           Plugin[]              @relation("PluginCreator")
   purchases         Purchase[]
   checkoutSessions  StripeCheckoutSession[]
+  discordRoles      UserDiscordRole[]
 }
 
 enum Tier {
@@ -82,6 +83,7 @@ model Plugin {
   category   Category?  @relation(fields: [categoryId], references: [id])
   purchases  Purchase[]
   importJobs ImportJob[] @relation("ImportJobPlugin")
+  discordRoles DiscordRole[]
 }
 
 model Category {
@@ -238,7 +240,48 @@ model PluginVersion {
   published   Boolean  @default(false)
   
   createdAt   DateTime @default(now())
-  
+
   @@unique([pluginId, version])
   @@index([fileHash])
+}
+
+// ============= DISCORD INTEGRATION =============
+
+model DiscordRole {
+  id            String   @id @default(uuid())
+  roleId        String   @unique // ID del rol en Discord
+  roleName      String   // Nombre del rol en Discord
+  discordGuildId String  // ID del servidor Discord
+  
+  // Vinculación con producto
+  pluginId      String?
+  plugin        Plugin?  @relation(fields: [pluginId], references: [id], onDelete: SetNull)
+  tier          Tier?    // VIP o LEGEND
+  
+  userRoles     UserDiscordRole[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([discordGuildId, roleId])
+  @@index([discordGuildId])
+}
+
+model UserDiscordRole {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  discordRoleId String
+  discordRole   DiscordRole @relation(fields: [discordRoleId], references: [id], onDelete: Cascade)
+  
+  // Status
+  assignedAt    DateTime @default(now())
+  removedAt     DateTime?
+  status        String   @default("active") // active, pending, failed
+  errorMessage  String?
+  
+  @@unique([userId, discordRoleId])
+  @@index([userId])
+  @@index([status])
 }
