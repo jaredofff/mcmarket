@@ -67,7 +67,8 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
         throw new Error('No se pudo cargar Stripe');
       }
 
-      const { error: redirectError } = await stripe.redirectToCheckout({
+      // Use stripe.redirectToCheckout or direct redirect
+      const { error: redirectError } = await (stripe as any).redirectToCheckout({
         sessionId,
       });
 

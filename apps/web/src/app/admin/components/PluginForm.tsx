@@ -19,8 +19,8 @@ const pluginSchema = z.object({
   coverImage: z.instanceof(FileList).optional(),
   bannerImage: z.instanceof(FileList).optional(),
   pluginFile: z.instanceof(FileList).optional(),
-  isVipOnly: z.boolean().default(false),
-  published: z.boolean().default(false),
+  isVipOnly: z.boolean(),
+  published: z.boolean(),
 });
 
 type PluginFormData = z.infer<typeof pluginSchema>;
@@ -52,12 +52,16 @@ export default function PluginForm({
     defaultValues: {
       title: initialData?.title || '',
       version: initialData?.version || '1.0.0',
-      price: initialData?.price || 0,
+      price: initialData?.price ?? 0,
       category: initialData?.category || '',
       tier: initialData?.tier || 'free',
       testedVersions: initialData?.testedVersions || '',
-      isVipOnly: initialData?.isVipOnly || false,
-      published: initialData?.published || false,
+      isVipOnly: initialData?.isVipOnly ?? false,
+      published: initialData?.published ?? false,
+      description: initialData?.description || '',
+      coverImage: undefined,
+      bannerImage: undefined,
+      pluginFile: undefined,
     },
   });
 
@@ -132,7 +136,7 @@ export default function PluginForm({
           <div>
             <label className="block text-[#a89968] font-medium mb-2">Price ($) *</label>
             <input
-              {...register('price')}
+              {...register('price', { valueAsNumber: true })}
               type="number"
               step="0.01"
               placeholder="9.99"

@@ -12,7 +12,7 @@ interface PluginData {
   price: number;
   description: string;
   category: string;
-  tier: string;
+  tier: 'free' | 'premium' | 'elite';
   testedVersions: string;
   isVipOnly: boolean;
   published: boolean;

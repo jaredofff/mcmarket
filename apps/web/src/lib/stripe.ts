@@ -7,7 +7,7 @@ if (!stripeSecret) {
 }
 
 export const stripe = new Stripe(stripeSecret || '', {
-  apiVersion: '2025-01-27.acpi',
+  apiVersion: '2024-12-18.acpi' as any,
 });
 
 export interface CheckoutSessionParams {
@@ -31,7 +31,7 @@ export async function createCheckoutSession(params: CheckoutSessionParams) {
     cancelUrl,
   } = params;
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await (stripe.checkout.sessions.create as any)({
     payment_method_types: ['card'],
     line_items: [
       {

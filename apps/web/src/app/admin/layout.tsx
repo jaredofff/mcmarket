@@ -1,5 +1,7 @@
 import AdminSidebar from './components/AdminSidebar';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Admin Panel | MC Market',
   description: 'Administration panel for MC Market',

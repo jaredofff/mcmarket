@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createCheckoutSession } from '@/lib/stripe';
+
+export const dynamic = 'force-dynamic';
 
 interface CheckoutRequestBody {
   productId: string;
@@ -10,6 +11,19 @@ interface CheckoutRequestBody {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Stripe no configurado' },
+        { status: 503 }
+      );
+    }
+
+    // Importar Stripe dinámicamente para evitar error en build
+    const Stripe = (await import('stripe')).default;
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+      apiVersion: '2024-12-18.acpi' as any,
+    });
+
     const body: CheckoutRequestBody = await request.json();
 
     const { productId, productName, price, quantity = 1 } = body;
@@ -33,13 +47,32 @@ export async function POST(request: NextRequest) {
     const origin = request.headers.get('origin') || 'http://localhost:3000';
 
     // Crear sesión de checkout
-    const session = await createCheckoutSession({
-      productId,
-      productName,
-      price,
-      quantity,
-      successUrl: `${origin}/checkout/success?sessionId={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${origin}/products/${productId}`,
+    const session = await (stripe.checkout.sessions.create as any)({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: productName,
+              metadata: {
+                productId,
+              },
+            },
+            unit_amount: Math.round(price * 100),
+          },
+          quantity,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${origin}/checkout/success?sessionId={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/products/${productId}`,
+      customer_email_collection: {
+        enabled: true,
+      },
+      metadata: {
+        productId,
+      },
     });
 
     return NextResponse.json({ sessionId: session.id });
