@@ -1,0 +1,244 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  VIP
+  LEGEND
+  ADMIN
+  DEVELOPER
+  CEO
+}
+
+enum PurchaseStatus {
+  PENDING
+  COMPLETED
+  REFUNDED
+}
+
+model User {
+  id               String     @id @default(uuid())
+  discordId        String     @unique
+  discordToken     String?
+  name             String
+  email            String?    @unique
+  image            String?
+  role             Role       @default(USER)
+  stripeCustomerId String?    @unique // Para tracking de pagos en Stripe
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  plugins           Plugin[]              @relation("PluginCreator")
+  purchases         Purchase[]
+  checkoutSessions  StripeCheckoutSession[]
+}
+
+enum Tier {
+  VIP
+  LEGEND
+}
+
+model Plugin {
+  id             String   @id @default(uuid())
+  title          String
+  slug           String   @unique
+  description    String   @db.Text
+  descriptionHtml String?  @db.Text   // HTML original sanitizado
+  price          Int      @default(0) // Guardado en centavos para precisión
+  version        String
+  testedVersions String[]
+  dependencies   String[]
+  testServerUrl  String?
+  coverImage     String?
+  fileUrl        String?
+  bannerImage    String?  // Imagen de banner
+  tier           Tier?
+  categories     String[]
+  isVipOnly      Boolean  @default(false)
+  downloadCount  Int      @default(0)
+  rating         Float    @default(0)
+  published      Boolean  @default(false)
+  
+  // Metadata de importación
+  sourceUrl      String?  // URL original de BuiltByBit
+  author         String?  // Autor original
+  tags           String[] // Tags/categorías
+  
+  // Snapshot
+  snapshot       ResourceSnapshot? @relation("PluginSnapshot")
+  versions       PluginVersion[]    @relation("PluginVersions")
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  creatorId  String
+  creator    User       @relation("PluginCreator", fields: [creatorId], references: [id])
+  categoryId String?
+  category   Category?  @relation(fields: [categoryId], references: [id])
+  purchases  Purchase[]
+  importJobs ImportJob[] @relation("ImportJobPlugin")
+}
+
+model Category {
+  id      String   @id @default(uuid())
+  name    String
+  slug    String   @unique
+  plugins Plugin[]
+}
+
+model Purchase {
+  id        String         @id @default(uuid())
+  amount    Int            // Precio pagado en centavos
+  status    PurchaseStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  pluginId  String
+  plugin    Plugin   @relation(fields: [pluginId], references: [id])
+  
+  // Stripe integration
+  stripePaymentIntentId String? @unique // Para vincular con Stripe
+}
+
+// ============= STRIPE MODELS =============
+
+model StripeCheckoutSession {
+  id        String   @id @default(uuid())
+  sessionId String   @unique // ID de sesión desde Stripe
+  status    String   @default("open") // open, complete, expired
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  pluginId  String?  // Opcional: si es para un plugin específico
+  
+  // Datos del pago
+  amountTotal     Int?       // Total en centavos
+  currency        String     @default("usd")
+  customerEmail   String?
+  
+  // Timestamps
+  expiresAt       DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([sessionId])
+}
+
+model StripeEvent {
+  id        String   @id @default(uuid())
+  eventId   String   @unique // ID único del evento desde Stripe
+  type      String   // ej: "checkout.session.completed", "payment_intent.succeeded"
+  data      Json     @db.JsonB // JSON completo del evento (para auditoría)
+  
+  processed Boolean  @default(false)
+  error     String?  // Si hubo error al procesar
+  
+  createdAt DateTime @default(now())
+  
+  @@index([type])
+  @@index([processed])
+  @@index([createdAt])
+}
+
+// ============= IMPORT SYSTEM MODELS =============
+
+enum ImportStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model ImportJob {
+  id          String         @id @default(uuid())
+  sourceUrl   String         // URL de BuiltByBit
+  status      ImportStatus   @default(PENDING)
+  progress    Int            @default(0) // 0-100
+  errorMessage String?
+  
+  // Metadata capturada
+  metadata    Json?          @db.JsonB
+  
+  // Resultado
+  pluginId    String?
+  plugin      Plugin?        @relation("ImportJobPlugin", fields: [pluginId], references: [id])
+  
+  createdAt   DateTime       @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+  updatedAt   DateTime       @updatedAt
+  
+  @@index([status])
+  @@index([sourceUrl])
+}
+
+model ResourceSnapshot {
+  id          String   @id @default(uuid())
+  pluginId    String   @unique
+  plugin      Plugin   @relation("PluginSnapshot", fields: [pluginId], references: [id], onDelete: Cascade)
+  
+  // HTML completo sanitizado
+  htmlContent String?  @db.Text
+  title       String?
+  descriptionHtml String? @db.Text
+  author      String?
+  version     String?
+  tags        String[]
+  categories  String[]
+  testedVersions String[]
+  dependencies String[]
+  coverImage  String?
+  bannerImage String?
+  
+  // Imágenes almacenadas localmente
+  images      String[] // Array de rutas locales: ["/public/snapshots/uuid-1.jpg", ...]
+  
+  // Changelog snapshot
+  changelog   Json?    @db.JsonB
+  
+  // Metadata original
+  sourceMetadata Json? @db.JsonB
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PluginVersion {
+  id          String   @id @default(uuid())
+  pluginId    String
+  plugin      Plugin   @relation("PluginVersions", fields: [pluginId], references: [id], onDelete: Cascade)
+  
+  version     String
+  
+  // Archivo
+  fileUrl     String?
+  fileName    String?
+  downloadUrl String?
+  fileHash    String   @unique // SHA-256
+  fileSize    Int      // bytes
+  isLatest    Boolean  @default(false)
+  
+  // Changelog
+  changelog   String?  @db.Text
+  changelogJson Json?  @db.JsonB
+  
+  // Stats
+  downloadCount Int    @default(0)
+  published   Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([pluginId, version])
+  @@index([fileHash])
+}

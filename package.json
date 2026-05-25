@@ -1,0 +1,36 @@
+{
+  "name": "mcmarket-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api start:dev",
+    "dev": "pnpm --config.verifyDepsBeforeRun=false --stream --parallel --filter web --filter api run dev",
+    "build:web": "pnpm --filter web build",
+    "build:api": "pnpm --filter api build",
+    "build": "pnpm run build:web && pnpm run build:api",
+    "lint": "pnpm --filter \"*\" lint"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "dependencies": {
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/serve-static": "^5.0.5",
+    "@supabase/supabase-js": "^2.106.1",
+    "@types/passport-jwt": "^4.0.1",
+    "axion": "^0.1.0",
+    "axios": "^1.16.1",
+    "cheerio": "^1.2.0",
+    "isomorphic-dompurify": "^3.14.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "jest-environment-jsdom": "^30.4.1",
+    "jsdom": "^29.1.1"
+  }
+}

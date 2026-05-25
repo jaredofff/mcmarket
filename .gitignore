@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+pnpm-lock.yaml
+package-lock.json
+
+# Build outputs
+dist/
+dist-build/
+build/
+.next/
+out/
+coverage/
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env.local
+.env.*.local
+
+# Development
+.tsbuildinfo
+.turbo/
+.vercel/
+
+# Test
+.nyc_output/
+*.lcov
+
+# Runtime
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Environment files (but keep examples)
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.development.example
+
+# pnpm specific
+*.pnpm-debug.log*
+
+# Project specific
+STRIPE_SERVICE_EXAMPLE.ts
