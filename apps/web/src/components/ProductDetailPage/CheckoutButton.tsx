@@ -61,7 +61,7 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
       const { sessionId } = await response.json();
 
       // Redirigir a Stripe Checkout
-      const stripe = await import('@stripe/js').then((m) => m.loadStripe(publicKey));
+      const stripe = await import('@stripe/stripe-js').then((m) => m.loadStripe(publicKey));
 
       if (!stripe) {
         throw new Error('No se pudo cargar Stripe');
