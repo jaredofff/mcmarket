@@ -6,13 +6,15 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-sm bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center font-outfit font-bold text-[#141311] shadow-[3px_3px_0_rgba(0,0,0,0.5)] border border-amber-400">
-                M
-              </div>
+              <img
+                src="/logo.png"
+                alt="MCMarket Logo"
+                className="w-8 h-8 rounded-sm"
+              />
               <span className="font-outfit font-bold text-xl text-[#e8e4db]">mcmarket</span>
             </div>
             <p className="text-sm text-[#6b6459] leading-relaxed max-w-[180px]">
-              The premium marketplace for Minecraft server resources.
+              La plataforma #1 de recursos premium para Minecraft.
             </p>
           </div>
 
@@ -20,7 +22,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-xs uppercase tracking-widest text-[#a39c90] mb-4">Marketplace</h4>
             <ul className="space-y-2.5">
-              {["Browse Plugins", "Free Resources", "New Releases", "Top Sellers"].map((item) => (
+              {["Explorar Plugins", "Recursos Gratis", "Novedades", "Top Sellers"].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
                     {item}
@@ -34,7 +36,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-xs uppercase tracking-widest text-[#a39c90] mb-4">Creators</h4>
             <ul className="space-y-2.5">
-              {["Sell Your Plugin", "Creator Dashboard", "Documentation", "Payout Info"].map((item) => (
+              {["Vender Tu Recurso", "Dashboard de Creator", "Documentación", "Info de Pagos"].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
                     {item}
@@ -48,7 +50,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-xs uppercase tracking-widest text-[#a39c90] mb-4">Legal</h4>
             <ul className="space-y-2.5">
-              {["Terms of Service", "Privacy Policy", "Refund Policy", "DMCA"].map((item) => (
+              {["Términos de Servicio", "Política de Privacidad", "Política de Reembolso", "DMCA"].map((item) => (
                 <li key={item}>
                   <a href="#" className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
                     {item}
@@ -61,7 +63,7 @@ export default function Footer() {
 
         <div className="border-t border-[#2d2a26] pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[#4a4540]">
-            © {new Date().getFullYear()} MC Market. Not affiliated with Mojang Studios.
+            © {new Date().getFullYear()} MC Market. No afiliado con Mojang Studios.
           </p>
           <div className="flex items-center gap-4">
             {/* Discord */}

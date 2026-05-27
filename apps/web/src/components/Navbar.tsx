@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -9,9 +10,13 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { href: "/plugins", label: "Marketplace" },
-    { href: "/creators", label: "Creators" },
-    { href: "#", label: "Community" },
+    { href: "/", label: "Inicio" },
+    { href: "/plugins", label: "Plugins" },
+    { href: "/setups", label: "Setups" },
+    { href: "/configs", label: "Configs" },
+    { href: "/builds", label: "Builds" },
+    { href: "/webs", label: "Webs" },
+    { href: "/membership", label: "Membresia" },
   ];
 
   return (
@@ -19,9 +24,13 @@ export default function Navbar() {
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-8 h-8 rounded-sm bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center font-outfit font-bold text-[#141311] shadow-[3px_3px_0_rgba(0,0,0,0.5)] border border-amber-400 group-hover:shadow-[3px_3px_0_rgba(245,158,11,0.4)] transition-all">
-            M
-          </div>
+          <Image
+            src="/logo.png"
+            alt="MCMarket Logo"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-sm"
+          />
           <span className="font-outfit font-bold text-xl tracking-tight text-[#e8e4db] group-hover:text-amber-400 transition-colors">
             mcmarket
           </span>
@@ -46,6 +55,14 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
+          {/* Creator Panel */}
+          <Link
+            href="/creator/dashboard"
+            className="hidden md:flex h-9 px-4 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-sm font-medium text-[#a39c90] hover:text-amber-400 hover:border-amber-500/50 transition-all items-center gap-2"
+          >
+            <span>🎨 Creator Panel</span>
+          </Link>
+
           {/* Search Button */}
           <Link
             href="/plugins"
