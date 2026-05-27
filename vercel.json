@@ -1,0 +1,13 @@
+{
+  "buildCommand": "pnpm install && pnpm build:web",
+  "installCommand": "pnpm install",
+  "outputDirectory": "apps/web/.next",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@next_public_api_url"
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  }
+}
