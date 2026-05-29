@@ -46,7 +46,19 @@ export default function EditPluginPage() {
     if (pluginId) fetchPlugin();
   }, [pluginId]);
 
-  const handleSubmit = async (data: any, files: Record<string, File>) => {
+  interface PluginFormData {
+    title: string
+    version: string
+    price: string | number
+    description: string
+    category: string
+    tier: string
+    testedVersions: string
+    isVipOnly: boolean | string
+    published: boolean | string
+  }
+
+  const handleSubmit = async (data: PluginFormData, files: { coverImage?: File; bannerImage?: File; pluginFile?: File }) => {
     try {
       setIsSubmitting(true);
       setError('');

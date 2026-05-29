@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // Importar Stripe dinámicamente para evitar error en build
     const Stripe = (await import('stripe')).default;
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-      apiVersion: '2024-12-18.acpi' as any,
+      apiVersion: '2024-12-18',
     });
 
     const body: CheckoutRequestBody = await request.json();
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const origin = request.headers.get('origin') || 'http://localhost:3000';
 
     // Crear sesión de checkout
-    const session = await (stripe.checkout.sessions.create as any)({
+    const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {

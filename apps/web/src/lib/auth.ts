@@ -1,15 +1,17 @@
-import NextAuth, { NextAuthConfig, Session } from "next-auth"
+import NextAuth, { type NextAuthConfig } from "next-auth"
+import type { DefaultSession, Session as NextAuthSession } from "next-auth"
+import type { JWT as NextAuthJWT } from "next-auth/jwt"
 import DiscordProvider from "next-auth/providers/discord"
-import { JWT } from "next-auth/jwt"
+// NOTE: Avoid top-level imports of `@prisma/client` here because this module
+// is imported by Edge middleware. Use dynamic import inside server-only
+// callbacks to prevent bundling Node-only modules into Edge runtime.
 
 declare module "next-auth" {
   interface Session {
-    user: {
+    user: DefaultSession["user"] & {
       id: string
-      email: string
-      name: string
-      image: string
       discordId: string
+      role?: string
     }
   }
 }
@@ -17,6 +19,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     discordId: string
+    role?: string
   }
 }
 
@@ -30,15 +33,55 @@ export const authConfig = {
   ],
   callbacks: {
     async jwt({ token, profile }) {
-      if (profile?.id) {
-        token.discordId = profile.id as string
+      const jwtToken = token as NextAuthJWT & { discordId?: string; role?: string }
+
+      type DiscordProfile = {
+        id?: string
+        username?: string
+        name?: string
+        email?: string | null
+        avatar?: string | null
       }
-      return token
+
+      const p = profile as unknown as DiscordProfile
+
+      // if we already have a role on the token, keep it
+      if (!jwtToken.role && p?.id) {
+        jwtToken.discordId = p.id as string
+
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:3001'
+          const res = await fetch(`${apiUrl.replace(/\/$/, '')}/auth/upsert`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              discordId: p.id as string,
+              name: p.username || p.name || 'discord-user',
+              email: p.email || null,
+              image: p.avatar || null,
+            }),
+          })
+
+          if (res.ok) {
+            const data = await res.json()
+            jwtToken.role = data?.role || 'USER'
+          } else {
+            jwtToken.role = 'USER'
+          }
+        } catch (e) {
+          // if API fails, don't block auth — proceed without role
+          
+          console.error('Error calling auth upsert endpoint', e)
+          jwtToken.role = 'USER'
+        }
+      }
+      return jwtToken
     },
-    async session({ session, token }): Promise<Session> {
+    async session({ session, token }): Promise<NextAuthSession> {
       if (session.user) {
         session.user.discordId = token.discordId as string
         session.user.id = token.sub as string
+        session.user.role = (token.role as string) ?? undefined
       }
       return session
     },

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import type { Stripe as StripeJs } from '@stripe/stripe-js';
 import { Button } from '@/components/ui/button';
 import { Loader2, ShoppingCart } from 'lucide-react';
 
@@ -61,19 +62,16 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
       const { sessionId } = await response.json();
 
       // Redirigir a Stripe Checkout
-      const stripe = await import('@stripe/stripe-js').then((m) => m.loadStripe(publicKey));
+      const stripeInstance = (await import('@stripe/stripe-js').then((m) => m.loadStripe(publicKey))) as StripeJs | null;
 
-      if (!stripe) {
+      if (!stripeInstance) {
         throw new Error('No se pudo cargar Stripe');
       }
 
-      // Use stripe.redirectToCheckout or direct redirect
-      const { error: redirectError } = await (stripe as any).redirectToCheckout({
-        sessionId,
-      });
+      const redirectResult = await stripeInstance.redirectToCheckout({ sessionId });
 
-      if (redirectError) {
-        throw new Error(redirectError.message);
+      if (redirectResult && 'error' in redirectResult && redirectResult.error) {
+        throw new Error(redirectResult.error.message || 'Error en redirectToCheckout');
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error desconocido';

@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function DashboardLayout({
   children,
@@ -9,6 +11,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { data: session } = useSession();
 
   const sidebarLinks = [
     { href: "/dashboard", label: "Resumen", icon: "📊" },
@@ -57,12 +60,34 @@ export default function DashboardLayout({
             </svg>
           </button>
           <div className="flex items-center gap-3 ml-auto">
-            <button className="h-9 px-4 rounded-sm bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-bold hover:bg-amber-500/20 transition-all">
-              Perfil
-            </button>
-            <button className="h-9 px-4 rounded-sm bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-bold hover:bg-red-500/20 transition-all">
-              Salir
-            </button>
+            {session ? (
+              <>
+                <Link href="/dashboard" className="hidden md:inline-flex h-9 px-4 items-center justify-center rounded-sm bg-[#1c1a17] border border-[#3d2f2a] text-sm font-medium text-[#e8e4db] hover:text-amber-400 transition-all">
+                  Perfil
+                </Link>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="h-9 px-4 rounded-sm bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-bold hover:bg-red-500/20 transition-all"
+                >
+                  Salir
+                </button>
+                <div className="hidden lg:flex items-center gap-2 rounded-sm bg-[#1c1a17] border border-[#3d3830] px-3 py-1.5">
+                  <div className="relative h-6 w-6 overflow-hidden rounded-full bg-[#242118]">
+                    {session.user?.image ? (
+                       
+                      <Image src={session.user.image} alt={session.user?.name ?? "Usuario"} fill sizes="24px" className="object-cover" />
+                    ) : (
+                      <span className="flex h-full w-full items-center justify-center text-[10px] font-black text-amber-400">{(session.user?.name ?? "U").charAt(0)}</span>
+                    )}
+                  </div>
+                  <span className="max-w-35 truncate text-sm font-semibold text-[#e8e4db]">{session.user?.name ?? "Usuario"}</span>
+                </div>
+              </>
+            ) : (
+              <Link href="/auth" className="h-9 px-4 rounded-sm bg-[#5865F2] hover:bg-[#4752c4] text-sm font-bold text-white transition-all border-b-2 border-[#3442d9] shadow-[0_2px_0_#3442d9] flex items-center gap-2">
+                Iniciar sesión
+              </Link>
+            )}
           </div>
         </div>
 

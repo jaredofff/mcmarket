@@ -12,8 +12,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/', request.url));
     }
 
-    const userRole = (session.user as any)?.role || 'user';
-    if (userRole !== 'admin' && userRole !== 'CEO') {
+    const userRole = (session.user.role ?? 'USER').toString().toUpperCase();
+    if (userRole !== 'ADMIN' && userRole !== 'CEO') {
       return NextResponse.redirect(new URL('/', request.url));
     }
   }

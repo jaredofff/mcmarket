@@ -46,7 +46,7 @@ export const StripeSetupGuide: React.FC = () => {
                 <ExternalLink className="h-3 w-3" />
               </a>
             </li>
-            <li>Copiar tu "Publishable key" (comienza con pk_test_)</li>
+            <li>Copiar tu &quot;Publishable key&quot; (comienza con pk_test_)</li>
             <li>
               Pegar en <code className="bg-zinc-800 px-2 py-1 rounded text-xs">.env.local</code>:
               <pre className="bg-zinc-800 p-2 rounded mt-1 text-xs overflow-auto">

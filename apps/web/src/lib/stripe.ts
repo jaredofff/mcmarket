@@ -7,7 +7,7 @@ if (!stripeSecret) {
 }
 
 export const stripe = new Stripe(stripeSecret || '', {
-  apiVersion: '2024-12-18.acpi' as any,
+  apiVersion: '2024-12-18',
 });
 
 export interface CheckoutSessionParams {
@@ -31,7 +31,7 @@ export async function createCheckoutSession(params: CheckoutSessionParams) {
     cancelUrl,
   } = params;
 
-  const session = await (stripe.checkout.sessions.create as any)({
+  const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: [
       {
@@ -51,6 +51,7 @@ export async function createCheckoutSession(params: CheckoutSessionParams) {
     mode: 'payment',
     success_url: successUrl,
     cancel_url: cancelUrl,
+    // `customer_email_collection` may not exist on older typings; prefer `customer_email` fallback in server code
     customer_email_collection: {
       enabled: true,
     },

@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 export default function MembershipPage() {
   const plans = [
     {
@@ -40,8 +38,8 @@ export default function MembershipPage() {
     <>
       {/* Hero */}
       <section className="relative w-full pt-28 pb-20 px-6 overflow-hidden flex flex-col items-center justify-center text-center">
-        <div className="absolute top-[-10%] left-[50%] translate-x-[-50%] w-[700px] h-[400px] rounded-full bg-amber-600/8 blur-[140px] pointer-events-none" />
-        <div className="absolute top-[30%] right-[-10%] w-[500px] h-[300px] rounded-full bg-purple-600/5 blur-[100px] pointer-events-none" />
+        <div className="absolute top-[-10%] left-[50%] translate-x-[-50%] w-175 h-100 rounded-full bg-amber-600/8 blur-[140px] pointer-events-none" />
+        <div className="absolute top-[30%] right-[-10%] w-125 h-75 rounded-full bg-purple-600/5 blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 flex flex-col items-center max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-xs font-bold text-amber-400 mb-8 uppercase tracking-widest shadow-inner">
@@ -52,7 +50,7 @@ export default function MembershipPage() {
           <h1 className="font-outfit text-5xl md:text-6xl font-black tracking-tight text-[#e8e4db] max-w-4xl leading-[1.05] mb-6">
             Elige tu
             <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-amber-300 via-yellow-400 to-amber-600">
+            <span className="text-transparent bg-clip-text bg-linear-to-b from-amber-300 via-yellow-400 to-amber-600">
               plan perfecto
             </span>
           </h1>
@@ -71,7 +69,7 @@ export default function MembershipPage() {
               key={plan.name}
               className={`relative rounded-sm overflow-hidden transition-all ${
                 plan.highlighted
-                  ? "bg-gradient-to-br from-purple-900/20 via-[#1c1a17] to-[#1c1a17] border-2 border-purple-500/40 shadow-[0_0_30px_rgba(168,85,247,0.2)]"
+                  ? "bg-linear-to-br from-purple-900/20 via-[#1c1a17] to-[#1c1a17] border-2 border-purple-500/40 shadow-[0_0_30px_rgba(168,85,247,0.2)]"
                   : "bg-[#1c1a17] border border-[#2d2a26]"
               }`}
             >
@@ -80,7 +78,7 @@ export default function MembershipPage() {
                 <div className="absolute top-0 right-0">
                   <div className={`px-4 py-2 rounded-bl-sm font-black text-xs uppercase tracking-widest ${
                     plan.highlighted
-                      ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                      ? "bg-linear-to-r from-purple-600 to-pink-600 text-white"
                       : "bg-amber-500 text-[#141311]"
                   }`}>
                     {plan.badge}
@@ -95,7 +93,7 @@ export default function MembershipPage() {
                   <div className="text-5xl mb-3">{plan.icon}</div>
                   <h2 className="font-outfit text-3xl font-black text-[#e8e4db] mb-2">{plan.name}</h2>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">
+                    <span className="text-4xl font-black text-transparent bg-clip-text bg-linear-to-r from-amber-300 to-yellow-400">
                       ${plan.price.toFixed(2)}
                     </span>
                     <span className="text-[#6b6459] font-bold">/mes</span>
@@ -118,8 +116,8 @@ export default function MembershipPage() {
                 <button
                   className={`w-full h-14 rounded-sm font-black text-lg transition-all ${
                     plan.highlighted
-                      ? "bg-gradient-to-b from-purple-500 to-pink-600 text-white hover:brightness-110 shadow-[0_4px_0_#6b21a8]"
-                      : "bg-gradient-to-b from-amber-400 to-yellow-600 text-[#141311] hover:brightness-110 shadow-[0_4px_0_#92400e]"
+                      ? "bg-linear-to-b from-purple-500 to-pink-600 text-white hover:brightness-110 shadow-[0_4px_0_#6b21a8]"
+                      : "bg-linear-to-b from-amber-400 to-yellow-600 text-[#141311] hover:brightness-110 shadow-[0_4px_0_#92400e]"
                   }`}
                 >
                   Obtener {plan.name}
