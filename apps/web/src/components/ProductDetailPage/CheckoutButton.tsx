@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import type { Stripe as StripeJs } from '@stripe/stripe-js';
 import { Button } from '@/components/ui/button';
 import { Loader2, ShoppingCart } from 'lucide-react';
 
@@ -26,53 +25,8 @@ export const CheckoutButton: React.FC<CheckoutButtonProps> = ({
     setError(null);
 
     try {
-      const publicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY;
-
-      if (!publicKey) {
-        throw new Error(
-          'Stripe no está configurado. Por favor, agrega NEXT_PUBLIC_STRIPE_PUBLIC_KEY a .env.local'
-        );
-      }
-
-      if (publicKey.includes('your_key')) {
-        throw new Error(
-          'Stripe key vacía. Reemplaza pk_test_your_key_here con tu clave real'
-        );
-      }
-
-      // Llamar a la API para crear la sesión de checkout
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId,
-          productName,
-          price,
-          quantity: 1,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al crear la sesión de checkout');
-      }
-
-      const { sessionId } = await response.json();
-
-      // Redirigir a Stripe Checkout
-      const stripeInstance = (await import('@stripe/stripe-js').then((m) => m.loadStripe(publicKey))) as StripeJs | null;
-
-      if (!stripeInstance) {
-        throw new Error('No se pudo cargar Stripe');
-      }
-
-      const redirectResult = await stripeInstance.redirectToCheckout({ sessionId });
-
-      if (redirectResult && 'error' in redirectResult && redirectResult.error) {
-        throw new Error(redirectResult.error.message || 'Error en redirectToCheckout');
-      }
+      // Stripe ha sido eliminado del proyecto; no realizar llamadas de pago.
+      throw new Error('El sistema de pagos (Stripe) ha sido eliminado. Checkout no disponible.');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error desconocido';
       setError(message);
