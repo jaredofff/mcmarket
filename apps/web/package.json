@@ -14,8 +14,6 @@
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "@stripe/react-stripe-js": "^6.4.0",
-    "@stripe/stripe-js": "^9.6.0",
     "@supabase/supabase-js": "^2.41.3",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.1",
@@ -30,7 +28,7 @@
     "react-hook-form": "^7.76.1",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "stripe": "^22.1.1",
+    
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3"
   },
