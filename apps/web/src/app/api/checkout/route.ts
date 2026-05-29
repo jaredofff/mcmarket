@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const origin = request.headers.get('origin') || 'http://localhost:3000';
 
     // Crear sesión de checkout
-    const session = await stripe.checkout.sessions.create({
+    const session = await (stripe.checkout.sessions.create as any)({
       payment_method_types: ['card'],
       line_items: [
         {
@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
         productId,
       },
     });
+    
 
     return NextResponse.json({ sessionId: session.id });
   } catch (error) {
