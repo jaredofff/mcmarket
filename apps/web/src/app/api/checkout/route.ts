@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // Importar Stripe dinámicamente para evitar error en build
     const Stripe = (await import('stripe')).default;
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-      apiVersion: '2024-12-18',
+      apiVersion: '2024-12-18' as any,
     });
 
     const body: CheckoutRequestBody = await request.json();
