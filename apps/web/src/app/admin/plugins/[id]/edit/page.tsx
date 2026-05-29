@@ -68,13 +68,13 @@ export default function EditPluginPage() {
       // Add regular fields
       formData.append('title', data.title);
       formData.append('version', data.version);
-      formData.append('price', data.price);
+      formData.append('price', String(data.price));
       formData.append('description', data.description);
       formData.append('category', data.category);
       formData.append('tier', data.tier);
       formData.append('testedVersions', data.testedVersions);
-      formData.append('isVipOnly', data.isVipOnly);
-      formData.append('published', data.published);
+      formData.append('isVipOnly', String(data.isVipOnly));
+      formData.append('published', String(data.published));
 
       // Add files
       if (files.coverImage) formData.append('coverImage', files.coverImage);
