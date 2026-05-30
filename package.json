@@ -8,7 +8,7 @@
     "dev": "pnpm --config.verifyDepsBeforeRun=false --stream --parallel --filter web --filter api run dev",
     "build:web": "pnpm --filter web build",
     "build:api": "pnpm --filter api build",
-    "build:cloudflare-pages": "pnpm --dir apps/web dlx @cloudflare/next-on-pages@1",
+    "build:cloudflare-pages": "cd apps/web && pnpm dlx @cloudflare/next-on-pages@1",
     "build": "pnpm run build:web && pnpm run build:api",
     "lint": "pnpm --filter \"*\" lint"
   },
