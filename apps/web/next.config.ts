@@ -6,6 +6,7 @@ const repoRoot = process.cwd().endsWith(path.join("apps", "web"))
   : process.cwd();
 
 const nextConfig: NextConfig = {
+  outputFileTracingRoot: repoRoot,
   turbopack: {
     root: repoRoot,
   },
