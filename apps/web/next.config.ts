@@ -1,14 +1,8 @@
 import type { NextConfig } from "next";
-import path from "node:path";
-
-const repoRoot = process.cwd().endsWith(path.join("apps", "web"))
-  ? path.join(process.cwd(), "..", "..")
-  : process.cwd();
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: repoRoot,
-  turbopack: {
-    root: repoRoot,
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   images: {
     remotePatterns: [

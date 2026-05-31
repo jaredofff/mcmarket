@@ -1,17 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { getCategoryProducts, type CategoryProduct } from "@/lib/categoryProducts";
 
-interface ProductPageProps {
-  params: {
-    category: string;
-    productId: string;
-  };
-}
-
-export default function ProductPage({ params }: ProductPageProps) {
+export default function ProductPage() {
+  const params = useParams<{ category: string; productId: string }>();
   const categoryName = params.category.charAt(0).toUpperCase() + params.category.slice(1);
   const allProducts = getCategoryProducts(categoryName);
   const product = allProducts.find((p) => p.id === params.productId);
