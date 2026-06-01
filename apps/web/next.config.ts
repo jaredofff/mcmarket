@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    // Enable Node.js compatibility for Cloudflare Pages
+    serverActions: {
+      allowedOrigins: ["*"],
+    },
+  },
 };
 
 export default nextConfig;
