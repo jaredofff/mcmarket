@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession, signOut } from '@/lib/auth-compat';
 import { useState } from 'react';
 import { LayoutDashboard, Package, BookOpen, Users, Menu, X, LogOut } from 'lucide-react';
 

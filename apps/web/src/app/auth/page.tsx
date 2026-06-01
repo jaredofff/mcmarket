@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from '@/lib/auth-compat';
 import { ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
 
 export default function AuthPage() {

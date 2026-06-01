@@ -3,7 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider } from "@/lib/auth-compat";
 
 const inter = Inter({
   variable: "--font-inter",
