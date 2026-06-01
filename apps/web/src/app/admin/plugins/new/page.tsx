@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PluginForm from '../../components/PluginForm';
 
+export const runtime = 'edge';
+
 export default function CreatePluginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);

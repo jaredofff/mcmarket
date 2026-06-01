@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import PluginForm from '../../../components/PluginForm';
 
+export const runtime = 'edge';
+
 interface PluginData {
   id: string;
   title: string;
