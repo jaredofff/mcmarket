@@ -10,6 +10,8 @@ import {
   type Category,
 } from "@/lib/mockData";
 
+export const runtime = "edge";
+
 type SortOption = "trending" | "newest" | "price-asc" | "price-desc" | "rating" | "featured";
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [

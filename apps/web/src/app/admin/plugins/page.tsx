@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Search, Plus } from 'lucide-react';
 import PluginTable from '../components/PluginTable';
 
+export const runtime = 'edge';
+
 interface Plugin {
   id: string;
   title: string;
