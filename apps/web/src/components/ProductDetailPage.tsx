@@ -79,11 +79,13 @@ export default function ProductDetailPage({
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
-                navigator.share?.({ 
-                  title: product.name,
-                  text: `Check out ${product.name} on MC Market`,
-                  url: window.location.href
-                });
+                if (typeof window !== 'undefined' && navigator.share) {
+                  navigator.share({ 
+                    title: product.name,
+                    text: `Check out ${product.name} on MC Market`,
+                    url: window.location.href
+                  });
+                }
               }}
               className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
             >

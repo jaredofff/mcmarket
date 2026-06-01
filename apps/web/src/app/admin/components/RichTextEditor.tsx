@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Bold, Italic, Link2, Code } from 'lucide-react';
 
@@ -16,9 +16,10 @@ export default function RichTextEditor({
   placeholder = 'Write markdown here...',
 }: RichTextEditorProps) {
   const [showPreview, setShowPreview] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const insertMarkdown = (before: string, after: string = '') => {
-    const textarea = document.getElementById('markdown-editor') as HTMLTextAreaElement;
+    const textarea = textareaRef.current;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
@@ -92,7 +93,7 @@ export default function RichTextEditor({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Textarea */}
         <textarea
-          id="markdown-editor"
+          ref={textareaRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}

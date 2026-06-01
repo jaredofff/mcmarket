@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface ProductFormData {
@@ -20,6 +21,7 @@ interface ProductFormData {
 const CATEGORIES = ["Setups", "Configs", "Builds", "Webs"] as const;
 
 export default function ProductFormPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState<ProductFormData>({
     title: "",
     category: "Setups",
@@ -141,7 +143,7 @@ export default function ProductFormPage() {
 
       setSuccess(true);
       setTimeout(() => {
-        window.location.href = "/creator/dashboard";
+        router.push("/creator/dashboard");
       }, 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error desconocido");
