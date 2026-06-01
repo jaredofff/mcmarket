@@ -5,8 +5,6 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { getCategoryProducts, type CategoryProduct } from "@/lib/categoryProducts";
 
-export const runtime = "edge";
-
 export default function ProductPage() {
   const params = useParams<{ category: string; productId: string }>();
   const categoryName = params.category.charAt(0).toUpperCase() + params.category.slice(1);

@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Package, CheckCircle, Clock, Plus, TrendingUp } from 'lucide-react';
 
-export const runtime = 'edge';
-
 interface DashboardStats {
   totalPlugins: number;
   publishedPlugins: number;
