@@ -1,8 +1,6 @@
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +17,6 @@ export async function POST(request: NextRequest) {
     const tagsStr = formData.get("tags") as string;
     const version = formData.get("version") as string;
     const featured = formData.get("featured") === "true";
-    const imageFile = formData.get("image") as File | null;
 
     // Validación básica
     if (!title || !category || !shortDescription || !longDescription) {
@@ -29,29 +26,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Procesar imagen si existe
-    let imagePath = "https://images.unsplash.com/photo-1460925895917-adf4e566c072?w=500&h=300&fit=crop";
-
-    if (imageFile) {
-      try {
-        const bytes = await imageFile.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-
-        // Crear directorio si no existe
-        const uploadDir = join(process.cwd(), "public", "uploads");
-        await mkdir(uploadDir, { recursive: true });
-
-        // Guardar archivo
-        const filename = `${Date.now()}-${imageFile.name}`;
-        const filepath = join(uploadDir, filename);
-        await writeFile(filepath, buffer);
-
-        imagePath = `/uploads/${filename}`;
-      } catch (err) {
-        console.error("Error procesando imagen:", err);
-        // Continuar sin imagen personalizada
-      }
-    }
+    // Usar imagen por defecto (Edge Runtime no soporta escritura de archivos)
+    const imagePath = "https://images.unsplash.com/photo-1460925895917-adf4e566c072?w=500&h=300&fit=crop";
 
     // Parsear features y tags
     const features = JSON.parse(featuresStr || "[]");
@@ -74,7 +50,7 @@ export async function POST(request: NextRequest) {
       features,
       version,
       creator: {
-        username: "CurrentUser", // Esto vendría de la sesión
+        username: "CurrentUser",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=user",
         verified: true,
       },
@@ -85,10 +61,7 @@ export async function POST(request: NextRequest) {
       status: "published",
     };
 
-    // Aquí guardarías en la base de datos
-    // Por ahora lo retornamos como éxito
-    console.log("Producto creado:", product);
-
+    // Retornar producto (guardar en BD debería hacerse en otro lugar)
     return NextResponse.json(
       {
         success: true,
