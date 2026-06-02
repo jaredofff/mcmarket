@@ -79,7 +79,7 @@ export default function PluginTable({
     return (
       <div className="text-center py-12">
         <p className="mb-2 font-outfit text-xl font-bold text-[#e8e4db]">No hay recursos todavía</p>
-        <p className="mb-5 text-[#a89968]">Carga el primer plugin para empezar a poblar el marketplace.</p>
+        <p className="mb-5 text-[#a89968]">Carga el primer recurso para empezar a poblar el marketplace.</p>
         <Link
           href="/admin/plugins/new"
           className="inline-block rounded-sm border border-amber-500/30 bg-amber-500/10 px-6 py-2 font-bold text-amber-400 transition-colors hover:bg-amber-500/20"

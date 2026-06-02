@@ -28,11 +28,11 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const response = await fetch('/api/admin/stats');
-        if (!response.ok) throw new Error('Failed to fetch stats');
+        if (!response.ok) throw new Error('No se pudieron cargar las métricas');
         const data = await response.json();
         setStats(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load statistics');
+        setError(err instanceof Error ? err.message : 'No se pudieron cargar las métricas');
       } finally {
         setLoading(false);
       }
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
         <div className="p-6 bg-[#1a1714] border border-amber-500/20 rounded-lg hover:border-amber-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#a89968] text-sm font-medium">Total Plugins</p>
+              <p className="text-[#a89968] text-sm font-medium">Total recursos</p>
               <p className="text-3xl font-bold text-amber-500 mt-2">
                 {stats?.totalPlugins || 0}
               </p>
@@ -78,7 +78,7 @@ export default function AdminDashboard() {
         <div className="p-6 bg-[#1a1714] border border-green-500/20 rounded-lg hover:border-green-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-600 text-sm font-medium">Published</p>
+              <p className="text-green-600 text-sm font-medium">Publicados</p>
               <p className="text-3xl font-bold text-green-500 mt-2">
                 {stats?.publishedPlugins || 0}
               </p>
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
         <div className="p-6 bg-[#1a1714] border border-yellow-500/20 rounded-lg hover:border-yellow-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-yellow-600 text-sm font-medium">Drafts</p>
+              <p className="text-yellow-600 text-sm font-medium">Borradores</p>
               <p className="text-3xl font-bold text-yellow-500 mt-2">
                 {stats?.draftPlugins || 0}
               </p>
@@ -104,7 +104,7 @@ export default function AdminDashboard() {
         <div className="p-6 bg-[#1a1714] border border-blue-500/20 rounded-lg hover:border-blue-500/40 transition-colors">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-600 text-sm font-medium">Total Downloads</p>
+              <p className="text-blue-600 text-sm font-medium">Descargas</p>
               <p className="text-3xl font-bold text-blue-500 mt-2">
                 {stats?.totalDownloads || 0}
               </p>
@@ -121,8 +121,8 @@ export default function AdminDashboard() {
           className="p-6 bg-[#1a1714] border border-amber-500/20 rounded-lg hover:border-amber-500/40 transition-colors flex items-center justify-between group"
         >
           <div>
-            <h3 className="text-amber-500 font-semibold mb-1">Create New Plugin</h3>
-            <p className="text-[#a89968] text-sm">Add a new plugin to the marketplace</p>
+            <h3 className="text-amber-500 font-semibold mb-1">Cargar recurso</h3>
+            <p className="text-[#a89968] text-sm">Añade contenido al marketplace</p>
           </div>
           <Plus className="text-amber-500/30 group-hover:text-amber-500/60 transition-colors" size={32} />
         </Link>
@@ -132,8 +132,8 @@ export default function AdminDashboard() {
           className="p-6 bg-[#1a1714] border border-blue-500/20 rounded-lg hover:border-blue-500/40 transition-colors flex items-center justify-between group"
         >
           <div>
-            <h3 className="text-blue-400 font-semibold mb-1">View All Plugins</h3>
-            <p className="text-[#a89968] text-sm">Manage all plugins in the system</p>
+            <h3 className="text-blue-400 font-semibold mb-1">Ver recursos</h3>
+            <p className="text-[#a89968] text-sm">Administra catálogo, estado y archivos</p>
           </div>
           <Package className="text-blue-400/30 group-hover:text-blue-400/60 transition-colors" size={32} />
         </Link>
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
       {/* Recent Plugins */}
       {stats?.recentPlugins && stats.recentPlugins.length > 0 && (
         <div className="p-6 bg-[#1a1714] border border-amber-500/20 rounded-lg">
-          <h2 className="text-amber-500 font-semibold mb-4">Recent Plugins</h2>
+          <h2 className="text-amber-500 font-semibold mb-4">Recursos recientes</h2>
           <div className="space-y-3">
             {stats.recentPlugins.map((plugin) => (
               <Link

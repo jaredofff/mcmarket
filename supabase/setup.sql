@@ -89,12 +89,7 @@ values (
   'plugin-files',
   false,
   104857600,
-  array[
-    'application/java-archive',
-    'application/zip',
-    'application/x-zip-compressed',
-    'application/octet-stream'
-  ]
+  null
 )
 on conflict (id) do update set
   public = excluded.public,

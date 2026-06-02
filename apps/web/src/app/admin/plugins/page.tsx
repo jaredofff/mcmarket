@@ -40,7 +40,7 @@ export default function PluginsPage() {
         });
 
         const response = await fetch(`/api/admin/plugins?${params}`);
-        if (!response.ok) throw new Error('Failed to fetch plugins');
+        if (!response.ok) throw new Error('No se pudieron cargar los recursos');
 
         const data = await response.json();
         setPlugins(data.plugins || []);
@@ -48,7 +48,7 @@ export default function PluginsPage() {
         setTotalItems(data.total || 0);
         setError('');
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load plugins');
+        setError(err instanceof Error ? err.message : 'No se pudieron cargar los recursos');
       } finally {
         setLoading(false);
       }
@@ -63,7 +63,7 @@ export default function PluginsPage() {
         method: 'DELETE',
       });
 
-      if (!response.ok) throw new Error('Failed to delete plugin');
+      if (!response.ok) throw new Error('No se pudo eliminar el recurso');
 
       setPlugins(plugins.filter((p) => p.id !== id));
       setTotalItems((current) => Math.max(0, current - 1));
@@ -79,7 +79,7 @@ export default function PluginsPage() {
         method: 'PATCH',
       });
 
-      if (!response.ok) throw new Error('Failed to publish plugin');
+      if (!response.ok) throw new Error('No se pudo publicar el recurso');
 
       const updatedPlugin = await response.json();
       setPlugins(plugins.map((p) => (p.id === id ? updatedPlugin : p)));
@@ -95,7 +95,7 @@ export default function PluginsPage() {
         <div>
           <p className="mb-1 text-xs font-bold uppercase tracking-widest text-amber-500">Administración</p>
           <h1 className="text-3xl font-bold text-[#e8e4db]">Recursos del marketplace</h1>
-          <p className="mt-1 text-[#a89968]">Carga, publica y organiza los plugins que aparecen en la tienda.</p>
+          <p className="mt-1 text-[#a89968]">Carga, publica y organiza todos los recursos que aparecen en la tienda.</p>
         </div>
         <Link
           href="/admin/plugins/new"

@@ -162,13 +162,13 @@ export async function POST(request: NextRequest) {
     const category = getString(formData, "category");
 
     if (!title || !description || !version || !category) {
-      return NextResponse.json({ message: "Missing required plugin fields" }, { status: 400 });
+      return NextResponse.json({ message: "Faltan campos obligatorios del recurso" }, { status: 400 });
     }
 
     const pluginSlug = await generateUniqueSlug(title);
     const coverImage = await uploadFile(MEDIA_BUCKET, "covers", formData.get("coverImage") as File | null, pluginSlug);
     const bannerImage = await uploadFile(MEDIA_BUCKET, "banners", formData.get("bannerImage") as File | null, pluginSlug);
-    const pluginFile = await uploadFile(FILES_BUCKET, "jars", formData.get("pluginFile") as File | null, pluginSlug);
+    const resourceFile = await uploadFile(FILES_BUCKET, "resources", formData.get("pluginFile") as File | null, pluginSlug);
 
     const testedVersions = parseList(formData.get("testedVersions"));
     const categories = [category].filter(Boolean);
@@ -192,10 +192,10 @@ export async function POST(request: NextRequest) {
         cover_image_path: coverImage?.path || null,
         banner_image: bannerImage?.publicUrl || null,
         banner_image_path: bannerImage?.path || null,
-        file_path: pluginFile?.path || null,
-        file_name: pluginFile?.name || null,
-        file_size: pluginFile?.size || null,
-        file_mime_type: pluginFile?.type || null,
+        file_path: resourceFile?.path || null,
+        file_name: resourceFile?.name || null,
+        file_size: resourceFile?.size || null,
+        file_mime_type: resourceFile?.type || null,
         is_vip_only: getBoolean(formData, "isVipOnly"),
         published: getBoolean(formData, "published"),
         created_by: currentUser?.id || null,
@@ -211,7 +211,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating plugin:", error);
     return NextResponse.json(
-      { message: error instanceof Error ? error.message : "Failed to create plugin" },
+      { message: error instanceof Error ? error.message : "No se pudo crear el recurso" },
       { status: 500 }
     );
   }

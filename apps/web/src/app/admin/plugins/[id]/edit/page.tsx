@@ -34,12 +34,12 @@ export default function EditPluginPage() {
     const fetchPlugin = async () => {
       try {
         const response = await fetch(`/api/admin/plugins/${pluginId}`);
-        if (!response.ok) throw new Error('Failed to fetch plugin');
+        if (!response.ok) throw new Error('No se pudo cargar el recurso');
 
         const data = await response.json();
         setPlugin(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load plugin');
+        setError(err instanceof Error ? err.message : 'No se pudo cargar el recurso');
       } finally {
         setLoading(false);
       }
@@ -89,8 +89,8 @@ export default function EditPluginPage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update plugin');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'No se pudo actualizar el recurso');
       }
 
       router.push('/admin/plugins');
@@ -124,8 +124,8 @@ export default function EditPluginPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-amber-500">Edit Plugin</h1>
-        <p className="text-[#a89968] mt-1">Update plugin information</p>
+        <h1 className="text-3xl font-bold text-amber-500">Editar recurso</h1>
+        <p className="text-[#a89968] mt-1">Actualiza la información, media y archivo del recurso.</p>
       </div>
 
       {error && (
@@ -141,7 +141,7 @@ export default function EditPluginPage() {
             initialData={plugin}
             onSubmit={handleSubmit}
             isLoading={isSubmitting}
-            submitLabel="Update Plugin"
+            submitLabel="Actualizar recurso"
           />
         </div>
       )}

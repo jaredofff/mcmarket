@@ -52,11 +52,10 @@ export default function CreatePluginPage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create plugin');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'No se pudo crear el recurso');
       }
 
-      const result = await response.json();
       router.push('/admin/plugins');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -68,24 +67,25 @@ export default function CreatePluginPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-amber-500">Create New Plugin</h1>
-        <p className="text-[#a89968] mt-1">Add a new plugin to the marketplace</p>
+      <div className="rounded-sm border border-[#2d2a26] bg-[#181512] p-6">
+        <p className="mb-1 text-xs font-bold uppercase tracking-widest text-amber-500">Nuevo recurso</p>
+        <h1 className="text-3xl font-bold text-[#e8e4db]">Cargar contenido al marketplace</h1>
+        <p className="mt-2 max-w-2xl text-[#a89968]">
+          Sube plugins, setups, configs, builds, webs o assets. Al publicarlo aparecerá en el catálogo público.
+        </p>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400">
+        <div className="rounded-sm border border-red-500/50 bg-red-500/20 p-4 text-red-400">
           {error}
         </div>
       )}
 
-      {/* Form */}
-      <div className="p-6 bg-[#1a1714] border border-amber-500/20 rounded-lg">
+      <div>
         <PluginForm
           onSubmit={handleSubmit}
           isLoading={isLoading}
-          submitLabel="Create Plugin"
+          submitLabel="Guardar recurso"
         />
       </div>
     </div>

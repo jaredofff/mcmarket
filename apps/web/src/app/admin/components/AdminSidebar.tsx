@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from '@/lib/auth-compat';
 import { useState } from 'react';
-import { LayoutDashboard, Package, BookOpen, Users, Menu, X, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, Menu, X, LogOut } from 'lucide-react';
 import { canAccessAdmin } from '@/lib/roles';
 
 const AdminSidebar = () => {
@@ -16,9 +16,7 @@ const AdminSidebar = () => {
 
   const menuItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin/plugins', label: 'Plugins', icon: Package },
-    { href: '/admin/resources', label: 'Resources', icon: BookOpen },
-    { href: '/admin/users', label: 'Users', icon: Users },
+    { href: '/admin/plugins', label: 'Recursos', icon: Package },
   ];
 
   const isActive = (href: string) => {
@@ -41,7 +39,7 @@ const AdminSidebar = () => {
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 lg:hidden p-2 bg-amber-500/10 hover:bg-amber-500/20 rounded-lg text-amber-500"
+        className="fixed top-4 left-4 z-50 rounded-sm bg-amber-500/10 p-2 text-amber-500 hover:bg-amber-500/20 lg:hidden"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
@@ -62,9 +60,9 @@ const AdminSidebar = () => {
       >
         {/* Logo/Title */}
         <div className="mb-8 pt-12 lg:pt-0">
-          <h1 className="text-2xl font-bold text-amber-500 flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-amber-500">
             <LayoutDashboard size={28} />
-            Admin Panel
+            Admin
           </h1>
         </div>
 
@@ -77,9 +75,9 @@ const AdminSidebar = () => {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                className={`flex items-center gap-3 rounded-sm px-4 py-3 transition-colors ${
                   active
-                    ? 'bg-amber-500/20 text-amber-500 border-l-2 border-amber-500'
+                    ? 'border-l-2 border-amber-500 bg-amber-500/20 text-amber-500'
                     : 'text-[#a89968] hover:bg-amber-500/10 hover:text-amber-500'
                 }`}
                 onClick={() => setIsOpen(false)}
@@ -95,16 +93,16 @@ const AdminSidebar = () => {
         <div className="absolute bottom-6 left-6 right-6 border-t border-amber-500/20 pt-6">
           {session?.user && (
             <div className="mb-4">
-              <p className="text-sm text-[#a89968] mb-1">Logged in as:</p>
+              <p className="text-sm text-[#a89968] mb-1">Sesión:</p>
               <p className="text-amber-500 font-medium truncate">{session.user.email}</p>
             </div>
           )}
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-colors font-medium"
+            className="flex w-full items-center justify-center gap-2 rounded-sm bg-red-500/20 px-4 py-2 font-medium text-red-400 transition-colors hover:bg-red-500/30"
           >
             <LogOut size={18} />
-            Logout
+            Salir
           </button>
         </div>
       </aside>

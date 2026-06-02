@@ -5,17 +5,17 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
-import { Upload, AlertCircle } from 'lucide-react';
+import { Upload, AlertCircle, Box, FileArchive, ImageIcon, Settings } from 'lucide-react';
 import RichTextEditor from './RichTextEditor';
 
 const pluginSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  version: z.string().min(1, 'Version is required'),
-  price: z.number().min(0, 'Price must be positive'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  category: z.string().min(1, 'Category is required'),
+  title: z.string().min(3, 'El título debe tener al menos 3 caracteres'),
+  version: z.string().min(1, 'La versión es obligatoria'),
+  price: z.number().min(0, 'El precio no puede ser negativo'),
+  description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
+  category: z.string().min(1, 'La categoría es obligatoria'),
   tier: z.enum(['free', 'premium', 'elite']),
-  testedVersions: z.string().min(1, 'Tested versions required'),
+  testedVersions: z.string().min(1, 'Indica compatibilidad o escribe N/A'),
   coverImage: z.instanceof(FileList).optional(),
   bannerImage: z.instanceof(FileList).optional(),
   pluginFile: z.instanceof(FileList).optional(),
@@ -36,7 +36,7 @@ export default function PluginForm({
   initialData,
   onSubmit,
   isLoading = false,
-  submitLabel = 'Create Plugin',
+  submitLabel = 'Guardar recurso',
 }: PluginFormProps) {
   const [description, setDescription] = useState(initialData?.description || '');
   const [error, setError] = useState('');
@@ -48,6 +48,7 @@ export default function PluginForm({
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<PluginFormData>({
     resolver: zodResolver(pluginSchema),
     defaultValues: {
@@ -68,11 +69,15 @@ export default function PluginForm({
 
   const isVipOnly = watch('isVipOnly');
   const published = watch('published');
+  const coverImageField = register('coverImage');
+  const bannerImageField = register('bannerImage');
 
   const handleImagePreview = (
     e: React.ChangeEvent<HTMLInputElement>,
-    setPreview: (url: string | null) => void
+    setPreview: (url: string | null) => void,
+    formOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   ) => {
+    formOnChange(e);
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -81,6 +86,11 @@ export default function PluginForm({
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleDescriptionChange = (value: string) => {
+    setDescription(value);
+    setValue('description', value, { shouldDirty: true, shouldValidate: true });
   };
 
   const onSubmitForm = async (data: PluginFormData) => {
@@ -100,37 +110,39 @@ export default function PluginForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6 max-w-4xl">
+    <form onSubmit={handleSubmit(onSubmitForm)} className="max-w-5xl space-y-6">
       {error && (
-        <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex gap-3">
+        <div className="flex gap-3 rounded-sm border border-red-500/50 bg-red-500/20 p-4">
           <AlertCircle className="text-red-400 flex-shrink-0 mt-0.5" size={20} />
           <p className="text-red-400">{error}</p>
         </div>
       )}
 
-      {/* Basic Information */}
-      <fieldset className="space-y-4 p-4 bg-amber-500/5 rounded-lg border border-amber-500/20">
-        <legend className="text-amber-500 font-semibold px-2">Basic Information</legend>
+      <fieldset className="space-y-5 rounded-sm border border-[#2d2a26] bg-[#181512] p-5">
+        <legend className="flex items-center gap-2 px-2 font-bold text-amber-400">
+          <Box size={18} />
+          Información principal
+        </legend>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Plugin Title *</label>
+            <label className="block text-[#a89968] font-medium mb-2">Título del recurso *</label>
             <input
               {...register('title')}
               type="text"
-              placeholder="My Awesome Plugin"
-              className="w-full px-4 py-2 bg-[#1a1714] border border-amber-500/20 rounded-lg text-[#e8e4db] placeholder-[#a89968] focus:outline-none focus:border-amber-500/50"
+              placeholder="Survival Setup Pro, Lobby Medieval, Economy Config..."
+              className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] placeholder-[#6b6459] focus:border-amber-500/50 focus:outline-none"
             />
             {errors.title && <p className="text-red-400 text-sm mt-1">{errors.title.message}</p>}
           </div>
 
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Version *</label>
+            <label className="block text-[#a89968] font-medium mb-2">Versión *</label>
             <input
               {...register('version')}
               type="text"
               placeholder="1.0.0"
-              className="w-full px-4 py-2 bg-[#1a1714] border border-amber-500/20 rounded-lg text-[#e8e4db] placeholder-[#a89968] focus:outline-none focus:border-amber-500/50"
+              className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] placeholder-[#6b6459] focus:border-amber-500/50 focus:outline-none"
             />
             {errors.version && (
               <p className="text-red-400 text-sm mt-1">{errors.version.message}</p>
@@ -138,34 +150,32 @@ export default function PluginForm({
           </div>
 
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Price ($) *</label>
+            <label className="block text-[#a89968] font-medium mb-2">Precio USD *</label>
             <input
               {...register('price', { valueAsNumber: true })}
               type="number"
               step="0.01"
               placeholder="9.99"
-              className="w-full px-4 py-2 bg-[#1a1714] border border-amber-500/20 rounded-lg text-[#e8e4db] placeholder-[#a89968] focus:outline-none focus:border-amber-500/50"
+              className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] placeholder-[#6b6459] focus:border-amber-500/50 focus:outline-none"
             />
             {errors.price && <p className="text-red-400 text-sm mt-1">{errors.price.message}</p>}
           </div>
 
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Category *</label>
+            <label className="block text-[#a89968] font-medium mb-2">Tipo de recurso *</label>
             <select
               {...register('category')}
-              className="w-full px-4 py-2 bg-[#1a1714] border border-amber-500/20 rounded-lg text-[#e8e4db] focus:outline-none focus:border-amber-500/50"
+              className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] focus:border-amber-500/50 focus:outline-none"
             >
-              <option value="">Select a category</option>
-              <option value="Economy">Economy</option>
-              <option value="RPG">RPG</option>
-              <option value="Admin">Admin</option>
-              <option value="Minigames">Minigames</option>
-              <option value="Mechanics">Mechanics</option>
-              <option value="Social">Social</option>
-              <option value="Skyblock">Skyblock</option>
-              <option value="PvP">PvP</option>
-              <option value="Building">Building</option>
-              <option value="Utilities">Utilities</option>
+              <option value="">Selecciona un tipo</option>
+              <option value="Plugins">Plugins</option>
+              <option value="Setups">Setups</option>
+              <option value="Configs">Configs</option>
+              <option value="Builds">Builds</option>
+              <option value="Webs">Webs</option>
+              <option value="Models">Modelos 3D</option>
+              <option value="Textures">Texturas</option>
+              <option value="Utilities">Utilidades</option>
             </select>
             {errors.category && (
               <p className="text-red-400 text-sm mt-1">{errors.category.message}</p>
@@ -173,12 +183,12 @@ export default function PluginForm({
           </div>
 
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Tier *</label>
+            <label className="block text-[#a89968] font-medium mb-2">Nivel *</label>
             <select
               {...register('tier')}
-              className="w-full px-4 py-2 bg-[#1a1714] border border-amber-500/20 rounded-lg text-[#e8e4db] focus:outline-none focus:border-amber-500/50"
+              className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] focus:border-amber-500/50 focus:outline-none"
             >
-              <option value="free">Free</option>
+              <option value="free">Gratis</option>
               <option value="premium">Premium</option>
               <option value="elite">Elite</option>
             </select>
@@ -186,12 +196,12 @@ export default function PluginForm({
           </div>
 
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Tested Versions *</label>
+            <label className="block text-[#a89968] font-medium mb-2">Compatibilidad *</label>
             <input
               {...register('testedVersions')}
               type="text"
-              placeholder="1.19, 1.20, 1.20.1"
-              className="w-full px-4 py-2 bg-[#1a1714] border border-amber-500/20 rounded-lg text-[#e8e4db] placeholder-[#a89968] focus:outline-none focus:border-amber-500/50"
+              placeholder="1.19, 1.20, Paper, N/A..."
+              className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] placeholder-[#6b6459] focus:border-amber-500/50 focus:outline-none"
             />
             {errors.testedVersions && (
               <p className="text-red-400 text-sm mt-1">{errors.testedVersions.message}</p>
@@ -200,67 +210,71 @@ export default function PluginForm({
         </div>
       </fieldset>
 
-      {/* Description */}
-      <fieldset className="space-y-2 p-4 bg-amber-500/5 rounded-lg border border-amber-500/20">
-        <legend className="text-amber-500 font-semibold px-2">Description (Markdown) *</legend>
-        <RichTextEditor value={description} onChange={setDescription} />
+      <fieldset className="space-y-2 rounded-sm border border-[#2d2a26] bg-[#181512] p-5">
+        <legend className="flex items-center gap-2 px-2 font-bold text-amber-400">
+          <Settings size={18} />
+          Descripción del recurso *
+        </legend>
+        <input type="hidden" {...register('description')} />
+        <RichTextEditor value={description} onChange={handleDescriptionChange} placeholder="Describe qué incluye, cómo se instala, requisitos y soporte..." />
+        {errors.description && <p className="text-red-400 text-sm mt-1">{errors.description.message}</p>}
       </fieldset>
 
-      {/* Images */}
-      <fieldset className="space-y-4 p-4 bg-amber-500/5 rounded-lg border border-amber-500/20">
-        <legend className="text-amber-500 font-semibold px-2">Media</legend>
+      <fieldset className="space-y-4 rounded-sm border border-[#2d2a26] bg-[#181512] p-5">
+        <legend className="flex items-center gap-2 px-2 font-bold text-amber-400">
+          <ImageIcon size={18} />
+          Media y archivo
+        </legend>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Cover Image */}
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Cover Image</label>
+            <label className="block text-[#a89968] font-medium mb-2">Imagen de portada</label>
             <div className="relative">
               <input
-                {...register('coverImage')}
+                {...coverImageField}
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleImagePreview(e, setCoverImagePreview)}
+                onChange={(e) => handleImagePreview(e, setCoverImagePreview, coverImageField.onChange)}
                 className="hidden"
                 id="cover-image"
               />
               <label
                 htmlFor="cover-image"
-                className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-amber-500/30 rounded-lg cursor-pointer hover:border-amber-500/60 transition-colors"
+                className="flex min-h-40 w-full cursor-pointer flex-col items-center justify-center rounded-sm border-2 border-dashed border-[#3d3830] bg-[#11100e] p-6 transition-colors hover:border-amber-500/60"
               >
                 {coverImagePreview ? (
                   <img src={coverImagePreview} alt="Preview" className="max-h-32 rounded" />
                 ) : (
                   <>
                     <Upload size={24} className="text-amber-500 mb-2" />
-                    <span className="text-[#a89968] text-sm">Click to upload or drag</span>
+                    <span className="text-[#a89968] text-sm">Click para subir portada</span>
                   </>
                 )}
               </label>
             </div>
           </div>
 
-          {/* Banner Image */}
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Banner Image</label>
+            <label className="block text-[#a89968] font-medium mb-2">Banner opcional</label>
             <div className="relative">
               <input
-                {...register('bannerImage')}
+                {...bannerImageField}
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleImagePreview(e, setBannerImagePreview)}
+                onChange={(e) => handleImagePreview(e, setBannerImagePreview, bannerImageField.onChange)}
                 className="hidden"
                 id="banner-image"
               />
               <label
                 htmlFor="banner-image"
-                className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-amber-500/30 rounded-lg cursor-pointer hover:border-amber-500/60 transition-colors"
+                className="flex min-h-40 w-full cursor-pointer flex-col items-center justify-center rounded-sm border-2 border-dashed border-[#3d3830] bg-[#11100e] p-6 transition-colors hover:border-amber-500/60"
               >
                 {bannerImagePreview ? (
                   <img src={bannerImagePreview} alt="Preview" className="max-h-32 rounded" />
                 ) : (
                   <>
                     <Upload size={24} className="text-amber-500 mb-2" />
-                    <span className="text-[#a89968] text-sm">Click to upload or drag</span>
+                    <span className="text-[#a89968] text-sm">Click para subir banner</span>
                   </>
                 )}
               </label>
@@ -268,21 +282,25 @@ export default function PluginForm({
           </div>
         </div>
 
-        {/* Plugin File */}
         <div>
-          <label className="block text-[#a89968] font-medium mb-2">Plugin File (.jar)</label>
+          <label className="flex items-center gap-2 text-[#a89968] font-medium mb-2">
+            <FileArchive size={18} />
+            Archivo del recurso
+          </label>
           <input
             {...register('pluginFile')}
             type="file"
-            accept=".jar"
-            className="w-full px-4 py-2 bg-[#1a1714] border border-amber-500/20 rounded-lg text-[#e8e4db] file:bg-amber-500/20 file:border-0 file:text-amber-500 file:px-3 file:py-1 file:rounded cursor-pointer"
+            accept=".jar,.zip,.rar,.7z,.schem,.schematic,.yml,.yaml,.json,.txt,.html,.css,.js,.ts,.tsx,.jsx,.png,.jpg,.jpeg,.webp"
+            className="w-full cursor-pointer rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] file:mr-4 file:rounded-sm file:border-0 file:bg-amber-500/20 file:px-3 file:py-1 file:font-bold file:text-amber-400"
           />
+          <p className="mt-2 text-xs text-[#6b6459]">
+            Acepta JAR, ZIP, configuraciones, esquemáticos, builds comprimidos, webs y assets.
+          </p>
         </div>
       </fieldset>
 
-      {/* Options */}
-      <fieldset className="space-y-3 p-4 bg-amber-500/5 rounded-lg border border-amber-500/20">
-        <legend className="text-amber-500 font-semibold px-2">Options</legend>
+      <fieldset className="space-y-3 rounded-sm border border-[#2d2a26] bg-[#181512] p-5">
+        <legend className="px-2 font-bold text-amber-400">Opciones</legend>
 
         <div className="flex items-center gap-3">
           <input
@@ -293,7 +311,7 @@ export default function PluginForm({
             className="w-4 h-4 bg-amber-500/20 border border-amber-500/30 rounded cursor-pointer accent-amber-500"
           />
           <label htmlFor="vip-only" className="text-[#a89968] cursor-pointer">
-            VIP Only
+            Solo VIP
           </label>
         </div>
 
@@ -306,25 +324,24 @@ export default function PluginForm({
             className="w-4 h-4 bg-amber-500/20 border border-amber-500/30 rounded cursor-pointer accent-amber-500"
           />
           <label htmlFor="published" className="text-[#a89968] cursor-pointer">
-            Publish Immediately
+            Publicar inmediatamente
           </label>
         </div>
       </fieldset>
 
-      {/* Submit Buttons */}
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 py-2 bg-amber-500/20 hover:bg-amber-500/30 disabled:opacity-50 text-amber-500 rounded-lg font-medium transition-colors"
+          className="h-11 rounded-sm bg-linear-to-b from-amber-400 to-yellow-600 px-6 font-black text-[#141311] shadow-[0_3px_0_#92400e] transition-all hover:brightness-110 disabled:opacity-50"
         >
-          {isLoading ? 'Saving...' : submitLabel}
+          {isLoading ? 'Guardando...' : submitLabel}
         </button>
         <Link
           href="/admin/plugins"
-          className="px-6 py-2 bg-gray-500/20 hover:bg-gray-500/30 text-gray-400 rounded-lg font-medium transition-colors"
+          className="flex h-11 items-center justify-center rounded-sm border border-[#3d3830] bg-[#11100e] px-6 font-bold text-[#a89968] transition-colors hover:text-amber-400"
         >
-          Cancel
+          Cancelar
         </Link>
       </div>
     </form>

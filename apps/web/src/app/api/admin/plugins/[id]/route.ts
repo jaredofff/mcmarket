@@ -123,11 +123,11 @@ export async function PUT(
     const category = getString(formData, "category");
     const coverImage = await uploadReplacement(MEDIA_BUCKET, "covers", formData.get("coverImage") as File | null, current.slug);
     const bannerImage = await uploadReplacement(MEDIA_BUCKET, "banners", formData.get("bannerImage") as File | null, current.slug);
-    const pluginFile = await uploadReplacement(FILES_BUCKET, "jars", formData.get("pluginFile") as File | null, current.slug);
+    const resourceFile = await uploadReplacement(FILES_BUCKET, "resources", formData.get("pluginFile") as File | null, current.slug);
 
     if (coverImage) await removeStoredFile(MEDIA_BUCKET, current.cover_image_path);
     if (bannerImage) await removeStoredFile(MEDIA_BUCKET, current.banner_image_path);
-    if (pluginFile) await removeStoredFile(FILES_BUCKET, current.file_path);
+    if (resourceFile) await removeStoredFile(FILES_BUCKET, current.file_path);
 
     const updateData: Record<string, unknown> = {
       title: getString(formData, "title", current.title),
@@ -152,11 +152,11 @@ export async function PUT(
       updateData.banner_image_path = bannerImage.path;
     }
 
-    if (pluginFile) {
-      updateData.file_path = pluginFile.path;
-      updateData.file_name = pluginFile.name;
-      updateData.file_size = pluginFile.size;
-      updateData.file_mime_type = pluginFile.type;
+    if (resourceFile) {
+      updateData.file_path = resourceFile.path;
+      updateData.file_name = resourceFile.name;
+      updateData.file_size = resourceFile.size;
+      updateData.file_mime_type = resourceFile.type;
     }
 
     const { data, error } = await supabase
@@ -174,7 +174,7 @@ export async function PUT(
   } catch (error) {
     console.error("Error updating plugin:", error);
     return NextResponse.json(
-      { message: error instanceof Error ? error.message : "Failed to update plugin" },
+      { message: error instanceof Error ? error.message : "No se pudo actualizar el recurso" },
       { status: 500 }
     );
   }

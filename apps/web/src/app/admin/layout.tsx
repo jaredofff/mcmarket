@@ -7,8 +7,8 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'edge';
 
 export const metadata = {
-  title: 'Admin Panel | MC Market',
-  description: 'Administration panel for MC Market',
+  title: 'Admin | MC Market',
+  description: 'Resource administration for MC Market',
 };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -29,10 +29,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AdminSidebar />
       <main className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="bg-[#1a1714] border-b border-amber-500/20 px-6 py-4">
+        <header className="border-b border-[#2d2a26] bg-[#11100e] px-6 py-5">
           <div className="max-w-7xl">
-            <h1 className="text-2xl font-bold text-amber-500">Admin Panel</h1>
-            <p className="text-[#a89968] text-sm mt-1">Manage your marketplace content</p>
+            <h1 className="text-2xl font-bold text-amber-500">MC Market Admin</h1>
+            <p className="mt-1 text-sm text-[#a89968]">Gestión de catálogo, uploads y publicación.</p>
           </div>
         </header>
 
