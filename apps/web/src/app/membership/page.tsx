@@ -125,7 +125,7 @@ export default function MembershipPage() {
 
                 {/* Info Text */}
                 <p className="text-xs text-[#6b6459] text-center mt-4">
-                  Sin compromiso • Cancela cuando quieras
+                  Acceso permanente con un único pago.
                 </p>
               </div>
             </div>
