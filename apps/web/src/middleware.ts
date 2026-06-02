@@ -1,6 +1,17 @@
 import { createServerClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 
+const getSupabaseConfig = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !anonKey) {
+    return null;
+  }
+
+  return { anonKey, url };
+};
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -8,9 +19,25 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
+  const isOnAdmin = request.nextUrl.pathname.startsWith('/admin');
+
+  const supabaseConfig = getSupabaseConfig();
+
+  if (!supabaseConfig) {
+    if (isOnDashboard || isOnAdmin) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = '/auth';
+      redirectUrl.searchParams.set('next', request.nextUrl.pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    return response;
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseConfig.url,
+    supabaseConfig.anonKey,
     {
       cookies: {
         getAll() {
@@ -33,9 +60,6 @@ export async function middleware(request: NextRequest) {
 
   // Refresh session if expired
   const { data: { session } } = await supabase.auth.getSession();
-
-  const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
-  const isOnAdmin = request.nextUrl.pathname.startsWith('/admin');
 
   if (isOnDashboard || isOnAdmin) {
     if (!session) {

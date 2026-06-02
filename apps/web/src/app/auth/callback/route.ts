@@ -4,16 +4,29 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
+const getSupabaseConfig = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !anonKey) {
+    return null;
+  }
+
+  return { anonKey, url };
+};
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   const next = searchParams.get('next') ?? '/dashboard';
 
-  if (code) {
+  const supabaseConfig = getSupabaseConfig();
+
+  if (code && supabaseConfig) {
     const cookieStore = await cookies();
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      supabaseConfig.url,
+      supabaseConfig.anonKey,
       {
         cookies: {
           getAll() {

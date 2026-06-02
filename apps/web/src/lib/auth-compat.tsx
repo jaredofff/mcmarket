@@ -32,6 +32,10 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
+    if (!supabase) {
+      setStatus('unauthenticated');
+      return;
+    }
 
     // Map supabase session to our NextAuth-like session
     const mapSession = async (supabaseSession: Session | null): Promise<CustomSession | null> => {
@@ -118,6 +122,11 @@ export function useSession() {
 
 export const signIn = async (provider: 'discord', options?: { callbackUrl?: string }) => {
   const supabase = getSupabaseBrowserClient();
+  if (!supabase) {
+    console.error('Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.');
+    return;
+  }
+
   const next = options?.callbackUrl || '/dashboard';
   
   // Format the redirect URL back to the callback route
@@ -138,8 +147,13 @@ export const signIn = async (provider: 'discord', options?: { callbackUrl?: stri
 
 export const signOut = async (options?: { callbackUrl?: string; redirectTo?: string }) => {
   const supabase = getSupabaseBrowserClient();
-  await supabase.auth.signOut();
-  
   const redirectUrl = options?.callbackUrl || options?.redirectTo || '/';
+
+  if (!supabase) {
+    window.location.href = redirectUrl;
+    return;
+  }
+
+  await supabase.auth.signOut();
   window.location.href = redirectUrl;
 };
