@@ -3,6 +3,7 @@ import { getCurrentSession } from "@/lib/auth-supabase-server";
 import DashboardShell from "./DashboardShell";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export default async function DashboardLayout({
   children,

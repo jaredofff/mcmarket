@@ -4,6 +4,7 @@ import { getCurrentSession } from '@/lib/auth-supabase-server';
 import { canAccessAdmin, getRoleFromMetadata } from '@/lib/roles';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
 
 export const metadata = {
   title: 'Admin Panel | MC Market',

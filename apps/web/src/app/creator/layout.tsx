@@ -4,6 +4,7 @@ import { canAccessCreator, getRoleFromMetadata } from "@/lib/roles";
 import CreatorShell from "./CreatorShell";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export default async function CreatorLayout({
   children,
