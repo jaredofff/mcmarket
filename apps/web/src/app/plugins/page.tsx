@@ -64,6 +64,7 @@ export default function PluginsExplorer() {
     selectedVersions.length +
     (showFreeOnly ? 1 : 0) +
     (priceRange[0] > 0 || priceRange[1] < 50 ? 1 : 0);
+  const catalogIsEmpty = MOCK_PLUGINS.length === 0;
 
   const filteredPlugins = useMemo(() => {
     let result = [...MOCK_PLUGINS];
@@ -389,18 +390,33 @@ export default function PluginsExplorer() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center py-24 text-center gap-4">
               <div className="w-16 h-16 rounded-sm bg-[#1c1a17] border border-[#2d2a26] flex items-center justify-center text-3xl shadow-[4px_4px_0_rgba(0,0,0,0.4)]">
-                🔍
+                {catalogIsEmpty ? "📦" : "🔍"}
               </div>
               <div>
-                <h3 className="font-outfit font-bold text-xl text-[#e8e4db] mb-1">No plugins found</h3>
-                <p className="text-[#6b6459]">Try adjusting your filters or search query.</p>
+                <h3 className="font-outfit font-bold text-xl text-[#e8e4db] mb-1">
+                  {catalogIsEmpty ? "Aún no hay plugins publicados" : "No plugins found"}
+                </h3>
+                <p className="text-[#6b6459]">
+                  {catalogIsEmpty
+                    ? "Carga el primer recurso desde administración para empezar a poblar el marketplace."
+                    : "Try adjusting your filters or search query."}
+                </p>
               </div>
-              <button
-                onClick={clearFilters}
-                className="px-6 py-2.5 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-sm font-bold text-[#a39c90] hover:text-amber-400 hover:border-amber-500/40 transition-all"
-              >
-                Clear all filters
-              </button>
+              {catalogIsEmpty ? (
+                <a
+                  href="/admin/plugins/new"
+                  className="px-6 py-2.5 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-sm font-bold text-[#a39c90] hover:text-amber-400 hover:border-amber-500/40 transition-all"
+                >
+                  Crear primer plugin
+                </a>
+              ) : (
+                <button
+                  onClick={clearFilters}
+                  className="px-6 py-2.5 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-sm font-bold text-[#a39c90] hover:text-amber-400 hover:border-amber-500/40 transition-all"
+                >
+                  Clear all filters
+                </button>
+              )}
             </div>
           )}
         </div>

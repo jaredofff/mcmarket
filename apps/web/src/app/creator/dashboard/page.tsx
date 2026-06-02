@@ -21,43 +21,8 @@ export default function CreatorDashboard() {
   const [activeTab, setActiveTab] = useState<"published" | "draft" | "archived">("published");
 
   useEffect(() => {
-    // Simular carga de productos
     setTimeout(() => {
-      setProducts([
-        {
-          id: "prod-1",
-          title: "Survival Server Pro Setup",
-          category: "Setups",
-          price: 24.99,
-          rating: 4.9,
-          sales: 856,
-          downloads: 2400,
-          createdAt: "2024-01-15",
-          status: "published",
-        },
-        {
-          id: "prod-2",
-          title: "RPG World Complete",
-          category: "Setups",
-          price: 34.99,
-          rating: 4.7,
-          sales: 645,
-          downloads: 1890,
-          createdAt: "2024-01-10",
-          status: "published",
-        },
-        {
-          id: "prod-3",
-          title: "Mi Nuevo Proyecto",
-          category: "Configs",
-          price: 12.99,
-          rating: 0,
-          sales: 0,
-          downloads: 0,
-          createdAt: "2024-02-01",
-          status: "draft",
-        },
-      ]);
+      setProducts([]);
       setIsLoading(false);
     }, 500);
   }, []);

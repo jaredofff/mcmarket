@@ -1,24 +1,18 @@
 "use client";
 
+import Link from "next/link";
+
 export default function Dashboard() {
   const stats = [
-    { label: "Recursos Adquiridos", value: "24", icon: "🎁" },
-    { label: "Descargas Totales", value: "156", icon: "📥" },
-    { label: "Favoritos", value: "12", icon: "⭐" },
-    { label: "Espacio Usado", value: "2.4GB", icon: "💾" },
+    { label: "Recursos Adquiridos", value: "0", icon: "🎁" },
+    { label: "Descargas Totales", value: "0", icon: "📥" },
+    { label: "Favoritos", value: "0", icon: "⭐" },
+    { label: "Espacio Usado", value: "0GB", icon: "💾" },
   ];
 
-  const recentDownloads = [
-    { id: 1, name: "Advanced Economy", date: "Hoy", size: "24MB" },
-    { id: 2, name: "PvP Arena Manager", date: "Ayer", size: "18MB" },
-    { id: 3, name: "Skyblock Config", date: "Hace 3 días", size: "45MB" },
-  ];
+  const recentDownloads: Array<{ id: number; name: string; date: string; size: string }> = [];
 
-  const favoriteResources = [
-    { id: 1, name: "Advanced Economy", type: "Plugin", rating: 4.8 },
-    { id: 2, name: "Server Config Pack", type: "Config", rating: 4.9 },
-    { id: 3, name: "Premium Lobby Build", type: "Build", rating: 4.6 },
-  ];
+  const favoriteResources: Array<{ id: number; name: string; type: string; rating: number }> = [];
 
   return (
     <div className="space-y-8">
@@ -45,43 +39,58 @@ export default function Dashboard() {
       {/* Recent Downloads */}
       <div className="bg-[#1c1a17] border border-[#2d2a26] rounded-sm p-6">
         <h2 className="font-outfit text-2xl font-bold text-[#e8e4db] mb-4">Descargas Recientes</h2>
-        <div className="space-y-3">
-          {recentDownloads.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between p-4 bg-[#141311] rounded-sm border border-[#2d2a26] hover:border-amber-500/30 transition-all"
-            >
-              <div>
-                <div className="font-bold text-[#e8e4db]">{item.name}</div>
-                <div className="text-sm text-[#6b6459]">{item.date}</div>
+        {recentDownloads.length > 0 ? (
+          <div className="space-y-3">
+            {recentDownloads.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between p-4 bg-[#141311] rounded-sm border border-[#2d2a26] hover:border-amber-500/30 transition-all"
+              >
+                <div>
+                  <div className="font-bold text-[#e8e4db]">{item.name}</div>
+                  <div className="text-sm text-[#6b6459]">{item.date}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-bold text-[#a39c90]">{item.size}</div>
+                </div>
               </div>
-              <div className="text-right">
-                <div className="text-sm font-bold text-[#a39c90]">{item.size}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-sm border border-dashed border-[#3d3830] bg-[#141311] p-8 text-center">
+            <p className="text-[#8c8278]">Todavía no tienes descargas.</p>
+            <Link href="/plugins" className="mt-3 inline-block text-sm font-bold text-amber-400 hover:text-amber-300">
+              Explorar marketplace
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Favorite Resources */}
       <div className="bg-[#1c1a17] border border-[#2d2a26] rounded-sm p-6">
         <h2 className="font-outfit text-2xl font-bold text-[#e8e4db] mb-4">Recursos Favoritos</h2>
-        <div className="space-y-3">
-          {favoriteResources.map((resource) => (
-            <div
-              key={resource.id}
-              className="flex items-center justify-between p-4 bg-[#141311] rounded-sm border border-[#2d2a26] hover:border-amber-500/30 transition-all"
-            >
-              <div>
-                <div className="font-bold text-[#e8e4db]">{resource.name}</div>
-                <div className="text-sm text-[#6b6459]">{resource.type}</div>
+        {favoriteResources.length > 0 ? (
+          <div className="space-y-3">
+            {favoriteResources.map((resource) => (
+              <div
+                key={resource.id}
+                className="flex items-center justify-between p-4 bg-[#141311] rounded-sm border border-[#2d2a26] hover:border-amber-500/30 transition-all"
+              >
+                <div>
+                  <div className="font-bold text-[#e8e4db]">{resource.name}</div>
+                  <div className="text-sm text-[#6b6459]">{resource.type}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-bold text-amber-400">★ {resource.rating}</div>
+                </div>
               </div>
-              <div className="text-right">
-                <div className="text-sm font-bold text-amber-400">★ {resource.rating}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-sm border border-dashed border-[#3d3830] bg-[#141311] p-8 text-center">
+            <p className="text-[#8c8278]">No hay favoritos guardados.</p>
+          </div>
+        )}
       </div>
     </div>
   );

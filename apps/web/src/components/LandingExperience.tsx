@@ -40,10 +40,10 @@ const sectionVariants = {
 };
 
 const stats = [
-  { label: "Recursos curados", value: "1.4k+" },
-  { label: "Creadores verificados", value: "88" },
-  { label: "Descargas mensuales", value: "120k" },
-  { label: "Satisfacción", value: "99%" },
+  { label: "Recursos curados", value: "0" },
+  { label: "Creadores verificados", value: "0" },
+  { label: "Descargas mensuales", value: "0" },
+  { label: "Satisfacción", value: "0%" },
 ];
 
 const resourceCategories = [
@@ -100,6 +100,23 @@ function PluginMiniCard({ plugin }: { plugin: Plugin }) {
         </CardFooter>
       </Card>
     </motion.div>
+  );
+}
+
+function EmptyCollection() {
+  return (
+    <div className="flex min-h-48 flex-col items-center justify-center rounded-sm border border-dashed border-[#3d3830] bg-[#1c1a17]/70 px-6 py-12 text-center">
+      <h3 className="font-outfit text-xl font-bold text-[#e8e4db]">Catálogo listo para recursos reales</h3>
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#8c8278]">
+        Aún no hay productos publicados. Cuando cargues recursos desde el panel de administración, aparecerán aquí automáticamente.
+      </p>
+      <Link
+        href="/admin/plugins/new"
+        className="mt-5 rounded-sm border border-amber-500/30 bg-amber-500/10 px-5 py-2 text-sm font-bold text-amber-400 transition-colors hover:border-amber-500/50 hover:text-amber-300"
+      >
+        Cargar primer recurso
+      </Link>
+    </div>
   );
 }
 
@@ -282,27 +299,39 @@ export default function LandingExperience() {
           </TabsList>
 
           <TabsContent value="featured" className="outline-none">
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {featuredPlugins.map((plugin) => (
-                <PluginMiniCard key={plugin.id} plugin={plugin} />
-              ))}
-            </div>
+            {featuredPlugins.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {featuredPlugins.map((plugin) => (
+                  <PluginMiniCard key={plugin.id} plugin={plugin} />
+                ))}
+              </div>
+            ) : (
+              <EmptyCollection />
+            )}
           </TabsContent>
 
           <TabsContent value="trending" className="outline-none">
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {trendingPlugins.map((plugin) => (
-                <PluginMiniCard key={plugin.id} plugin={plugin} />
-              ))}
-            </div>
+            {trendingPlugins.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {trendingPlugins.map((plugin) => (
+                  <PluginMiniCard key={plugin.id} plugin={plugin} />
+                ))}
+              </div>
+            ) : (
+              <EmptyCollection />
+            )}
           </TabsContent>
 
           <TabsContent value="latest" className="outline-none">
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {latestPlugins.map((plugin) => (
-                <PluginMiniCard key={plugin.id} plugin={plugin} />
-              ))}
-            </div>
+            {latestPlugins.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {latestPlugins.map((plugin) => (
+                  <PluginMiniCard key={plugin.id} plugin={plugin} />
+                ))}
+              </div>
+            ) : (
+              <EmptyCollection />
+            )}
           </TabsContent>
         </Tabs>
       </motion.section>

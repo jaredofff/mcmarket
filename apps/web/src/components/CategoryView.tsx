@@ -81,6 +81,7 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
   };
 
   const activeFilterCount = (showFreeOnly ? 1 : 0) + (priceRange[0] > 0 || priceRange[1] < 50 ? 1 : 0);
+  const catalogIsEmpty = allProducts.length === 0;
 
   return (
     <div className="w-full">
@@ -255,15 +256,30 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center py-24 text-center gap-4">
-                <div className="text-5xl">🔍</div>
-                <h3 className="font-bold text-[#e8e4db] text-lg">Sin resultados</h3>
-                <p className="text-[#6b6459]">Intenta ajustar tus filtros</p>
-                <button
-                  onClick={clearFilters}
-                  className="px-6 py-2 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-sm font-bold text-[#a39c90] hover:text-amber-400"
-                >
-                  Limpiar filtros
-                </button>
+                <div className="text-5xl">{catalogIsEmpty ? categoryInfo.emoji : "🔍"}</div>
+                <h3 className="font-bold text-[#e8e4db] text-lg">
+                  {catalogIsEmpty ? `Aún no hay ${categoryName.toLowerCase()} publicados` : "Sin resultados"}
+                </h3>
+                <p className="max-w-lg text-[#6b6459]">
+                  {catalogIsEmpty
+                    ? "Cuando cargues recursos reales desde el panel de administración, se mostrarán en esta categoría."
+                    : "Intenta ajustar tus filtros"}
+                </p>
+                {catalogIsEmpty ? (
+                  <Link
+                    href="/admin/plugins/new"
+                    className="px-6 py-2 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-sm font-bold text-[#a39c90] hover:text-amber-400"
+                  >
+                    Cargar recurso
+                  </Link>
+                ) : (
+                  <button
+                    onClick={clearFilters}
+                    className="px-6 py-2 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-sm font-bold text-[#a39c90] hover:text-amber-400"
+                  >
+                    Limpiar filtros
+                  </button>
+                )}
               </div>
             )}
           </div>

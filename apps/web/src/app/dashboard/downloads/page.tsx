@@ -1,40 +1,14 @@
 "use client";
 
 export default function Downloads() {
-  const downloads = [
-    {
-      id: 1,
-      name: "Advanced Economy",
-      category: "Plugin",
-      size: "24MB",
-      date: "26/05/2024",
-      version: "2.5.1",
-    },
-    {
-      id: 2,
-      name: "PvP Arena Manager",
-      category: "Plugin",
-      size: "18MB",
-      date: "25/05/2024",
-      version: "1.8.0",
-    },
-    {
-      id: 3,
-      name: "Skyblock Configuration",
-      category: "Config",
-      size: "45MB",
-      date: "23/05/2024",
-      version: "3.2.1",
-    },
-    {
-      id: 4,
-      name: "Premium Lobby Design",
-      category: "Build",
-      size: "156MB",
-      date: "20/05/2024",
-      version: "1.0.0",
-    },
-  ];
+  const downloads: Array<{
+    id: number;
+    name: string;
+    category: string;
+    size: string;
+    date: string;
+    version: string;
+  }> = [];
 
   return (
     <div className="space-y-6">
@@ -43,7 +17,8 @@ export default function Downloads() {
         <p className="text-[#8c8278]">Todos tus recursos descargados</p>
       </div>
 
-      <div className="bg-[#1c1a17] border border-[#2d2a26] rounded-sm overflow-hidden">
+      {downloads.length > 0 ? (
+        <div className="bg-[#1c1a17] border border-[#2d2a26] rounded-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -96,7 +71,13 @@ export default function Downloads() {
             </tbody>
           </table>
         </div>
-      </div>
+        </div>
+      ) : (
+        <div className="rounded-sm border border-dashed border-[#3d3830] bg-[#1c1a17] px-6 py-16 text-center">
+          <h2 className="font-outfit text-xl font-bold text-[#e8e4db]">No hay descargas todavía</h2>
+          <p className="mt-2 text-[#8c8278]">Cuando compres o descargues recursos reales, aparecerán en esta tabla.</p>
+        </div>
+      )}
     </div>
   );
 }
