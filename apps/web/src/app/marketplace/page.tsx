@@ -163,7 +163,7 @@ export default function MarketplacePage() {
                 {/* Cover Image */}
                 <div className="relative h-40 bg-gray-700">
                   <Image
-                    src={plugin.coverImage}
+                    src={plugin.coverImage || '/logo.png'}
                     alt={plugin.title}
                     fill
                     className="object-cover group-hover:scale-110 transition duration-300"

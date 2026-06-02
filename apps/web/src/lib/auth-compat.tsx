@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getSupabaseBrowserClient } from './auth-supabase-client';
 import type { Session } from '@supabase/supabase-js';
-import { DEFAULT_ROLE, getRoleFromMetadata, normalizeRole, type AppRole } from './roles';
+import { DEFAULT_ROLE, getTrustedRoleFromMetadata, normalizeRole, type AppRole } from './roles';
 
 export interface CustomSession {
   user: {
@@ -50,7 +50,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         || user.user_metadata?.sub 
         || '';
 
-      let role = getRoleFromMetadata(user.app_metadata, user.user_metadata);
+      let role = getTrustedRoleFromMetadata(user.app_metadata);
 
       if (role === DEFAULT_ROLE && process.env.NEXT_PUBLIC_API_URL) {
         try {

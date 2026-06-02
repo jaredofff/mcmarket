@@ -42,6 +42,16 @@ export function getRoleFromMetadata(
   ]);
 }
 
+export function getTrustedRoleFromMetadata(
+  appMetadata?: Record<string, unknown> | null
+): AppRole {
+  return highestRole([
+    appMetadata?.role,
+    appMetadata?.roles,
+    appMetadata?.app_role,
+  ]);
+}
+
 export function canAccessAdmin(role: unknown) {
   const normalizedRole = normalizeRole(role);
   return normalizedRole === 'ADMIN' || normalizedRole === 'CEO';

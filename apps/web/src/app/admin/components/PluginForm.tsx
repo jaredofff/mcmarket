@@ -156,12 +156,16 @@ export default function PluginForm({
               className="w-full px-4 py-2 bg-[#1a1714] border border-amber-500/20 rounded-lg text-[#e8e4db] focus:outline-none focus:border-amber-500/50"
             >
               <option value="">Select a category</option>
-              <option value="utilities">Utilities</option>
-              <option value="economy">Economy</option>
-              <option value="gameplay">Gameplay</option>
-              <option value="protection">Protection</option>
-              <option value="management">Management</option>
-              <option value="other">Other</option>
+              <option value="Economy">Economy</option>
+              <option value="RPG">RPG</option>
+              <option value="Admin">Admin</option>
+              <option value="Minigames">Minigames</option>
+              <option value="Mechanics">Mechanics</option>
+              <option value="Social">Social</option>
+              <option value="Skyblock">Skyblock</option>
+              <option value="PvP">PvP</option>
+              <option value="Building">Building</option>
+              <option value="Utilities">Utilities</option>
             </select>
             {errors.category && (
               <p className="text-red-400 text-sm mt-1">{errors.category.message}</p>

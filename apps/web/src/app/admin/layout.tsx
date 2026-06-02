@@ -1,7 +1,7 @@
 import AdminSidebar from './components/AdminSidebar';
 import { redirect } from 'next/navigation';
 import { getCurrentSession } from '@/lib/auth-supabase-server';
-import { canAccessAdmin, getRoleFromMetadata } from '@/lib/roles';
+import { canAccessAdmin, getTrustedRoleFromMetadata } from '@/lib/roles';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'edge';
@@ -18,7 +18,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect('/auth?next=/admin');
   }
 
-  const role = getRoleFromMetadata(session.user.app_metadata, session.user.user_metadata);
+  const role = getTrustedRoleFromMetadata(session.user.app_metadata);
 
   if (!canAccessAdmin(role)) {
     redirect('/dashboard?forbidden=admin');

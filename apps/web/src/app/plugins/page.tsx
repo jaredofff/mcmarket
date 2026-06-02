@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import PluginCard from "@/components/PluginCard";
 import {
-  MOCK_PLUGINS,
   CATEGORIES,
   MINECRAFT_VERSIONS,
+  type Plugin,
   type Category,
 } from "@/lib/mockData";
 
@@ -23,9 +23,82 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "featured", label: "Featured" },
 ];
 
+interface PublicPlugin {
+  id: string;
+  title: string;
+  slug: string;
+  author: string;
+  description: string;
+  coverImage: string;
+  categories: string[];
+  tags: string[];
+  version: string;
+  downloadCount: number;
+  rating: number;
+  isVipOnly: boolean;
+  price: number;
+  testedVersions: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+const CATEGORY_ALIASES: Record<string, Category> = {
+  utilities: "Utilities",
+  economy: "Economy",
+  gameplay: "Mechanics",
+  protection: "Admin",
+  management: "Admin",
+  other: "Utilities",
+};
+
+function normalizeCategory(value?: string): Category {
+  if (!value) return "Utilities";
+  const direct = CATEGORIES.find((category) => category.toLowerCase() === value.toLowerCase());
+  return direct || CATEGORY_ALIASES[value.toLowerCase()] || "Utilities";
+}
+
+function mapPublicPlugin(plugin: PublicPlugin): Plugin {
+  const category = normalizeCategory(plugin.categories?.[0]);
+  const updatedAt = plugin.updatedAt || plugin.createdAt || new Date().toISOString();
+
+  return {
+    id: plugin.id,
+    slug: plugin.slug,
+    title: plugin.title,
+    shortDescription: plugin.description.slice(0, 140),
+    description: plugin.description,
+    category,
+    price: Number(plugin.price || 0),
+    isFree: Number(plugin.price || 0) === 0,
+    image: plugin.coverImage || "/logo.png",
+    gallery: plugin.coverImage ? [plugin.coverImage] : ["/logo.png"],
+    rating: Number(plugin.rating || 0),
+    reviewCount: 0,
+    sales: 0,
+    downloads: plugin.downloadCount || 0,
+    version: plugin.version,
+    testedVersions: plugin.testedVersions || [],
+    dependencies: [],
+    tags: plugin.tags || [],
+    creator: {
+      id: plugin.author,
+      username: plugin.author || "MC Market",
+      avatar: `https://api.dicebear.com/8.x/pixel-art/svg?seed=${encodeURIComponent(plugin.author || "mc-market")}`,
+      verified: true,
+      totalSales: 0,
+      joinedYear: new Date(updatedAt).getFullYear(),
+    },
+    createdAt: plugin.createdAt || updatedAt,
+    updatedAt,
+    featured: false,
+  };
+}
+
 export default function PluginsExplorer() {
   const searchParams = useSearchParams();
 
+  const [plugins, setPlugins] = useState<Plugin[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<Category[]>(
     searchParams.get("category") ? [searchParams.get("category") as Category] : []
@@ -37,6 +110,28 @@ export default function PluginsExplorer() {
     (searchParams.get("sort") as SortOption) ?? "trending"
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const loadPlugins = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/plugins/search?limit=100");
+        if (!response.ok) {
+          throw new Error("Failed to load plugins");
+        }
+
+        const data = await response.json();
+        setPlugins(((data.items || []) as PublicPlugin[]).map(mapPublicPlugin));
+      } catch (error) {
+        console.error("Error loading plugins:", error);
+        setPlugins([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPlugins();
+  }, []);
 
   const toggleCategory = (cat: Category) => {
     setSelectedCategories((prev) =>
@@ -64,10 +159,10 @@ export default function PluginsExplorer() {
     selectedVersions.length +
     (showFreeOnly ? 1 : 0) +
     (priceRange[0] > 0 || priceRange[1] < 50 ? 1 : 0);
-  const catalogIsEmpty = MOCK_PLUGINS.length === 0;
+  const catalogIsEmpty = !loading && plugins.length === 0;
 
   const filteredPlugins = useMemo(() => {
-    let result = [...MOCK_PLUGINS];
+    let result = [...plugins];
 
     // Search
     if (search.trim()) {
@@ -119,7 +214,7 @@ export default function PluginsExplorer() {
     });
 
     return result;
-  }, [search, selectedCategories, selectedVersions, showFreeOnly, priceRange, sortBy]);
+  }, [plugins, search, selectedCategories, selectedVersions, showFreeOnly, priceRange, sortBy]);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-8 flex-1 flex flex-col">
@@ -195,7 +290,7 @@ export default function PluginsExplorer() {
               </label>
               <div className="flex flex-col gap-1">
                 {CATEGORIES.map((cat) => {
-                  const count = MOCK_PLUGINS.filter((p) => p.category === cat).length;
+                  const count = plugins.filter((p) => p.category === cat).length;
                   const active = selectedCategories.includes(cat);
                   return (
                     <button
@@ -381,7 +476,13 @@ export default function PluginsExplorer() {
           )}
 
           {/* Grid or Empty state */}
-          {filteredPlugins.length > 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="h-80 animate-pulse rounded-sm border border-[#2d2a26] bg-[#1c1a17]" />
+              ))}
+            </div>
+          ) : filteredPlugins.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredPlugins.map((plugin) => (
                 <PluginCard key={plugin.id} plugin={plugin} />

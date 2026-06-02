@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
-import { canAccessAdmin, canAccessCreator, getRoleFromMetadata } from './lib/roles';
+import { canAccessAdmin, canAccessCreator, getTrustedRoleFromMetadata } from './lib/roles';
 
 const getSupabaseConfig = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -73,7 +73,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const role = getRoleFromMetadata(session?.user.app_metadata, session?.user.user_metadata);
+  const role = getTrustedRoleFromMetadata(session?.user.app_metadata);
 
   if (isOnAdmin && !canAccessAdmin(role)) {
     const redirectUrl = request.nextUrl.clone();
