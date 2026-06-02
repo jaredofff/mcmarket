@@ -17,7 +17,7 @@ export default function CreatePluginPage() {
     price: string | number
     description: string
     category: string
-    tier: string
+    tier: 'free' | 'vip' | 'legend'
     testedVersions: string
     isVipOnly: boolean | string
     published: boolean | string

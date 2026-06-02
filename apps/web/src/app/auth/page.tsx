@@ -1,12 +1,16 @@
 'use client';
 
+import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { signIn, signOut, useSession } from '@/lib/auth-compat';
 import { ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
 
-export default function AuthPage() {
+function AuthPageContent() {
   const { data: session, status } = useSession();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get('next') || '/dashboard';
 
   if (status === 'loading') {
     return (
@@ -51,10 +55,10 @@ export default function AuthPage() {
                 Cerrar sesión
               </button>
               <Link
-                href="/dashboard"
+                href={nextPath}
                 className="inline-flex h-12 flex-1 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-5 font-bold text-white transition hover:bg-white/10"
               >
-                Ir al dashboard
+                Continuar
               </Link>
             </div>
           </div>
@@ -110,7 +114,7 @@ export default function AuthPage() {
 
           <div className="mt-8 space-y-4">
             <button
-              onClick={() => signIn('discord', { callbackUrl: '/dashboard' })}
+              onClick={() => signIn('discord', { callbackUrl: nextPath })}
               className="flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-[#5865F2] px-5 text-base font-bold text-white shadow-[0_10px_30px_rgba(88,101,242,0.35)] transition hover:brightness-110"
             >
               <svg className="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -161,5 +165,19 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#0f0b18] text-white">
+          Cargando...
+        </div>
+      }
+    >
+      <AuthPageContent />
+    </Suspense>
   );
 }

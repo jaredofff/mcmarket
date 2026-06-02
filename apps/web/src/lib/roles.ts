@@ -61,3 +61,22 @@ export function canAccessCreator(role: unknown) {
   const normalizedRole = normalizeRole(role);
   return normalizedRole === 'DEVELOPER' || normalizedRole === 'ADMIN' || normalizedRole === 'CEO';
 }
+
+export function roleMeetsMinimum(role: unknown, minimumRole: AppRole) {
+  const normalizedRole = normalizeRole(role);
+  return ROLE_PRIORITY[normalizedRole] >= ROLE_PRIORITY[minimumRole];
+}
+
+export function canDownloadResourceTier(role: unknown, tier?: string | null, isVipOnly = false) {
+  const normalizedTier = (tier || 'free').toLowerCase();
+
+  if (normalizedTier === 'legend' || normalizedTier === 'elite') {
+    return roleMeetsMinimum(role, 'LEGEND');
+  }
+
+  if (normalizedTier === 'vip' || normalizedTier === 'premium' || isVipOnly) {
+    return roleMeetsMinimum(role, 'VIP');
+  }
+
+  return Boolean(role);
+}

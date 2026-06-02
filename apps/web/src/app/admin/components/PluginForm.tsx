@@ -14,7 +14,7 @@ const pluginSchema = z.object({
   price: z.number().min(0, 'El precio no puede ser negativo'),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
   category: z.string().min(1, 'La categoría es obligatoria'),
-  tier: z.enum(['free', 'premium', 'elite']),
+  tier: z.enum(['free', 'vip', 'legend']),
   testedVersions: z.string().min(1, 'Indica compatibilidad o escribe N/A'),
   coverImage: z.instanceof(FileList).optional(),
   bannerImage: z.instanceof(FileList).optional(),
@@ -56,7 +56,7 @@ export default function PluginForm({
       version: initialData?.version || '1.0.0',
       price: initialData?.price ?? 0,
       category: initialData?.category || '',
-      tier: (initialData?.tier as 'free' | 'premium' | 'elite') || 'free',
+      tier: (initialData?.tier as 'free' | 'vip' | 'legend') || 'free',
       testedVersions: initialData?.testedVersions || '',
       isVipOnly: initialData?.isVipOnly ?? false,
       published: initialData?.published ?? false,
@@ -189,8 +189,8 @@ export default function PluginForm({
               className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] focus:border-amber-500/50 focus:outline-none"
             >
               <option value="free">Gratis</option>
-              <option value="premium">Premium</option>
-              <option value="elite">Elite</option>
+              <option value="vip">VIP</option>
+              <option value="legend">Legend</option>
             </select>
             {errors.tier && <p className="text-red-400 text-sm mt-1">{errors.tier.message}</p>}
           </div>

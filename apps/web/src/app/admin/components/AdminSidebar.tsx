@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from '@/lib/auth-compat';
 import { useState } from 'react';
-import { LayoutDashboard, Package, Menu, X, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, Menu, X, LogOut, ShieldCheck } from 'lucide-react';
 import { canAccessAdmin } from '@/lib/roles';
 
 const AdminSidebar = () => {
@@ -54,7 +54,7 @@ const AdminSidebar = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full w-64 bg-[#1a1714] border-r border-amber-500/20 p-6 z-40 lg:relative lg:z-auto transform transition-transform duration-300 ${
+        className={`fixed left-0 top-0 z-40 flex h-full w-64 flex-col border-r border-amber-500/20 bg-[#1a1714] p-6 transition-transform duration-300 lg:relative lg:z-auto ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
@@ -67,7 +67,7 @@ const AdminSidebar = () => {
         </div>
 
         {/* Navigation Menu */}
-        <nav className="space-y-2 mb-8">
+        <nav className="mb-8 space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);
@@ -90,16 +90,23 @@ const AdminSidebar = () => {
         </nav>
 
         {/* User Info & Logout */}
-        <div className="absolute bottom-6 left-6 right-6 border-t border-amber-500/20 pt-6">
-          {session?.user && (
-            <div className="mb-4">
-              <p className="text-sm text-[#a89968] mb-1">Sesión:</p>
-              <p className="text-amber-500 font-medium truncate">{session.user.email}</p>
+        <div className="mt-auto border-t border-amber-500/20 pt-5">
+          <div className="mb-4 rounded-sm border border-[#2d2a26] bg-[#11100e] p-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-amber-500/30 bg-amber-500/10 text-amber-400">
+                <ShieldCheck size={18} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-widest text-[#6b6459]">Sesión activa</p>
+                <p className="mt-0.5 truncate text-sm font-bold text-[#e8e4db]">
+                  {session?.user?.role || 'ADMIN'}
+                </p>
+              </div>
             </div>
-          )}
+          </div>
           <button
             onClick={handleLogout}
-            className="flex w-full items-center justify-center gap-2 rounded-sm bg-red-500/20 px-4 py-2 font-medium text-red-400 transition-colors hover:bg-red-500/30"
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-sm border border-red-500/20 bg-red-500/15 px-4 font-bold text-red-400 transition-colors hover:bg-red-500/25"
           >
             <LogOut size={18} />
             Salir

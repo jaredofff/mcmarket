@@ -174,13 +174,18 @@ export async function POST(request: NextRequest) {
     const categories = [category].filter(Boolean);
     const tier = getString(formData, "tier", "free");
     const price = Number(getString(formData, "price", "0")) || 0;
+    const author =
+      currentUser?.user_metadata?.full_name ||
+      currentUser?.user_metadata?.name ||
+      currentUser?.user_metadata?.username ||
+      "MC Market";
 
     const { data, error } = await supabase
       .from("plugins")
       .insert({
         title,
         slug: pluginSlug,
-        author: currentUser?.email || currentUser?.user_metadata?.name || "MC Market",
+        author,
         description,
         price,
         version,

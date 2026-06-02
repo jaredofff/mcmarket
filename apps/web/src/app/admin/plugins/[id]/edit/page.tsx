@@ -14,7 +14,7 @@ interface PluginData {
   price: number;
   description: string;
   category: string;
-  tier: 'free' | 'premium' | 'elite';
+  tier: 'free' | 'vip' | 'legend';
   testedVersions: string;
   isVipOnly: boolean;
   published: boolean;
@@ -54,7 +54,7 @@ export default function EditPluginPage() {
     price: string | number
     description: string
     category: string
-    tier: string
+    tier: 'free' | 'vip' | 'legend'
     testedVersions: string
     isVipOnly: boolean | string
     published: boolean | string

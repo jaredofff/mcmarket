@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getCurrentSession } from "@/lib/auth-supabase-server";
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 import { toPublicPlugin, type PluginRecord } from "@/lib/plugin-records";
+import { canDownloadResourceTier, getTrustedRoleFromMetadata } from "@/lib/roles";
 
 export const runtime = "edge";
 
@@ -30,7 +32,17 @@ export default async function PluginDetailPage({ params }: PluginDetailPageProps
   }
 
   const plugin = toPublicPlugin(data as PluginRecord);
+  const rawPlugin = data as PluginRecord;
   const coverImage = plugin.coverImage || "/logo.png";
+  const session = await getCurrentSession();
+  const role = getTrustedRoleFromMetadata(session?.user.app_metadata);
+  const canDownload = Boolean(session) && canDownloadResourceTier(role, rawPlugin.tier, rawPlugin.is_vip_only);
+  const tierLabel =
+    rawPlugin.tier === "legend" || rawPlugin.tier === "elite"
+      ? "Legend"
+      : rawPlugin.tier === "vip" || rawPlugin.tier === "premium" || rawPlugin.is_vip_only
+      ? "VIP"
+      : "Gratis";
 
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-12">
@@ -69,6 +81,9 @@ export default async function PluginDetailPage({ params }: PluginDetailPageProps
                 VIP
               </span>
             )}
+            <span className="rounded-sm border border-[#3d3830] bg-[#1c1a17] px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#a39c90]">
+              {tierLabel}
+            </span>
           </div>
 
           <h1 className="font-outfit text-4xl font-black text-[#e8e4db] md:text-5xl">
@@ -105,15 +120,38 @@ export default async function PluginDetailPage({ params }: PluginDetailPageProps
               <span className="text-[#6b6459]">Rating</span>
               <span className="font-bold text-[#e8e4db]">{plugin.rating.toFixed(1)}</span>
             </div>
+            <div className="flex justify-between gap-4">
+              <span className="text-[#6b6459]">Acceso</span>
+              <span className="font-bold text-[#e8e4db]">{tierLabel}</span>
+            </div>
           </div>
 
-          <button
-            type="button"
-            className="mt-6 h-12 w-full rounded-sm bg-linear-to-b from-amber-400 to-yellow-600 font-black text-[#141311] shadow-[0_3px_0_#92400e] opacity-70"
-            disabled
-          >
-            Descarga próximamente
-          </button>
+          {!session ? (
+            <Link
+              href={`/auth?next=/plugins/${plugin.slug}`}
+              className="mt-6 flex h-12 w-full items-center justify-center rounded-sm bg-linear-to-b from-amber-400 to-yellow-600 font-black text-[#141311] shadow-[0_3px_0_#92400e] transition-all hover:brightness-110"
+            >
+              Iniciar sesión para descargar
+            </Link>
+          ) : canDownload ? (
+            <Link
+              href={`/api/resources/${plugin.id}/download`}
+              className="mt-6 flex h-12 w-full items-center justify-center rounded-sm bg-linear-to-b from-amber-400 to-yellow-600 font-black text-[#141311] shadow-[0_3px_0_#92400e] transition-all hover:brightness-110"
+            >
+              Descargar recurso
+            </Link>
+          ) : (
+            <Link
+              href={`/membership?upgrade=${rawPlugin.tier || "vip"}`}
+              className="mt-6 flex h-12 w-full items-center justify-center rounded-sm border border-purple-500/30 bg-purple-500/10 font-black text-purple-300 transition-all hover:bg-purple-500/20"
+            >
+              Requiere {tierLabel}
+            </Link>
+          )}
+
+          <p className="mt-3 text-center text-xs leading-relaxed text-[#6b6459]">
+            Todos pueden ver este recurso. Las descargas requieren sesión y el nivel correcto.
+          </p>
         </aside>
       </div>
     </div>

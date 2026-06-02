@@ -28,12 +28,20 @@ export interface PluginRecord {
   updated_at: string;
 }
 
+export function getSafeAuthor(author?: string | null) {
+  if (!author || author.includes("@")) {
+    return "MC Market";
+  }
+
+  return author;
+}
+
 export function toPublicPlugin(plugin: PluginRecord) {
   return {
     id: plugin.id,
     title: plugin.title,
     slug: plugin.slug,
-    author: plugin.author || "MC Market",
+    author: getSafeAuthor(plugin.author),
     description: plugin.description,
     coverImage: plugin.cover_image || "",
     bannerImage: plugin.banner_image || "",
@@ -54,7 +62,7 @@ export function toPublicPlugin(plugin: PluginRecord) {
 export function toAdminPlugin(plugin: PluginRecord) {
   return {
     ...toPublicPlugin(plugin),
-    author: plugin.author || "MC Market",
+    author: getSafeAuthor(plugin.author),
     status: plugin.published ? "published" : "draft",
     published: plugin.published,
     category: plugin.categories?.[0] || "",
