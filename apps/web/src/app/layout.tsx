@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   description:
     "The premium marketplace for Minecraft plugins. Discover high-quality resources built by verified developers. Transform your server into an unforgettable experience.",
   keywords: ["minecraft", "plugins", "marketplace", "server", "spigot", "paper"],
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
