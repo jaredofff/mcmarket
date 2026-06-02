@@ -32,14 +32,19 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Creators */}
+          {/* Admin */}
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-widest text-[#a39c90] mb-4">Creators</h4>
+            <h4 className="font-bold text-xs uppercase tracking-widest text-[#a39c90] mb-4">Gestión</h4>
             <ul className="space-y-2.5">
-              {["Vender Tu Recurso", "Dashboard de Creator", "Documentación", "Info de Pagos"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
-                    {item}
+              {[
+                { label: "Panel Admin", href: "/admin" },
+                { label: "Recursos", href: "/admin/plugins" },
+                { label: "Cargar Recurso", href: "/admin/plugins/new" },
+                { label: "Documentación", href: "#" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
+                    {item.label}
                   </a>
                 </li>
               ))}

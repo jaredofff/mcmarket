@@ -57,14 +57,6 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          {/* Creator Panel */}
-          <Link
-            href="/creator/dashboard"
-            className="hidden md:flex h-9 px-4 rounded-sm bg-[#1c1a17] border border-[#3d3830] text-sm font-medium text-[#a39c90] hover:text-amber-400 hover:border-amber-500/50 transition-all items-center gap-2"
-          >
-            <span>🎨 Creator Panel</span>
-          </Link>
-
           {/* Search Button */}
           <Link
             href="/plugins"

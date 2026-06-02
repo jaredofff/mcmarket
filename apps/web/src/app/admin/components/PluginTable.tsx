@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Trash2, Edit, Eye, CheckCircle, Circle } from 'lucide-react';
+import { Trash2, Edit, CheckCircle, Circle, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 
 interface Plugin {
@@ -9,6 +9,7 @@ interface Plugin {
   title: string;
   author: string;
   price: number;
+  slug?: string;
   status: 'published' | 'draft';
   createdAt: string;
 }
@@ -26,13 +27,11 @@ export default function PluginTable({
   onDelete,
   onPublish,
 }: PluginTableProps) {
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [publishingId, setPublishingId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<Set<string>>(new Set());
   const [publishing, setPublishing] = useState<Set<string>>(new Set());
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this plugin?')) return;
+    if (!confirm('¿Seguro que quieres eliminar este recurso? Esta acción no se puede deshacer.')) return;
     if (!onDelete) return;
 
     setDeleting(new Set(deleting).add(id));
@@ -70,7 +69,7 @@ export default function PluginTable({
     return (
       <div className="space-y-3">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-16 bg-amber-500/5 rounded-lg animate-pulse" />
+          <div key={i} className="h-16 animate-pulse rounded-sm bg-amber-500/5" />
         ))}
       </div>
     );
@@ -79,12 +78,13 @@ export default function PluginTable({
   if (plugins.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-[#a89968] mb-4">No plugins found</p>
+        <p className="mb-2 font-outfit text-xl font-bold text-[#e8e4db]">No hay recursos todavía</p>
+        <p className="mb-5 text-[#a89968]">Carga el primer plugin para empezar a poblar el marketplace.</p>
         <Link
           href="/admin/plugins/new"
-          className="inline-block px-6 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-500 rounded-lg transition-colors font-medium"
+          className="inline-block rounded-sm border border-amber-500/30 bg-amber-500/10 px-6 py-2 font-bold text-amber-400 transition-colors hover:bg-amber-500/20"
         >
-          Create First Plugin
+          Crear primer recurso
         </Link>
       </div>
     );
@@ -94,37 +94,40 @@ export default function PluginTable({
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-amber-500/20">
-            <th className="text-left px-4 py-3 text-[#a89968] font-semibold">Title</th>
-            <th className="text-left px-4 py-3 text-[#a89968] font-semibold">Author</th>
-            <th className="text-right px-4 py-3 text-[#a89968] font-semibold">Price</th>
-            <th className="text-left px-4 py-3 text-[#a89968] font-semibold">Status</th>
-            <th className="text-left px-4 py-3 text-[#a89968] font-semibold">Created</th>
-            <th className="text-right px-4 py-3 text-[#a89968] font-semibold">Actions</th>
+          <tr className="border-b border-[#2d2a26]">
+            <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-[#6b6459]">Recurso</th>
+            <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-[#6b6459]">Autor</th>
+            <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-[#6b6459]">Precio</th>
+            <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-[#6b6459]">Estado</th>
+            <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-[#6b6459]">Creado</th>
+            <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-[#6b6459]">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {plugins.map((plugin) => (
             <tr
               key={plugin.id}
-              className="border-b border-amber-500/10 hover:bg-amber-500/5 transition-colors"
+              className="border-b border-[#2d2a26] transition-colors hover:bg-amber-500/5"
             >
-              <td className="px-4 py-3 text-[#e8e4db]">{plugin.title}</td>
+              <td className="px-4 py-3">
+                <div className="font-bold text-[#e8e4db]">{plugin.title}</div>
+                {plugin.slug && <div className="mt-1 text-xs text-[#6b6459]">/{plugin.slug}</div>}
+              </td>
               <td className="px-4 py-3 text-[#a89968]">{plugin.author}</td>
-              <td className="px-4 py-3 text-right text-amber-500 font-medium">
-                ${plugin.price.toFixed(2)}
+              <td className="px-4 py-3 text-right font-bold text-amber-400">
+                {plugin.price === 0 ? 'Gratis' : `$${plugin.price.toFixed(2)}`}
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
                   {plugin.status === 'published' ? (
                     <>
                       <CheckCircle size={16} className="text-green-500" />
-                      <span className="text-green-500 text-sm font-medium">Published</span>
+                      <span className="text-sm font-bold text-green-500">Publicado</span>
                     </>
                   ) : (
                     <>
                       <Circle size={16} className="text-yellow-500" />
-                      <span className="text-yellow-500 text-sm font-medium">Draft</span>
+                      <span className="text-sm font-bold text-yellow-500">Borrador</span>
                     </>
                   )}
                 </div>
@@ -134,10 +137,19 @@ export default function PluginTable({
               </td>
               <td className="px-4 py-3">
                 <div className="flex gap-2 justify-end">
+                  {plugin.status === 'published' && plugin.slug && (
+                    <Link
+                      href={`/plugins/${plugin.slug}`}
+                      className="rounded-sm border border-[#2d2a26] bg-[#141311] p-2 text-[#a89968] transition-colors hover:border-amber-500/40 hover:text-amber-400"
+                      title="Ver público"
+                    >
+                      <ExternalLink size={16} />
+                    </Link>
+                  )}
                   <Link
                     href={`/admin/plugins/${plugin.id}/edit`}
-                    className="p-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded transition-colors"
-                    title="Edit"
+                    className="rounded-sm border border-blue-500/20 bg-blue-500/10 p-2 text-blue-400 transition-colors hover:bg-blue-500/20"
+                    title="Editar"
                   >
                     <Edit size={16} />
                   </Link>
@@ -146,8 +158,8 @@ export default function PluginTable({
                     <button
                       onClick={() => handlePublish(plugin.id)}
                       disabled={publishing.has(plugin.id)}
-                      className="p-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded transition-colors disabled:opacity-50"
-                      title="Publish"
+                      className="rounded-sm border border-green-500/20 bg-green-500/10 p-2 text-green-400 transition-colors hover:bg-green-500/20 disabled:opacity-50"
+                      title="Publicar"
                     >
                       {publishing.has(plugin.id) ? '...' : <CheckCircle size={16} />}
                     </button>
@@ -156,8 +168,8 @@ export default function PluginTable({
                   <button
                     onClick={() => handleDelete(plugin.id)}
                     disabled={deleting.has(plugin.id)}
-                    className="p-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded transition-colors disabled:opacity-50"
-                    title="Delete"
+                    className="rounded-sm border border-red-500/20 bg-red-500/10 p-2 text-red-400 transition-colors hover:bg-red-500/20 disabled:opacity-50"
+                    title="Eliminar"
                   >
                     {deleting.has(plugin.id) ? '...' : <Trash2 size={16} />}
                   </button>

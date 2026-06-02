@@ -14,7 +14,7 @@ export default async function CreatorLayout({
   const session = await getCurrentSession();
 
   if (!session) {
-    redirect("/auth?next=/creator/dashboard");
+    redirect("/auth?next=/admin/plugins");
   }
 
   const role = getTrustedRoleFromMetadata(session.user.app_metadata);

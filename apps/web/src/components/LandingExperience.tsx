@@ -52,7 +52,7 @@ const resourceCategories = [
   { icon: "⚙️", title: "Configs", desc: "Configuraciones profesionales y modelos 3D custom de alta calidad.", href: "/configs" },
   { icon: "🏗️", title: "Builds", desc: "Construcciones premium para lobbies, spawnpoints y más.", href: "/builds" },
   { icon: "🌐", title: "Webs", desc: "Webs y tiendas premium listas para tu servidor.", href: "/webs" },
-  { icon: "💻", title: "Paneles", desc: "Temas y paneles personalizados para gestión de servidores.", href: "/creator/dashboard" },
+  { icon: "💻", title: "Paneles", desc: "Temas y paneles personalizados para gestión de servidores.", href: "/webs" },
 ];
 
 function getLatestPlugins() {
@@ -361,9 +361,9 @@ export default function LandingExperience() {
                 size="lg"
                 variant="outline"
                 className="h-14 rounded-sm border-[#3d3830] bg-[#1c1a17] px-8 text-base font-black text-[#e8e4db] hover:border-amber-500/30 hover:bg-[#242118]"
-                onClick={() => router.push("/creator/dashboard")}
+                onClick={() => router.push("/plugins")}
               >
-                Panel de creator
+                Explorar catálogo
               </Button>
             </div>
           </div>
