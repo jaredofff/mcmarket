@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getSupabaseBrowserClient } from './auth-supabase-client';
 import type { Session } from '@supabase/supabase-js';
+import { DEFAULT_ROLE, getRoleFromMetadata, normalizeRole, type AppRole } from './roles';
 
 export interface CustomSession {
   user: {
@@ -11,7 +12,7 @@ export interface CustomSession {
     name?: string | null;
     image?: string | null;
     discordId?: string;
-    role?: string;
+    role?: AppRole;
   } | null;
   expires: string;
 }
@@ -49,27 +50,29 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         || user.user_metadata?.sub 
         || '';
 
-      // Sync and retrieve role from API
-      let role = 'USER';
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const res = await fetch(`${apiUrl.replace(/\/$/, '')}/auth/upsert`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            discordId: discordId,
-            name: user.user_metadata?.full_name || user.user_metadata?.name || user.user_metadata?.username || 'discord-user',
-            email: user.email || null,
-            image: user.user_metadata?.avatar_url || null,
-          }),
-        });
+      let role = getRoleFromMetadata(user.app_metadata, user.user_metadata);
 
-        if (res.ok) {
-          const data = await res.json();
-          role = data?.role || 'USER';
+      if (role === DEFAULT_ROLE && process.env.NEXT_PUBLIC_API_URL) {
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+          const res = await fetch(`${apiUrl.replace(/\/$/, '')}/auth/upsert`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              discordId: discordId,
+              name: user.user_metadata?.full_name || user.user_metadata?.name || user.user_metadata?.username || 'discord-user',
+              email: user.email || null,
+              image: user.user_metadata?.avatar_url || null,
+            }),
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            role = normalizeRole(data?.role);
+          }
+        } catch (e) {
+          console.error('Error fetching role from backend API:', e);
         }
-      } catch (e) {
-        console.error('Error fetching role from backend API:', e);
       }
 
       return {

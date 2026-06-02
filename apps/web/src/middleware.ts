@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
+import { canAccessAdmin, canAccessCreator, getRoleFromMetadata } from './lib/roles';
 
 const getSupabaseConfig = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -21,11 +22,13 @@ export async function middleware(request: NextRequest) {
 
   const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
   const isOnAdmin = request.nextUrl.pathname.startsWith('/admin');
+  const isOnCreator = request.nextUrl.pathname.startsWith('/creator');
+  const isOnProtectedRoute = isOnDashboard || isOnAdmin || isOnCreator;
 
   const supabaseConfig = getSupabaseConfig();
 
   if (!supabaseConfig) {
-    if (isOnDashboard || isOnAdmin) {
+    if (isOnProtectedRoute) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/auth';
       redirectUrl.searchParams.set('next', request.nextUrl.pathname);
@@ -61,13 +64,29 @@ export async function middleware(request: NextRequest) {
   // Refresh session if expired
   const { data: { session } } = await supabase.auth.getSession();
 
-  if (isOnDashboard || isOnAdmin) {
+  if (isOnProtectedRoute) {
     if (!session) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/auth';
       redirectUrl.searchParams.set('next', request.nextUrl.pathname);
       return NextResponse.redirect(redirectUrl);
     }
+  }
+
+  const role = getRoleFromMetadata(session?.user.app_metadata, session?.user.user_metadata);
+
+  if (isOnAdmin && !canAccessAdmin(role)) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/dashboard';
+    redirectUrl.searchParams.set('forbidden', 'admin');
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (isOnCreator && !canAccessCreator(role)) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/dashboard';
+    redirectUrl.searchParams.set('forbidden', 'creator');
+    return NextResponse.redirect(redirectUrl);
   }
 
   // If already logged in and going to auth page, redirect to dashboard
@@ -84,6 +103,7 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/admin/:path*',
+    '/creator/:path*',
     '/auth',
   ],
 };

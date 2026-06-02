@@ -57,20 +57,22 @@ export async function GET(request: NextRequest) {
       const email = user.email || null;
       const image = user.user_metadata?.avatar_url || null;
 
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        await fetch(`${apiUrl.replace(/\/$/, '')}/auth/upsert`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            discordId,
-            name,
-            email,
-            image,
-          }),
-        });
-      } catch (e) {
-        console.error('Error upserting user in OAuth callback:', e);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (apiUrl) {
+        try {
+          await fetch(`${apiUrl.replace(/\/$/, '')}/auth/upsert`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              discordId,
+              name,
+              email,
+              image,
+            }),
+          });
+        } catch (e) {
+          console.error('Error upserting user in OAuth callback:', e);
+        }
       }
 
       return NextResponse.redirect(new URL(next, request.url));

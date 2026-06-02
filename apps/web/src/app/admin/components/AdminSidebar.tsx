@@ -5,14 +5,14 @@ import { usePathname } from 'next/navigation';
 import { useSession, signOut } from '@/lib/auth-compat';
 import { useState } from 'react';
 import { LayoutDashboard, Package, BookOpen, Users, Menu, X, LogOut } from 'lucide-react';
+import { canAccessAdmin } from '@/lib/roles';
 
 const AdminSidebar = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
-  const role = session?.user?.role?.toString().toUpperCase() ?? 'USER'
-  const isAuthorized = role === 'ADMIN' || role === 'CEO'
+  const isAuthorized = canAccessAdmin(session?.user?.role);
 
   const menuItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
