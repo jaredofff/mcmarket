@@ -1,4 +1,7 @@
 import AdminSidebar from './components/AdminSidebar';
+import { redirect } from 'next/navigation';
+import { getCurrentSession } from '@/lib/auth-supabase-server';
+import { canAccessAdmin, getRoleFromMetadata } from '@/lib/roles';
 
 export const dynamic = 'force-dynamic';
 
@@ -7,7 +10,19 @@ export const metadata = {
   description: 'Administration panel for MC Market',
 };
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = await getCurrentSession();
+
+  if (!session) {
+    redirect('/auth?next=/admin');
+  }
+
+  const role = getRoleFromMetadata(session.user.app_metadata, session.user.user_metadata);
+
+  if (!canAccessAdmin(role)) {
+    redirect('/dashboard?forbidden=admin');
+  }
+
   return (
     <div className="flex min-h-screen bg-[#141311]">
       <AdminSidebar />
