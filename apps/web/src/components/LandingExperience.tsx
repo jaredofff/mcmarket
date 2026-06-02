@@ -151,12 +151,12 @@ export default function LandingExperience() {
   }, [reduceMotion]);
 
   return (
-    <motion.div ref={rootRef} initial="hidden" animate="show" variants={pageVariants} className="relative overflow-hidden">
-      <section className="relative flex flex-col items-center justify-center overflow-hidden px-6 pb-24 pt-28 text-center">
+    <motion.div ref={rootRef} initial="hidden" animate="show" variants={pageVariants} className="relative w-full max-w-full overflow-hidden">
+      <section className="relative flex w-full min-w-0 flex-col items-center justify-center overflow-hidden px-4 pb-24 pt-24 text-center sm:px-6 sm:pt-28">
         <div className="hero-orb absolute left-1/2 top-[-8%] h-95 w-170 -translate-x-1/2 rounded-full bg-amber-500/10 blur-[140px]" />
         <div className="hero-orb absolute left-[12%] top-[24%] h-65 w-65 rounded-full bg-yellow-700/10 blur-[110px]" />
 
-        <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center">
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl min-w-0 flex-col items-center">
           <motion.div
             animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 1.5, 0, -1.5, 0] }}
             transition={reduceMotion ? undefined : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
@@ -167,27 +167,27 @@ export default function LandingExperience() {
             </div>
           </motion.div>
 
-          <Badge variant="outline" className="mb-8 border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-300">
-            <Sparkles className="mr-1 size-3" />
-            Recursos premium verificados para servidores serios
+          <Badge variant="outline" className="mb-8 flex h-auto min-h-5 max-w-full items-center justify-center gap-1 whitespace-normal border-amber-500/20 bg-amber-500/10 px-3 py-2 text-center text-[10px] font-semibold uppercase leading-relaxed tracking-[0.08em] text-amber-300 sm:text-[11px] sm:tracking-[0.3em]">
+            <Sparkles className="size-3 shrink-0" />
+            <span className="min-w-0 break-words">Recursos premium verificados para servidores serios</span>
           </Badge>
 
-          <h1 className="max-w-5xl font-outfit text-5xl font-black leading-[1.02] tracking-tight text-[#e8e4db] md:text-7xl">
-            Compra recursos que hacen que tu servidor
+          <h1 className="w-full max-w-5xl px-1 font-outfit text-4xl font-black leading-[1.05] tracking-tight text-[#e8e4db] sm:px-0 sm:text-5xl md:text-7xl">
+            Compra recursos que hacen que tu servidor{" "}
             <br className="hidden md:block" />
-            <span className="bg-linear-to-b from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent">
+            <span className="bg-linear-to-b from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent block sm:inline mt-2 sm:mt-0">
               cargue mejor y venda más
             </span>
           </h1>
 
-          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#8c8278] md:text-xl">
+          <p className="mt-6 w-full max-w-3xl px-1 text-base leading-relaxed text-[#8c8278] sm:px-0 sm:text-lg md:text-xl">
             Plugins, setups, configs, builds y webs curadas para acelerar el setup, mejorar la experiencia del jugador y dar una apariencia premium desde el primer clic.
           </p>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <div className="mt-10 flex w-full max-w-sm flex-col gap-4 px-1 sm:w-auto sm:max-w-none sm:flex-row sm:px-0">
             <Button
               size="lg"
-              className="h-14 rounded-sm bg-linear-to-b from-amber-400 to-yellow-600 px-8 text-base font-black text-[#141311] shadow-[0_4px_0_#92400e,inset_0_1px_0_rgba(255,255,255,0.3)] hover:brightness-110"
+              className="h-14 w-full sm:w-auto rounded-sm bg-linear-to-b from-amber-400 to-yellow-600 px-8 text-base font-black text-[#141311] shadow-[0_4px_0_#92400e,inset_0_1px_0_rgba(255,255,255,0.3)] hover:brightness-110"
               onClick={() => router.push("/plugins")}
             >
               Ver plugins premium
@@ -196,25 +196,25 @@ export default function LandingExperience() {
             <Button
               size="lg"
               variant="outline"
-              className="h-14 rounded-sm border-[#3d3830] bg-[#1c1a17] px-8 text-base font-black text-[#e8e4db] hover:border-amber-500/30 hover:bg-[#242118]"
+              className="h-14 w-full sm:w-auto rounded-sm border-[#3d3830] bg-[#1c1a17] px-8 text-base font-black text-[#e8e4db] hover:border-amber-500/30 hover:bg-[#242118]"
               onClick={() => router.push("/membership")}
             >
               Ver membresía VIP+
             </Button>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold uppercase tracking-widest text-[#a39c90]">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
+          <div className="mt-6 flex w-full min-w-0 flex-wrap items-center justify-center gap-3 px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#a39c90] sm:text-xs sm:tracking-widest">
+            <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
               <CheckCircle2 className="size-3.5 text-emerald-400" />
-              Entrega instantánea
+              <span className="min-w-0 break-words">Entrega instantánea</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
+            <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
               <CheckCircle2 className="size-3.5 text-emerald-400" />
-              Updates vitalicios
+              <span className="min-w-0 break-words">Updates vitalicios</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
+            <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
               <CheckCircle2 className="size-3.5 text-emerald-400" />
-              Soporte prioritario
+              <span className="min-w-0 break-words">Soporte prioritario</span>
             </span>
           </div>
 
