@@ -113,9 +113,6 @@ const AdminSidebar = () => {
           </button>
         </div>
       </aside>
-
-      {/* Main content offset for desktop */}
-      <div className="lg:flex-1" />
     </>
   );
 };
