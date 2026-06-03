@@ -105,7 +105,7 @@ export default function PluginForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)} className="max-w-5xl space-y-6">
+    <form onSubmit={handleSubmit(onSubmitForm)} className="w-full max-w-none space-y-6">
       {error && (
         <div className="flex gap-3 rounded-sm border border-red-500/50 bg-red-500/20 p-4">
           <AlertCircle className="text-red-400 flex-shrink-0 mt-0.5" size={20} />
@@ -119,7 +119,7 @@ export default function PluginForm({
           Información principal
         </legend>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="block text-[#a89968] font-medium mb-2">Título del recurso *</label>
             <input
@@ -211,7 +211,7 @@ export default function PluginForm({
           Media y archivo
         </legend>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="block text-[#a89968] font-medium mb-2">Imagen de portada</label>
             <div className="relative">
