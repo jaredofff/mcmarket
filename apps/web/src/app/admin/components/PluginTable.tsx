@@ -8,7 +8,7 @@ interface Plugin {
   id: string;
   title: string;
   author: string;
-  price: number;
+  tier: string;
   slug?: string;
   status: 'published' | 'draft';
   createdAt: string;
@@ -97,7 +97,7 @@ export default function PluginTable({
           <tr className="border-b border-[#2d2a26]">
             <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-[#6b6459]">Recurso</th>
             <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-[#6b6459]">Autor</th>
-            <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-[#6b6459]">Precio</th>
+            <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-[#6b6459]">Rango</th>
             <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-[#6b6459]">Estado</th>
             <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-[#6b6459]">Creado</th>
             <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-[#6b6459]">Acciones</th>
@@ -114,8 +114,8 @@ export default function PluginTable({
                 {plugin.slug && <div className="mt-1 text-xs text-[#6b6459]">/{plugin.slug}</div>}
               </td>
               <td className="px-4 py-3 text-[#a89968]">{plugin.author}</td>
-              <td className="px-4 py-3 text-right font-bold text-amber-400">
-                {plugin.price === 0 ? 'Gratis' : `$${plugin.price.toFixed(2)}`}
+              <td className="px-4 py-3 text-right font-bold text-amber-400 uppercase">
+                {plugin.tier === 'legend' ? 'Legend' : 'VIP'}
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-2">

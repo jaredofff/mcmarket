@@ -96,7 +96,7 @@ export default function MembershipPage() {
                     <span className="text-4xl font-black text-transparent bg-clip-text bg-linear-to-r from-amber-300 to-yellow-400">
                       ${plan.price.toFixed(2)}
                     </span>
-                    <span className="text-[#6b6459] font-bold">/mes</span>
+                    <span className="text-[#6b6459] font-bold">/único pago</span>
                   </div>
                 </div>
 
@@ -133,19 +133,31 @@ export default function MembershipPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
+{/* FAQ Section */}
       <section className="w-full max-w-7xl mx-auto px-6 pb-20">
         <div className="text-center mb-12">
           <h2 className="font-outfit text-3xl font-black text-[#e8e4db] mb-3">Preguntas Frecuentes</h2>
-          <p className="text-[#8c8278]">Resolvemos tus dudas sobre nuestros planes</p>
+          <p className="text-[#8c8278]">Información detallada sobre el funcionamiento de nuestras licencias y rangos.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { q: "¿Puedo cambiar de plan?", a: "Sí, puedes actualizar a ZONELEGEND en cualquier momento." },
-            { q: "¿Qué incluye 'sin compromiso'?", a: "Puedes cancelar tu membresía cuando quieras sin penalización." },
-            { q: "¿Con qué frecuencia se actualizan?", a: "Nuevos recursos se añaden constantemente, cada semana." },
-            { q: "¿Acceso a todo el contenido?", a: "ZONELEGEND incluye todo lo de VIPZONE + contenido adicional exclusivo." },
+            { 
+              q: "¿Existen cargos recurrentes o cuotas de mantenimiento?", 
+              a: "No. Nuestro modelo se basa en un esquema de pago único (lifetime). Al adquirir tu rango, garantizas acceso vitalicio a tu categoría sin mensualidades, renovaciones ni cargos ocultos." 
+            },
+            { 
+              q: "¿Es posible realizar un upgrade de mi rango actual?", 
+              a: "Por supuesto. Puedes escalar tu nivel de acceso a ZONELEGEND en cualquier momento, lo que desbloqueará de forma inmediata y permanente todos los privilegios de nivel superior." 
+            },
+            { 
+              q: "¿Cuál es el ciclo de actualización de los recursos?", 
+              a: "Mantenemos un despliegue continuo de contenido. Integramos nuevas herramientas y actualizaciones estratégicas semanalmente, asegurando que siempre tengas acceso a los recursos más recientes del mercado." 
+            },
+            { 
+              q: "¿Qué ventajas exclusivas ofrece ZONELEGEND?", 
+              a: "Es nuestro rango definitivo. Además de heredar íntegramente todo el catálogo de VIPZONE, te proporciona acceso prioritario y sin restricciones a recursos premium reservados únicamente para esta categoría." 
+            },
           ].map((faq, idx) => (
             <div key={idx} className="p-6 bg-[#1c1a17] border border-[#2d2a26] rounded-sm hover:border-amber-500/30 transition-all">
               <h3 className="font-bold text-[#e8e4db] mb-2">{faq.q}</h3>

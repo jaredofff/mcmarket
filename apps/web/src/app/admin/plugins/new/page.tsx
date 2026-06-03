@@ -14,12 +14,10 @@ export default function CreatePluginPage() {
   interface PluginFormData {
     title: string
     version: string
-    price: string | number
     description: string
     category: string
-    tier: 'free' | 'vip' | 'legend'
+    tier: 'vip' | 'legend'
     testedVersions: string
-    isVipOnly: boolean | string
     published: boolean | string
   }
 
@@ -33,12 +31,10 @@ export default function CreatePluginPage() {
       // Add regular fields
       formData.append('title', data.title);
       formData.append('version', data.version);
-      formData.append('price', String(data.price));
       formData.append('description', data.description);
       formData.append('category', data.category);
       formData.append('tier', data.tier);
       formData.append('testedVersions', data.testedVersions);
-      formData.append('isVipOnly', String(data.isVipOnly));
       formData.append('published', String(data.published));
 
       // Add files

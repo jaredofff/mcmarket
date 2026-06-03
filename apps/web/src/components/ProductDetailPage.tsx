@@ -1,12 +1,12 @@
 "use client";
 
 import React from 'react';
-import Markdown from 'react-markdown';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Download, Heart, Share2, ShieldCheck } from 'lucide-react';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 import PricingCard from './ProductDetailPage/PricingCard';
 import TechnicalInfo from './ProductDetailPage/TechnicalInfo';
 import ChangelogSection from './ProductDetailPage/ChangelogSection';
@@ -191,9 +191,7 @@ export default function ProductDetailPage({
               <TabsContent value="overview" className="space-y-6">
                 <div className="prose prose-invert max-w-none">
                   <div className="bg-zinc-900 rounded-lg p-6 border border-zinc-800">
-                    <Markdown>
-                      {product.description}
-                    </Markdown>
+                    <MarkdownRenderer content={product.description} />
                   </div>
                 </div>
 

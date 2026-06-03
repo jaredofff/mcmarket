@@ -5,6 +5,7 @@ import { getCurrentSession } from "@/lib/auth-supabase-server";
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 import { toPublicPlugin, type PluginRecord } from "@/lib/plugin-records";
 import { canDownloadResourceTier, getTrustedRoleFromMetadata } from "@/lib/roles";
+import MarkdownRenderer from "@/components/MarkdownRenderer";
 
 export const runtime = "edge";
 
@@ -93,17 +94,17 @@ export default async function PluginDetailPage({ params }: PluginDetailPageProps
 
           <section className="mt-10 border-t border-[#2d2a26] pt-8">
             <h2 className="font-outfit text-2xl font-bold text-[#e8e4db]">Descripción</h2>
-            <div className="mt-4 whitespace-pre-wrap leading-relaxed text-[#a39c90]">
-              {plugin.description}
+            <div className="mt-5">
+              <MarkdownRenderer content={plugin.description} />
             </div>
           </section>
         </main>
 
         <aside className="h-fit rounded-sm border border-[#2d2a26] bg-[#1c1a17] p-6">
           <div className="mb-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#6b6459]">Precio</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-[#6b6459]">Acceso requerido</p>
             <p className="mt-1 font-outfit text-4xl font-black text-amber-400">
-              {plugin.price === 0 ? "Gratis" : `$${plugin.price.toFixed(2)}`}
+              {tierLabel}
             </p>
           </div>
 

@@ -17,6 +17,11 @@ function getBoolean(formData: FormData, key: string) {
   return getString(formData, key).toLowerCase() === "true";
 }
 
+function getAccessTier(formData: FormData, fallback = "vip") {
+  const tier = getString(formData, "tier", fallback).toLowerCase();
+  return tier === "legend" ? "legend" : "vip";
+}
+
 async function uploadReplacement(bucket: string, folder: string, file: File | null, slug: string) {
   if (!file || file.size === 0) {
     return null;
@@ -129,16 +134,18 @@ export async function PUT(
     if (bannerImage) await removeStoredFile(MEDIA_BUCKET, current.banner_image_path);
     if (resourceFile) await removeStoredFile(FILES_BUCKET, current.file_path);
 
+    const tier = getAccessTier(formData, current.tier);
+
     const updateData: Record<string, unknown> = {
       title: getString(formData, "title", current.title),
       description: getString(formData, "description", current.description),
-      price: Number(getString(formData, "price", String(current.price))) || 0,
+      price: 0,
       version: getString(formData, "version", current.version),
-      tier: getString(formData, "tier", current.tier),
+      tier,
       tested_versions: parseList(formData.get("testedVersions")),
       categories: [category].filter(Boolean),
       tags: [category].filter(Boolean),
-      is_vip_only: getBoolean(formData, "isVipOnly"),
+      is_vip_only: tier === "vip",
       published: getBoolean(formData, "published"),
     };
 

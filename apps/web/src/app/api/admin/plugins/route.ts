@@ -18,6 +18,11 @@ function getBoolean(formData: FormData, key: string) {
   return getString(formData, key).toLowerCase() === "true";
 }
 
+function getAccessTier(formData: FormData, fallback = "vip") {
+  const tier = getString(formData, "tier", fallback).toLowerCase();
+  return tier === "legend" ? "legend" : "vip";
+}
+
 async function uploadFile(bucket: string, folder: string, file: File | null, slug: string) {
   if (!file || file.size === 0) {
     return null;
@@ -172,8 +177,7 @@ export async function POST(request: NextRequest) {
 
     const testedVersions = parseList(formData.get("testedVersions"));
     const categories = [category].filter(Boolean);
-    const tier = getString(formData, "tier", "free");
-    const price = Number(getString(formData, "price", "0")) || 0;
+    const tier = getAccessTier(formData);
     const author =
       currentUser?.user_metadata?.full_name ||
       currentUser?.user_metadata?.name ||
@@ -187,7 +191,7 @@ export async function POST(request: NextRequest) {
         slug: pluginSlug,
         author,
         description,
-        price,
+        price: 0,
         version,
         tier,
         tested_versions: testedVersions,
@@ -201,7 +205,7 @@ export async function POST(request: NextRequest) {
         file_name: resourceFile?.name || null,
         file_size: resourceFile?.size || null,
         file_mime_type: resourceFile?.type || null,
-        is_vip_only: getBoolean(formData, "isVipOnly"),
+        is_vip_only: tier === "vip",
         published: getBoolean(formData, "published"),
         created_by: currentUser?.id || null,
       })

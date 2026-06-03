@@ -12,15 +12,20 @@ import {
 
 export const runtime = "edge";
 
-type SortOption = "trending" | "newest" | "price-asc" | "price-desc" | "rating" | "featured";
+type SortOption = "trending" | "newest" | "rating" | "featured";
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "trending", label: "Trending" },
   { value: "newest", label: "Newest" },
   { value: "rating", label: "Highest Rated" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
   { value: "featured", label: "Featured" },
+];
+
+type AccessTier = "vip" | "legend";
+
+const ACCESS_TIERS: { value: AccessTier; label: string }[] = [
+  { value: "vip", label: "VIP" },
+  { value: "legend", label: "Legend" },
 ];
 
 interface PublicPlugin {
@@ -37,6 +42,7 @@ interface PublicPlugin {
   rating: number;
   isVipOnly: boolean;
   price: number;
+  tier: string;
   testedVersions: string[];
   createdAt: string;
   updatedAt: string;
@@ -69,7 +75,8 @@ function mapPublicPlugin(plugin: PublicPlugin): Plugin {
     description: plugin.description,
     category,
     price: Number(plugin.price || 0),
-    isFree: Number(plugin.price || 0) === 0,
+    isFree: false,
+    tier: plugin.tier === "legend" ? "legend" : "vip",
     image: plugin.coverImage || "/logo.png",
     gallery: plugin.coverImage ? [plugin.coverImage] : ["/logo.png"],
     rating: Number(plugin.rating || 0),
@@ -104,8 +111,7 @@ export default function PluginsExplorer() {
     searchParams.get("category") ? [searchParams.get("category") as Category] : []
   );
   const [selectedVersions, setSelectedVersions] = useState<string[]>([]);
-  const [showFreeOnly, setShowFreeOnly] = useState(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50]);
+  const [selectedTiers, setSelectedTiers] = useState<AccessTier[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>(
     (searchParams.get("sort") as SortOption) ?? "trending"
   );
@@ -145,20 +151,24 @@ export default function PluginsExplorer() {
     );
   };
 
+  const toggleTier = (tier: AccessTier) => {
+    setSelectedTiers((prev) =>
+      prev.includes(tier) ? prev.filter((item) => item !== tier) : [...prev, tier]
+    );
+  };
+
   const clearFilters = () => {
     setSearch("");
     setSelectedCategories([]);
     setSelectedVersions([]);
-    setShowFreeOnly(false);
-    setPriceRange([0, 50]);
+    setSelectedTiers([]);
     setSortBy("trending");
   };
 
   const activeFilterCount =
     selectedCategories.length +
     selectedVersions.length +
-    (showFreeOnly ? 1 : 0) +
-    (priceRange[0] > 0 || priceRange[1] < 50 ? 1 : 0);
+    selectedTiers.length;
   const catalogIsEmpty = !loading && plugins.length === 0;
 
   const filteredPlugins = useMemo(() => {
@@ -188,16 +198,9 @@ export default function PluginsExplorer() {
       );
     }
 
-    // Free only
-    if (showFreeOnly) {
-      result = result.filter((p) => p.isFree);
-    }
-
-    // Price range (only for non-free)
-    if (!showFreeOnly) {
-      result = result.filter(
-        (p) => p.isFree || (p.price >= priceRange[0] && p.price <= priceRange[1])
-      );
+    // Access tier
+    if (selectedTiers.length > 0) {
+      result = result.filter((p) => selectedTiers.includes(p.tier));
     }
 
     // Sort
@@ -206,15 +209,13 @@ export default function PluginsExplorer() {
         case "trending":  return b.sales - a.sales;
         case "newest":    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
         case "rating":    return b.rating - a.rating;
-        case "price-asc": return a.price - b.price;
-        case "price-desc":return b.price - a.price;
         case "featured":  return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
         default:          return 0;
       }
     });
 
     return result;
-  }, [plugins, search, selectedCategories, selectedVersions, showFreeOnly, priceRange, sortBy]);
+  }, [plugins, search, selectedCategories, selectedVersions, selectedTiers, sortBy]);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-8 flex-1 flex flex-col">
@@ -339,57 +340,33 @@ export default function PluginsExplorer() {
               </div>
             </div>
 
-            {/* Price */}
+            {/* Access */}
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <label className="text-xs font-bold uppercase tracking-widest text-[#6b6459]">
-                  Max Price
-                </label>
-                <span className="text-xs font-black text-amber-400">
-                  {priceRange[1] >= 50 ? "Any" : `$${priceRange[1]}`}
-                </span>
+              <label className="block text-xs font-bold uppercase tracking-widest text-[#6b6459] mb-3">
+                Access
+              </label>
+              <div className="flex flex-col gap-2">
+                {ACCESS_TIERS.map((tier) => {
+                  const active = selectedTiers.includes(tier.value);
+                  return (
+                    <button
+                      key={tier.value}
+                      id={`filter-tier-${tier.value}`}
+                      onClick={() => toggleTier(tier.value)}
+                      className={`flex items-center justify-between px-3 py-2 rounded-sm text-sm font-bold transition-all ${
+                        active
+                          ? "bg-amber-500/15 border border-amber-500/40 text-amber-400"
+                          : "bg-[#1c1a17] border border-[#2d2a26] text-[#6b6459] hover:text-[#a39c90] hover:border-[#3d3830]"
+                      }`}
+                    >
+                      <span>{tier.label}</span>
+                      <span className={`text-xs ${active ? "text-amber-500" : "text-[#4a4540]"}`}>
+                        {plugins.filter((p) => p.tier === tier.value).length}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-              <input
-                id="filter-price-range"
-                type="range"
-                min={0}
-                max={50}
-                step={1}
-                value={priceRange[1]}
-                onChange={(e) => setPriceRange([0, Number(e.target.value)])}
-                className="w-full accent-amber-500 cursor-pointer"
-                disabled={showFreeOnly}
-              />
-              <div className="flex justify-between text-xs text-[#4a4540] mt-1">
-                <span>$0</span>
-                <span>$50+</span>
-              </div>
-            </div>
-
-            {/* Free only toggle */}
-            <div>
-              <button
-                id="filter-free-only"
-                onClick={() => setShowFreeOnly((v) => !v)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-sm border font-bold text-sm transition-all ${
-                  showFreeOnly
-                    ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
-                    : "bg-[#1c1a17] border-[#2d2a26] text-[#6b6459] hover:text-[#a39c90] hover:border-[#3d3830]"
-                }`}
-              >
-                <span>Free resources only</span>
-                <div
-                  className={`w-9 h-5 rounded-none transition-colors flex items-center ${
-                    showFreeOnly ? "bg-emerald-500" : "bg-[#2d2a26]"
-                  }`}
-                >
-                  <div
-                    className={`w-3.5 h-3.5 bg-white rounded-none shadow transition-transform mx-0.5 ${
-                      showFreeOnly ? "translate-x-4" : "translate-x-0"
-                    }`}
-                  />
-                </div>
-              </button>
             </div>
           </div>
         </aside>
@@ -435,7 +412,7 @@ export default function PluginsExplorer() {
           </div>
 
           {/* Active filter chips */}
-          {(selectedCategories.length > 0 || selectedVersions.length > 0 || showFreeOnly) && (
+          {(selectedCategories.length > 0 || selectedVersions.length > 0 || selectedTiers.length > 0) && (
             <div className="flex flex-wrap gap-2">
               {selectedCategories.map((cat) => (
                 <button
@@ -461,17 +438,18 @@ export default function PluginsExplorer() {
                   </svg>
                 </button>
               ))}
-              {showFreeOnly && (
+              {selectedTiers.map((tier) => (
                 <button
-                  onClick={() => setShowFreeOnly(false)}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-sm bg-emerald-500/15 border border-emerald-500/40 text-xs font-bold text-emerald-400 hover:bg-emerald-500/25 transition-colors"
+                  key={tier}
+                  onClick={() => toggleTier(tier)}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-sm bg-amber-500/15 border border-amber-500/40 text-xs font-bold text-amber-400 hover:bg-amber-500/25 transition-colors"
                 >
-                  Free only
+                  {tier === "legend" ? "Legend" : "VIP"}
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
-              )}
+              ))}
             </div>
           )}
 

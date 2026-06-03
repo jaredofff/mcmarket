@@ -12,7 +12,7 @@ interface Plugin {
   title: string;
   slug?: string;
   author: string;
-  price: number;
+  tier: string;
   status: 'published' | 'draft';
   createdAt: string;
 }

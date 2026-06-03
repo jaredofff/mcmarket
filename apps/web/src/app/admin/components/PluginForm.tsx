@@ -11,15 +11,13 @@ import RichTextEditor from './RichTextEditor';
 const pluginSchema = z.object({
   title: z.string().min(3, 'El título debe tener al menos 3 caracteres'),
   version: z.string().min(1, 'La versión es obligatoria'),
-  price: z.number().min(0, 'El precio no puede ser negativo'),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
   category: z.string().min(1, 'La categoría es obligatoria'),
-  tier: z.enum(['free', 'vip', 'legend']),
+  tier: z.enum(['vip', 'legend']),
   testedVersions: z.string().min(1, 'Indica compatibilidad o escribe N/A'),
   coverImage: z.instanceof(FileList).optional(),
   bannerImage: z.instanceof(FileList).optional(),
   pluginFile: z.instanceof(FileList).optional(),
-  isVipOnly: z.boolean(),
   published: z.boolean(),
 });
 
@@ -54,11 +52,9 @@ export default function PluginForm({
     defaultValues: {
       title: initialData?.title || '',
       version: initialData?.version || '1.0.0',
-      price: initialData?.price ?? 0,
       category: initialData?.category || '',
-      tier: (initialData?.tier as 'free' | 'vip' | 'legend') || 'free',
+      tier: initialData?.tier === 'legend' ? 'legend' : 'vip',
       testedVersions: initialData?.testedVersions || '',
-      isVipOnly: initialData?.isVipOnly ?? false,
       published: initialData?.published ?? false,
       description: initialData?.description || '',
       coverImage: undefined,
@@ -67,7 +63,6 @@ export default function PluginForm({
     },
   });
 
-  const isVipOnly = watch('isVipOnly');
   const published = watch('published');
   const coverImageField = register('coverImage');
   const bannerImageField = register('bannerImage');
@@ -150,18 +145,6 @@ export default function PluginForm({
           </div>
 
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Precio USD *</label>
-            <input
-              {...register('price', { valueAsNumber: true })}
-              type="number"
-              step="0.01"
-              placeholder="9.99"
-              className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] placeholder-[#6b6459] focus:border-amber-500/50 focus:outline-none"
-            />
-            {errors.price && <p className="text-red-400 text-sm mt-1">{errors.price.message}</p>}
-          </div>
-
-          <div>
             <label className="block text-[#a89968] font-medium mb-2">Tipo de recurso *</label>
             <select
               {...register('category')}
@@ -183,16 +166,18 @@ export default function PluginForm({
           </div>
 
           <div>
-            <label className="block text-[#a89968] font-medium mb-2">Nivel *</label>
+            <label className="block text-[#a89968] font-medium mb-2">Rango de acceso *</label>
             <select
               {...register('tier')}
               className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] focus:border-amber-500/50 focus:outline-none"
             >
-              <option value="free">Gratis</option>
               <option value="vip">VIP</option>
               <option value="legend">Legend</option>
             </select>
             {errors.tier && <p className="text-red-400 text-sm mt-1">{errors.tier.message}</p>}
+            <p className="mt-2 text-xs text-[#6b6459]">
+              Todos podrán ver el recurso; solo usuarios con este rango o superior podrán descargarlo.
+            </p>
           </div>
 
           <div>
@@ -301,19 +286,6 @@ export default function PluginForm({
 
       <fieldset className="space-y-3 rounded-sm border border-[#2d2a26] bg-[#181512] p-5">
         <legend className="px-2 font-bold text-amber-400">Opciones</legend>
-
-        <div className="flex items-center gap-3">
-          <input
-            {...register('isVipOnly')}
-            type="checkbox"
-            id="vip-only"
-            checked={isVipOnly}
-            className="w-4 h-4 bg-amber-500/20 border border-amber-500/30 rounded cursor-pointer accent-amber-500"
-          />
-          <label htmlFor="vip-only" className="text-[#a89968] cursor-pointer">
-            Solo VIP
-          </label>
-        </div>
 
         <div className="flex items-center gap-3">
           <input

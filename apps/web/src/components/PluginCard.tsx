@@ -46,6 +46,7 @@ function StarRating({ rating }: { rating: number }) {
 
 export default function PluginCard({ plugin }: PluginCardProps) {
   const categoryColor = CATEGORY_COLORS[plugin.category] ?? "text-amber-400 border-amber-500/30 bg-amber-500/10";
+  const tierLabel = plugin.tier === "legend" ? "Legend" : "VIP";
 
   return (
     <Link
@@ -70,12 +71,9 @@ export default function PluginCard({ plugin }: PluginCardProps) {
           {plugin.category}
         </div>
 
-        {/* Free Badge */}
-        {plugin.isFree && (
-          <div className="absolute top-3 right-3 px-2 py-0.5 rounded-sm bg-emerald-500 text-[#0a1a10] text-xs font-black uppercase tracking-widest">
-            Free
-          </div>
-        )}
+        <div className="absolute top-3 right-3 px-2 py-0.5 rounded-sm bg-amber-500 text-[#141311] text-xs font-black uppercase tracking-widest">
+          {tierLabel}
+        </div>
 
         {/* Featured glow overlay */}
         {plugin.featured && (
@@ -124,19 +122,13 @@ export default function PluginCard({ plugin }: PluginCardProps) {
         {/* Divider */}
         <div className="border-t border-[#2d2a26] border-dashed" />
 
-        {/* Price & Stats */}
+        {/* Access & Stats */}
         <div className="flex items-center justify-between">
           <div>
-            {plugin.isFree ? (
-              <span className="text-xl font-black text-emerald-400">FREE</span>
-            ) : (
-              <span className="text-xl font-black text-amber-400">${plugin.price.toFixed(2)}</span>
-            )}
+            <span className="text-xl font-black text-amber-400">{tierLabel}</span>
           </div>
           <div className="text-xs text-[#6b6459] font-bold uppercase tracking-wider">
-            {plugin.isFree
-              ? `${(plugin.downloads / 1000).toFixed(1)}k downloads`
-              : `${plugin.sales >= 1000 ? (plugin.sales / 1000).toFixed(1) + "k" : plugin.sales} sales`}
+            {plugin.downloads >= 1000 ? `${(plugin.downloads / 1000).toFixed(1)}k` : plugin.downloads} downloads
           </div>
         </div>
       </div>
