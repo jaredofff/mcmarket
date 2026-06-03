@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
-import { getCategoryProducts, getCategoryInfo, type CategoryProduct } from "@/lib/categoryProducts";
+import { useEffect, useState, useMemo } from "react";
+import { getCategoryInfo, type CategoryProduct } from "@/lib/categoryProducts";
 
 type SortOption = "trending" | "newest" | "price-asc" | "price-desc" | "rating" | "featured";
 
@@ -19,15 +19,108 @@ interface CategoryViewProps {
   categoryName: "Setups" | "Configs" | "Builds" | "Webs";
 }
 
+interface PublicResource {
+  id: string;
+  title: string;
+  slug: string;
+  author: string;
+  description: string;
+  coverImage: string;
+  categories: string[];
+  tags: string[];
+  version: string;
+  downloadCount: number;
+  rating: number;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function getDescriptionExcerpt(markdown: string, maxLength = 140) {
+  const plainText = markdown
+    .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^[\s>*-]+/gm, "")
+    .replace(/[*_~|]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!plainText) {
+    return "Abre el recurso para ver la descripcion completa.";
+  }
+
+  if (plainText.length <= maxLength) {
+    return plainText;
+  }
+
+  return `${plainText.slice(0, maxLength).trimEnd()}...`;
+}
+
+function mapPublicResource(resource: PublicResource): CategoryProduct {
+  const updatedAt = resource.updatedAt || resource.createdAt || new Date().toISOString();
+
+  return {
+    id: resource.id,
+    title: resource.title,
+    slug: resource.slug,
+    category: (resource.categories?.[0] || "Setups") as CategoryProduct["category"],
+    price: Number(resource.price || 0),
+    isFree: Number(resource.price || 0) === 0,
+    rating: Number(resource.rating || 0),
+    reviewCount: 0,
+    sales: 0,
+    downloads: resource.downloadCount || 0,
+    image: resource.coverImage || "/logo.png",
+    shortDescription: getDescriptionExcerpt(resource.description),
+    longDescription: resource.description,
+    features: [],
+    version: resource.version,
+    creator: {
+      username: resource.author || "MC Market",
+      avatar: `https://api.dicebear.com/8.x/pixel-art/svg?seed=${encodeURIComponent(resource.author || "mc-market")}`,
+      verified: true,
+    },
+    featured: false,
+    tags: resource.tags || [],
+    createdAt: updatedAt,
+  } as CategoryProduct & { createdAt: string };
+}
+
 export default function CategoryView({ categoryName }: CategoryViewProps) {
   const categoryInfo = getCategoryInfo(categoryName);
-  const allProducts = getCategoryProducts(categoryName);
 
+  const [allProducts, setAllProducts] = useState<(CategoryProduct & { createdAt?: string })[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [showFreeOnly, setShowFreeOnly] = useState(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50]);
   const [sortBy, setSortBy] = useState<SortOption>("trending");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/plugins/search?limit=100&categories=${encodeURIComponent(categoryName)}`);
+        if (!response.ok) {
+          throw new Error("No se pudieron cargar los recursos");
+        }
+
+        const data = await response.json();
+        setAllProducts(((data.items || []) as PublicResource[]).map(mapPublicResource));
+      } catch (error) {
+        console.error(`Error loading ${categoryName}:`, error);
+        setAllProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, [categoryName]);
 
   const filteredProducts = useMemo(() => {
     let result = [...allProducts];
@@ -65,6 +158,8 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
           return b.price - a.price;
         case "featured":
           return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+        case "newest":
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
         default:
           return 0;
       }
@@ -81,7 +176,7 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
   };
 
   const activeFilterCount = (showFreeOnly ? 1 : 0) + (priceRange[0] > 0 || priceRange[1] < 50 ? 1 : 0);
-  const catalogIsEmpty = allProducts.length === 0;
+  const catalogIsEmpty = !loading && allProducts.length === 0;
 
   return (
     <div className="w-full">
@@ -221,12 +316,18 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
             </div>
 
             {/* Grid */}
-            {filteredProducts.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="h-80 animate-pulse rounded-sm border border-[#2d2a26] bg-[#1c1a17]" />
+                ))}
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
                   <Link
                     key={product.id}
-                    href={`/${categoryName.toLowerCase()}/${product.id}`}
+                    href={`/${categoryName.toLowerCase()}/${product.slug}`}
                     className="p-5 bg-[#1c1a17] border border-[#2d2a26] rounded-sm hover:border-amber-500/40 transition-all cursor-pointer flex flex-col group"
                   >
                     <div className="relative aspect-video w-full overflow-hidden bg-[#141311] rounded-sm mb-4 group-hover:border-amber-500/30 transition-all">

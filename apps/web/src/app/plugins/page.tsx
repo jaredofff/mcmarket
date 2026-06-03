@@ -144,7 +144,7 @@ export default function PluginsExplorer() {
     const loadPlugins = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/plugins/search?limit=100");
+        const response = await fetch("/api/plugins/search?limit=100&categories=Plugins");
         if (!response.ok) {
           throw new Error("Failed to load plugins");
         }
