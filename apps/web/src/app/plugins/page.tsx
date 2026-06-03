@@ -63,6 +63,29 @@ function normalizeCategory(value?: string): Category {
   return direct || CATEGORY_ALIASES[value.toLowerCase()] || "Utilities";
 }
 
+function getDescriptionExcerpt(markdown: string, maxLength = 140) {
+  const plainText = markdown
+    .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^[\s>*-]+/gm, "")
+    .replace(/[*_~|]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!plainText) {
+    return "Abre el recurso para ver la descripcion completa.";
+  }
+
+  if (plainText.length <= maxLength) {
+    return plainText;
+  }
+
+  return `${plainText.slice(0, maxLength).trimEnd()}...`;
+}
+
 function mapPublicPlugin(plugin: PublicPlugin): Plugin {
   const category = normalizeCategory(plugin.categories?.[0]);
   const updatedAt = plugin.updatedAt || plugin.createdAt || new Date().toISOString();
@@ -71,7 +94,7 @@ function mapPublicPlugin(plugin: PublicPlugin): Plugin {
     id: plugin.id,
     slug: plugin.slug,
     title: plugin.title,
-    shortDescription: plugin.description.slice(0, 140),
+    shortDescription: getDescriptionExcerpt(plugin.description),
     description: plugin.description,
     category,
     price: Number(plugin.price || 0),
