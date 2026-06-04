@@ -60,13 +60,15 @@ const communityCreators = [
     name: "Harlex",
     role: "Creador de la comunidad",
     image: "/community-creators/harlex.png",
-    accent: "from-amber-400/25 to-yellow-600/10",
+    accent: "bg-amber-400",
+    align: "lg:translate-y-8",
   },
   {
     name: "Onze",
     role: "Creador de la comunidad",
     image: "/community-creators/onze.png",
-    accent: "from-emerald-400/20 to-amber-500/10",
+    accent: "bg-emerald-400",
+    align: "lg:-translate-y-6",
   },
 ];
 
@@ -263,45 +265,44 @@ export default function LandingExperience() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-6 py-12">
-        <div className="grid items-center gap-8 border-y border-[#2d2a26] py-10 lg:grid-cols-[0.85fr_1.15fr] lg:py-14">
-          <div>
+      <section className="mx-auto w-full max-w-7xl px-6 py-16">
+        <div className="grid items-center gap-10 border-y border-[#2d2a26] py-12 lg:grid-cols-[0.82fr_1.18fr] lg:py-18">
+          <div className="max-w-2xl">
             <Badge variant="outline" className="mb-5 border-amber-500/20 bg-amber-500/10 text-amber-300">
               <Sparkles className="mr-1 size-3" />
               Comunidad MC Market
             </Badge>
             <h2 className="font-outfit text-3xl font-black leading-tight text-[#e8e4db] md:text-5xl">
-              Skins de los creadores que construyen esta comunidad
+              Creadores que le dan cara a la comunidad
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-[#8c8278]">
-              Un espacio para destacar a quienes crean, prueban y empujan el marketplace desde dentro. Sus skins viven en el inicio como parte de la identidad visual de MC Market.
+              Las skins aparecen como protagonistas del inicio, limpias y sin fondo, listas para acompañar la información de cada creador cuando la tengamos.
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-8 sm:grid-cols-2 lg:gap-10">
             {communityCreators.map((creator) => (
               <motion.div
                 key={creator.name}
-                whileHover={{ y: -6 }}
-                transition={{ type: "spring", stiffness: 280, damping: 24 }}
-                className="group relative min-h-80 overflow-hidden rounded-sm border border-[#2d2a26] bg-[#1c1a17] shadow-[4px_4px_0_rgba(0,0,0,0.35)]"
+                animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
+                whileHover={{ y: -12, scale: 1.03 }}
+                transition={reduceMotion ? undefined : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                className={`group relative flex min-h-[480px] flex-col items-center justify-end overflow-visible ${creator.align}`}
               >
-                <div className={`absolute inset-x-0 top-0 h-32 bg-linear-to-b ${creator.accent}`} />
-                <div className="absolute inset-x-6 bottom-20 h-px bg-linear-to-r from-transparent via-amber-500/30 to-transparent" />
-                <div className="relative flex h-full min-h-80 flex-col items-center justify-end px-6 pb-6 pt-8 text-center">
-                  <div className="relative mb-5 h-48 w-36 transition-transform duration-300 group-hover:-translate-y-2">
-                    <Image
-                      src={creator.image}
-                      alt={`Skin de ${creator.name}`}
-                      fill
-                      sizes="(max-width: 640px) 144px, 160px"
-                      className="object-contain drop-shadow-[0_18px_28px_rgba(0,0,0,0.55)]"
-                    />
-                  </div>
-                  <div className="w-full rounded-sm border border-[#3d3830] bg-[#11100e]/80 px-4 py-3">
-                    <h3 className="font-outfit text-2xl font-black text-[#e8e4db]">{creator.name}</h3>
-                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-400">{creator.role}</p>
-                  </div>
+                <div className={`absolute bottom-24 h-44 w-44 rounded-full ${creator.accent} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
+                <div className="absolute bottom-22 h-2 w-44 rounded-full bg-black/55 blur-md" />
+                <div className="relative h-[390px] w-[260px] transition-transform duration-300 group-hover:-translate-y-3 sm:h-[440px] sm:w-[300px] xl:h-[500px] xl:w-[340px]">
+                  <Image
+                    src={creator.image}
+                    alt={`Skin de ${creator.name}`}
+                    fill
+                    sizes="(max-width: 640px) 260px, (max-width: 1280px) 300px, 340px"
+                    className="object-contain drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)]"
+                  />
+                </div>
+                <div className="relative mt-4 w-full max-w-xs border-t border-[#2d2a26] pt-4 text-center">
+                  <h3 className="font-outfit text-3xl font-black text-[#e8e4db]">{creator.name}</h3>
+                  <p className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-400">{creator.role}</p>
                 </div>
               </motion.div>
             ))}
