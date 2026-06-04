@@ -263,7 +263,7 @@ export default function LandingExperience() {
         </div>
       </section>
 
-      <motion.section className="section-reveal mx-auto w-full max-w-7xl px-6 py-12" variants={sectionVariants}>
+      <section className="mx-auto w-full max-w-7xl px-6 py-12">
         <div className="grid items-center gap-8 border-y border-[#2d2a26] py-10 lg:grid-cols-[0.85fr_1.15fr] lg:py-14">
           <div>
             <Badge variant="outline" className="mb-5 border-amber-500/20 bg-amber-500/10 text-amber-300">
@@ -307,7 +307,7 @@ export default function LandingExperience() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       <motion.section className="section-reveal mx-auto w-full max-w-7xl px-6 py-12" variants={sectionVariants}>
         <div className="mb-8 flex items-end justify-between border-b border-[#2d2a26] pb-4">
