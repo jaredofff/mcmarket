@@ -61,14 +61,12 @@ const communityCreators = [
     role: "Creador de la comunidad",
     image: "/community-creators/harlex.png",
     accent: "bg-amber-400",
-    align: "lg:translate-y-8",
   },
   {
     name: "Onze",
     role: "Creador de la comunidad",
     image: "/community-creators/onze.png",
     accent: "bg-emerald-400",
-    align: "lg:-translate-y-6",
   },
 ];
 
@@ -265,8 +263,8 @@ export default function LandingExperience() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-6 py-16">
-        <div className="grid items-center gap-10 border-y border-[#2d2a26] py-12 lg:grid-cols-[0.82fr_1.18fr] lg:py-18">
+      <section className="mx-auto w-full max-w-7xl px-6 py-8">
+        <div className="grid items-center gap-6 border-y border-[#2d2a26] py-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="max-w-2xl">
             <Badge variant="outline" className="mb-5 border-amber-500/20 bg-amber-500/10 text-amber-300">
               <Sparkles className="mr-1 size-3" />
@@ -280,27 +278,27 @@ export default function LandingExperience() {
             </p>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:gap-10">
+          <div className="grid items-end gap-5 sm:grid-cols-2 lg:gap-6">
             {communityCreators.map((creator) => (
               <motion.div
                 key={creator.name}
                 animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
                 whileHover={{ y: -12, scale: 1.03 }}
                 transition={reduceMotion ? undefined : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className={`group relative flex min-h-[480px] flex-col items-center justify-end overflow-visible ${creator.align}`}
+                className="group relative flex flex-col items-center overflow-visible"
               >
-                <div className={`absolute bottom-24 h-44 w-44 rounded-full ${creator.accent} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
-                <div className="absolute bottom-22 h-2 w-44 rounded-full bg-black/55 blur-md" />
-                <div className="relative h-[390px] w-[260px] transition-transform duration-300 group-hover:-translate-y-3 sm:h-[440px] sm:w-[300px] xl:h-[500px] xl:w-[340px]">
+                <div className={`absolute bottom-16 h-40 w-40 rounded-full ${creator.accent} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
+                <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/55 blur-md" />
+                <div className="relative aspect-[2/3] w-[220px] transition-transform duration-300 group-hover:-translate-y-3 sm:w-[250px] lg:w-[280px] xl:w-[300px]">
                   <Image
                     src={creator.image}
                     alt={`Skin de ${creator.name}`}
                     fill
-                    sizes="(max-width: 640px) 260px, (max-width: 1280px) 300px, 340px"
+                    sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 300px"
                     className="object-contain drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)]"
                   />
                 </div>
-                <div className="relative mt-4 w-full max-w-xs border-t border-[#2d2a26] pt-4 text-center">
+                <div className="relative mt-3 w-full max-w-xs border-t border-[#2d2a26] pt-3 text-center">
                   <h3 className="font-outfit text-3xl font-black text-[#e8e4db]">{creator.name}</h3>
                   <p className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-400">{creator.role}</p>
                 </div>
