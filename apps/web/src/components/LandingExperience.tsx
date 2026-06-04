@@ -55,23 +55,6 @@ const resourceCategories = [
   { icon: "💻", title: "Paneles", desc: "Temas y paneles personalizados para gestión de servidores.", href: "/webs" },
 ];
 
-const communityCreators = [
-  {
-    name: "Harlex",
-    role: "Creador de la comunidad",
-    image: "/community-creators/harlex.png",
-    glowClass: "bg-amber-400",
-    labelClass: "text-amber-400",
-  },
-  {
-    name: "Onze",
-    role: "Creador de la comunidad",
-    image: "/community-creators/onze.png",
-    glowClass: "bg-emerald-400",
-    labelClass: "text-emerald-400",
-  },
-];
-
 function getLatestPlugins() {
   return [...MOCK_PLUGINS]
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
@@ -252,6 +235,59 @@ export default function LandingExperience() {
             </span>
           </div>
 
+          <div className="mt-14 w-full border-y border-[#2d2a26] py-8">
+            <div className="mx-auto grid w-full max-w-6xl items-center gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+              <div className="text-left">
+                <Badge variant="outline" className="mb-5 border-amber-500/20 bg-amber-500/10 text-amber-300">
+                  <Sparkles className="mr-1 size-3" />
+                  Comunidad MC Market
+                </Badge>
+                <h2 className="font-outfit text-3xl font-black leading-tight text-[#e8e4db] md:text-5xl">
+                  Creadores que le dan cara a la comunidad
+                </h2>
+                <p className="mt-4 max-w-xl text-base leading-relaxed text-[#8c8278]">
+                  Harlex y Onze son parte de la identidad visual de MC Market. Sus skins viven en el inicio como protagonistas de la comunidad.
+                </p>
+              </div>
+
+              <div className="grid items-end gap-6 sm:grid-cols-2">
+                <div className="group relative flex flex-col items-center">
+                  <div className="absolute bottom-16 h-40 w-40 rounded-full bg-amber-400 opacity-10 blur-3xl transition-opacity group-hover:opacity-20" />
+                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/55 blur-md" />
+                  <Image
+                    src="/community-creators/harlex.png"
+                    alt="Skin de Harlex"
+                    width={320}
+                    height={480}
+                    sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
+                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-transform duration-300 group-hover:-translate-y-3 sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                  />
+                  <div className="relative mt-3 w-full max-w-xs border-t border-[#2d2a26] pt-3 text-center">
+                    <h3 className="font-outfit text-3xl font-black text-[#e8e4db]">Harlex</h3>
+                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-400">Creador de la comunidad</p>
+                  </div>
+                </div>
+
+                <div className="group relative flex flex-col items-center">
+                  <div className="absolute bottom-16 h-40 w-40 rounded-full bg-emerald-400 opacity-10 blur-3xl transition-opacity group-hover:opacity-20" />
+                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/55 blur-md" />
+                  <Image
+                    src="/community-creators/onze.png"
+                    alt="Skin de Onze"
+                    width={320}
+                    height={480}
+                    sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
+                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-transform duration-300 group-hover:-translate-y-3 sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                  />
+                  <div className="relative mt-3 w-full max-w-xs border-t border-[#2d2a26] pt-3 text-center">
+                    <h3 className="font-outfit text-3xl font-black text-[#e8e4db]">Onze</h3>
+                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-emerald-400">Creador de la comunidad</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-16 grid w-full max-w-5xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-px">
             {stats.map((stat) => (
               <Card key={stat.label} className="stat-card border-[#2d2a26] bg-[#1c1a17]/90 text-left shadow-[3px_3px_0_rgba(0,0,0,0.28)]">
@@ -260,47 +296,6 @@ export default function LandingExperience() {
                   <div className="mt-1 text-xs font-bold uppercase tracking-widest text-[#6b6459]">{stat.label}</div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-7xl px-6 py-8">
-        <div className="grid items-center gap-6 border-y border-[#2d2a26] py-8 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="max-w-2xl">
-            <Badge variant="outline" className="mb-5 border-amber-500/20 bg-amber-500/10 text-amber-300">
-              <Sparkles className="mr-1 size-3" />
-              Comunidad MC Market
-            </Badge>
-            <h2 className="font-outfit text-3xl font-black leading-tight text-[#e8e4db] md:text-5xl">
-              Creadores que le dan cara a la comunidad
-            </h2>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-[#8c8278]">
-              Las skins aparecen como protagonistas del inicio, limpias y sin fondo, listas para acompañar la información de cada creador cuando la tengamos.
-            </p>
-          </div>
-
-          <div className="grid items-end gap-5 sm:grid-cols-2 lg:gap-6">
-            {communityCreators.map((creator) => (
-              <div
-                key={creator.name}
-                className="group relative flex flex-col items-center overflow-visible opacity-100"
-              >
-                <div className={`absolute bottom-16 h-40 w-40 rounded-full ${creator.glowClass} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
-                <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/55 blur-md" />
-                <Image
-                  src={creator.image}
-                  alt={`Skin de ${creator.name}`}
-                  width={320}
-                  height={480}
-                  sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
-                  className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-transform duration-300 group-hover:-translate-y-3 sm:w-[250px] lg:w-[280px] xl:w-[320px]"
-                />
-                <div className="relative mt-3 w-full max-w-xs border-t border-[#2d2a26] pt-3 text-center">
-                  <h3 className="font-outfit text-3xl font-black text-[#e8e4db]">{creator.name}</h3>
-                  <p className={`mt-1 text-xs font-bold uppercase tracking-widest ${creator.labelClass}`}>{creator.role}</p>
-                </div>
-              </div>
             ))}
           </div>
         </div>
