@@ -60,13 +60,15 @@ const communityCreators = [
     name: "Harlex",
     role: "Creador de la comunidad",
     image: "/community-creators/harlex.png",
-    accent: "bg-amber-400",
+    glowClass: "bg-amber-400",
+    labelClass: "text-amber-400",
   },
   {
     name: "Onze",
     role: "Creador de la comunidad",
     image: "/community-creators/onze.png",
-    accent: "bg-emerald-400",
+    glowClass: "bg-emerald-400",
+    labelClass: "text-emerald-400",
   },
 ];
 
@@ -280,29 +282,25 @@ export default function LandingExperience() {
 
           <div className="grid items-end gap-5 sm:grid-cols-2 lg:gap-6">
             {communityCreators.map((creator) => (
-              <motion.div
+              <div
                 key={creator.name}
-                animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
-                whileHover={{ y: -12, scale: 1.03 }}
-                transition={reduceMotion ? undefined : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="group relative flex flex-col items-center overflow-visible"
+                className="group relative flex flex-col items-center overflow-visible opacity-100"
               >
-                <div className={`absolute bottom-16 h-40 w-40 rounded-full ${creator.accent} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
+                <div className={`absolute bottom-16 h-40 w-40 rounded-full ${creator.glowClass} opacity-10 blur-3xl transition-opacity group-hover:opacity-20`} />
                 <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/55 blur-md" />
-                <div className="relative aspect-[2/3] w-[220px] transition-transform duration-300 group-hover:-translate-y-3 sm:w-[250px] lg:w-[280px] xl:w-[300px]">
-                  <Image
-                    src={creator.image}
-                    alt={`Skin de ${creator.name}`}
-                    fill
-                    sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 300px"
-                    className="object-contain drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)]"
-                  />
-                </div>
+                <Image
+                  src={creator.image}
+                  alt={`Skin de ${creator.name}`}
+                  width={320}
+                  height={480}
+                  sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
+                  className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-transform duration-300 group-hover:-translate-y-3 sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                />
                 <div className="relative mt-3 w-full max-w-xs border-t border-[#2d2a26] pt-3 text-center">
                   <h3 className="font-outfit text-3xl font-black text-[#e8e4db]">{creator.name}</h3>
-                  <p className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-400">{creator.role}</p>
+                  <p className={`mt-1 text-xs font-bold uppercase tracking-widest ${creator.labelClass}`}>{creator.role}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
