@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import { Crown, Gem, Infinity, Sparkles, Zap } from "lucide-react";
 
 const ranks = [
@@ -43,17 +46,72 @@ const ranks = [
   },
 ];
 
-const galleryImages = [
-  { id: "logo", label: "MC Market", image: "/logo.png" },
-  { id: "harlex", label: "Harlex", image: "/community-creators/harlex.png" },
-  { id: "onze", label: "Onze", image: "/community-creators/onze.png" },
-  { id: "plugins", label: "Plugins", image: "/logo.png" },
-  { id: "setups", label: "Setups", image: "/logo.png" },
-  { id: "resources", label: "Recursos premium", image: "/community-creators/onze.png" },
-];
+const galleryCategories = ["Plugins", "Setups", "Builds", "Configs", "Webs"] as const;
+
+type GalleryResource = {
+  id: string;
+  title: string;
+  coverImage?: string;
+  bannerImage?: string;
+  categories?: string[];
+};
+
+type GalleryImage = {
+  id: string;
+  label: string;
+  image: string;
+  category: string;
+};
 
 export default function MinecraftRanksShowcase() {
-  const marqueeImages = [...galleryImages, ...galleryImages];
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadGalleryImages = async () => {
+      try {
+        const params = new URLSearchParams({ limit: "40", sortBy: "createdAt" });
+        galleryCategories.forEach((category) => params.append("categories", category));
+
+        const response = await fetch(`/api/plugins/search?${params.toString()}`, {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error("No se pudo cargar la galeria de recursos");
+        }
+
+        const data = (await response.json()) as { items?: GalleryResource[] };
+        const images = (data.items || [])
+          .map((item) => {
+            const category = item.categories?.find((value) => galleryCategories.includes(value as (typeof galleryCategories)[number])) || item.categories?.[0] || "Recurso";
+            const image = item.bannerImage || item.coverImage || "";
+
+            return {
+              id: item.id,
+              label: item.title,
+              image,
+              category,
+            };
+          })
+          .filter((item) => item.image);
+
+        setGalleryImages(images);
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Error loading gallery images:", error);
+          setGalleryImages([]);
+        }
+      }
+    };
+
+    loadGalleryImages();
+
+    return () => controller.abort();
+  }, []);
+
+  const marqueeImages = useMemo(() => [...galleryImages, ...galleryImages], [galleryImages]);
 
   return (
     <section className="relative z-20 w-full isolate bg-transparent">
@@ -123,25 +181,28 @@ export default function MinecraftRanksShowcase() {
           })}
         </div>
 
-        <div className="mt-10 overflow-hidden">
-          <div className="flex w-max gap-4 [animation:minecraft-ranks-marquee_34s_linear_infinite] hover:[animation-play-state:paused]">
-            {marqueeImages.map((item, index) => (
-              <div
-                key={`${item.id}-${index}`}
-                className="relative aspect-video w-64 shrink-0 overflow-hidden rounded-sm border border-[#2d2a26] bg-[#1c1a17]/70 backdrop-blur sm:w-80"
-              >
+        {marqueeImages.length > 0 && (
+          <div className="mt-10 overflow-hidden">
+            <div className="flex w-max gap-4 [animation:minecraft-ranks-marquee_34s_linear_infinite] hover:[animation-play-state:paused]">
+              {marqueeImages.map((item, index) => (
                 <div
-                  className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-90"
-                  style={{ backgroundImage: `url(${item.image})` }}
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
-                <div className="absolute bottom-3 left-3 rounded-md border border-white/10 bg-black/35 px-2.5 py-1 text-xs font-bold uppercase tracking-widest text-white/85 backdrop-blur">
-                  {item.label}
+                  key={`${item.id}-${index}`}
+                  className="relative aspect-video w-64 shrink-0 overflow-hidden rounded-sm border border-[#2d2a26] bg-[#1c1a17]/70 backdrop-blur sm:w-80"
+                >
+                  <div
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90"
+                    style={{ backgroundImage: `url("${item.image}")` }}
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/15 to-transparent" />
+                  <div className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] rounded-md border border-white/10 bg-black/35 px-2.5 py-1 text-xs font-bold uppercase tracking-widest text-white/85 backdrop-blur">
+                    <span className="block truncate">{item.label}</span>
+                    <span className="mt-0.5 block text-[10px] text-amber-300/90">{item.category}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <style>{`
