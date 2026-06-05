@@ -231,7 +231,7 @@ export default function LandingExperience() {
                   <Sparkles className="mr-1 size-3" />
                   Comunidad MC Market
                 </Badge>
-                <h2 className="font-outfit text-3xl font-black leading-tight text-[#e8e4db] md:text-5xl">
+                <h2 className="bg-gradient-to-r from-white via-[#f2eee6] to-[#a8a19a] bg-clip-text font-outfit text-3xl font-black leading-tight text-transparent md:text-5xl">
                   Creadores que le dan cara a la comunidad
                 </h2>
                 <p className="mt-4 max-w-xl text-base leading-relaxed text-[#8c8278]">
@@ -241,36 +241,40 @@ export default function LandingExperience() {
 
               <div className="grid items-end gap-6 sm:grid-cols-2">
                 <div className="group relative flex flex-col items-center">
-                  <div className="absolute bottom-16 h-40 w-40 rounded-full bg-amber-400 opacity-10 blur-3xl transition-opacity group-hover:opacity-20" />
-                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/55 blur-md" />
+                  <div className="absolute bottom-16 h-44 w-44 rounded-full bg-amber-500 opacity-15 blur-3xl transition-all duration-500 ease-out group-hover:scale-110 group-hover:opacity-35" />
+                  <div className="absolute bottom-16 h-3 w-44 rounded-full bg-amber-500/25 blur-lg transition-all duration-500 ease-out group-hover:h-4 group-hover:w-52 group-hover:bg-amber-500/45" />
+                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/60 blur-md transition-all duration-500 ease-out group-hover:w-48" />
                   <Image
                     src="/community-creators/harlex.png"
                     alt="Skin de Harlex"
                     width={320}
                     height={480}
                     sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
-                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-transform duration-300 group-hover:-translate-y-3 sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-105 group-hover:drop-shadow-[0_34px_42px_rgba(245,158,11,0.24)] sm:w-[250px] lg:w-[280px] xl:w-[320px]"
                   />
-                  <div className="relative mt-3 w-full max-w-xs border-t border-[#2d2a26] pt-3 text-center">
-                    <h3 className="font-outfit text-3xl font-black text-[#e8e4db]">Harlex</h3>
-                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-400">Creador de la comunidad</p>
+                  <div className="relative mt-3 w-full max-w-xs pt-4 text-center">
+                    <div className="absolute top-0 left-1/2 h-px w-full -translate-x-1/2 bg-gradient-to-r from-transparent via-amber-500/55 to-transparent transition-all duration-500 ease-out group-hover:via-amber-400 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
+                    <h3 className="font-outfit text-3xl font-black text-[#e8e4db] transition-all duration-500 ease-out group-hover:text-white group-hover:drop-shadow-[0_0_14px_rgba(245,158,11,0.45)]">Harlex</h3>
+                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-400 transition-all duration-500 ease-out group-hover:text-amber-300 group-hover:drop-shadow-[0_0_10px_rgba(245,158,11,0.45)]">Creador de la comunidad</p>
                   </div>
                 </div>
 
                 <div className="group relative flex flex-col items-center">
-                  <div className="absolute bottom-16 h-40 w-40 rounded-full bg-emerald-400 opacity-10 blur-3xl transition-opacity group-hover:opacity-20" />
-                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/55 blur-md" />
+                  <div className="absolute bottom-16 h-44 w-44 rounded-full bg-emerald-500 opacity-15 blur-3xl transition-all duration-500 ease-out group-hover:scale-110 group-hover:opacity-35" />
+                  <div className="absolute bottom-16 h-3 w-44 rounded-full bg-emerald-500/25 blur-lg transition-all duration-500 ease-out group-hover:h-4 group-hover:w-52 group-hover:bg-emerald-500/45" />
+                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/60 blur-md transition-all duration-500 ease-out group-hover:w-48" />
                   <Image
                     src="/community-creators/onze.png"
                     alt="Skin de Onze"
                     width={320}
                     height={480}
                     sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
-                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-transform duration-300 group-hover:-translate-y-3 sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-105 group-hover:drop-shadow-[0_34px_42px_rgba(16,185,129,0.24)] sm:w-[250px] lg:w-[280px] xl:w-[320px]"
                   />
-                  <div className="relative mt-3 w-full max-w-xs border-t border-[#2d2a26] pt-3 text-center">
-                    <h3 className="font-outfit text-3xl font-black text-[#e8e4db]">Onze</h3>
-                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-emerald-400">Creador de la comunidad</p>
+                  <div className="relative mt-3 w-full max-w-xs pt-4 text-center">
+                    <div className="absolute top-0 left-1/2 h-px w-full -translate-x-1/2 bg-gradient-to-r from-transparent via-emerald-500/55 to-transparent transition-all duration-500 ease-out group-hover:via-emerald-400 group-hover:shadow-[0_0_18px_rgba(16,185,129,0.35)]" />
+                    <h3 className="font-outfit text-3xl font-black text-[#e8e4db] transition-all duration-500 ease-out group-hover:text-white group-hover:drop-shadow-[0_0_14px_rgba(16,185,129,0.45)]">Onze</h3>
+                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-emerald-400 transition-all duration-500 ease-out group-hover:text-emerald-300 group-hover:drop-shadow-[0_0_10px_rgba(16,185,129,0.45)]">Creador de la comunidad</p>
                   </div>
                 </div>
               </div>
