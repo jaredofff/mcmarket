@@ -139,14 +139,6 @@ export default function LandingExperience() {
         stagger: 0.35,
       });
 
-      gsap.from(".section-reveal", {
-        opacity: 0,
-        y: 20,
-        duration: 0.75,
-        ease: "power2.out",
-        stagger: 0.08,
-        delay: 0.15,
-      });
     }, rootRef);
 
     return () => ctx.revert();
