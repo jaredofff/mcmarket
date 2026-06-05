@@ -39,13 +39,6 @@ const sectionVariants = {
   },
 };
 
-const stats = [
-  { label: "Recursos curados", value: "0" },
-  { label: "Creadores verificados", value: "0" },
-  { label: "Descargas mensuales", value: "0" },
-  { label: "Satisfacción", value: "0%" },
-];
-
 const resourceCategories = [
   { icon: "🧩", title: "Plugins", desc: "Plugins únicos optimizados y configurados para rendimiento máximo.", href: "/plugins" },
   { icon: "🖥️", title: "Setups", desc: "Setups completos listos para desplegar tu servidor en minutos.", href: "/setups" },
@@ -143,15 +136,6 @@ export default function LandingExperience() {
         repeat: -1,
         yoyo: true,
         stagger: 0.35,
-      });
-
-      gsap.from(".stat-card", {
-        opacity: 0,
-        y: 22,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.08,
-        delay: 0.2,
       });
 
       gsap.from(".section-reveal", {
@@ -288,16 +272,6 @@ export default function LandingExperience() {
             </div>
           </div>
 
-          <div className="mt-16 grid w-full max-w-5xl grid-cols-2 gap-3 md:grid-cols-4 md:gap-px">
-            {stats.map((stat) => (
-              <Card key={stat.label} className="stat-card border-[#2d2a26] bg-[#1c1a17]/90 text-left shadow-[3px_3px_0_rgba(0,0,0,0.28)]">
-                <CardContent className="p-5">
-                  <div className="font-outfit text-3xl font-black text-amber-400">{stat.value}</div>
-                  <div className="mt-1 text-xs font-bold uppercase tracking-widest text-[#6b6459]">{stat.label}</div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
         </div>
       </section>
 
