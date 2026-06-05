@@ -220,6 +220,10 @@ export default function LandingExperience() {
             </span>
           </div>
 
+          <div className="relative z-20 mt-14 w-full isolate">
+            <MinecraftRanksShowcase />
+          </div>
+
           <div className="mt-14 w-full border-y border-[#2d2a26] py-8">
             <div className="mx-auto grid w-full max-w-6xl items-center gap-8 lg:grid-cols-[0.8fr_1.2fr]">
               <div className="text-left">
@@ -275,10 +279,6 @@ export default function LandingExperience() {
 
         </div>
       </section>
-
-      <motion.div className="section-reveal" variants={sectionVariants}>
-        <MinecraftRanksShowcase />
-      </motion.div>
 
       <motion.section className="section-reveal mx-auto w-full max-w-7xl px-6 py-12" variants={sectionVariants}>
         <div className="mb-8 flex items-end justify-between border-b border-[#2d2a26] pb-4">
