@@ -8,6 +8,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 import { ArrowRight, CheckCircle2, Flame, ShieldCheck, Sparkles, Star } from "lucide-react";
 
+import MinecraftRanksShowcase from "@/components/MinecraftRanksShowcase";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -274,6 +275,10 @@ export default function LandingExperience() {
 
         </div>
       </section>
+
+      <motion.div className="section-reveal" variants={sectionVariants}>
+        <MinecraftRanksShowcase />
+      </motion.div>
 
       <motion.section className="section-reveal mx-auto w-full max-w-7xl px-6 py-12" variants={sectionVariants}>
         <div className="mb-8 flex items-end justify-between border-b border-[#2d2a26] pb-4">

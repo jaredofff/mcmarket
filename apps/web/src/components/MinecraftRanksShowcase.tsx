@@ -56,8 +56,8 @@ export default function MinecraftRanksShowcase() {
   const marqueeImages = [...galleryImages, ...galleryImages];
 
   return (
-    <section className="w-full bg-transparent px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative z-10 w-full bg-transparent px-4 py-16 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-6xl">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {ranks.map((rank) => {
             const Icon = rank.icon;
