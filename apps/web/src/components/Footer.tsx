@@ -1,10 +1,24 @@
 export default function Footer() {
+  const marketplaceLinks = [
+    { label: "Explorar Plugins", href: "/plugins" },
+    { label: "Recursos Gratis", href: "/recursos" },
+    { label: "Novedades", href: "/marketplace" },
+    { label: "Top Sellers", href: "/marketplace" },
+  ];
+
+  const legalLinks = [
+    { label: "Términos de Servicio", href: "/legal/terminos-de-servicio" },
+    { label: "Política de Privacidad", href: "/legal/politica-de-privacidad" },
+    { label: "Política de Reembolso", href: "/legal/politica-de-reembolso" },
+    { label: "DMCA", href: "/legal/dmca" },
+  ];
+
   return (
     <footer className="w-full border-t border-[#2d2a26] bg-[#0f0e0c] mt-auto">
       <div className="container mx-auto px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
+          <div>
             <div className="flex items-center gap-3 mb-4">
               <img
                 src="/logo.png"
@@ -22,26 +36,7 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-xs uppercase tracking-widest text-[#a39c90] mb-4">Marketplace</h4>
             <ul className="space-y-2.5">
-              {["Explorar Plugins", "Recursos Gratis", "Novedades", "Top Sellers"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Admin */}
-          <div>
-            <h4 className="font-bold text-xs uppercase tracking-widest text-[#a39c90] mb-4">Gestión</h4>
-            <ul className="space-y-2.5">
-              {[
-                { label: "Panel Admin", href: "/admin" },
-                { label: "Recursos", href: "/admin/plugins" },
-                { label: "Cargar Recurso", href: "/admin/plugins/new" },
-                { label: "Documentación", href: "#" },
-              ].map((item) => (
+              {marketplaceLinks.map((item) => (
                 <li key={item.label}>
                   <a href={item.href} className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
                     {item.label}
@@ -55,10 +50,10 @@ export default function Footer() {
           <div>
             <h4 className="font-bold text-xs uppercase tracking-widest text-[#a39c90] mb-4">Legal</h4>
             <ul className="space-y-2.5">
-              {["Términos de Servicio", "Política de Privacidad", "Política de Reembolso", "DMCA"].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
-                    {item}
+              {legalLinks.map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="text-sm text-[#6b6459] hover:text-amber-400 transition-colors">
+                    {item.label}
                   </a>
                 </li>
               ))}
