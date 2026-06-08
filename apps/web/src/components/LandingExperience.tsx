@@ -1,13 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import gsap from "gsap";
-import { ArrowRight, Flame, ShieldCheck, Star } from "lucide-react";
+import { ArrowRight, CheckCircle2, Flame, ShieldCheck, Sparkles, Star } from "lucide-react";
 
 import HeroBanner from "@/components/HeroBanner";
+import MinecraftRanksShowcase from "@/components/MinecraftRanksShowcase";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -145,7 +147,136 @@ export default function LandingExperience() {
 
   return (
     <motion.div ref={rootRef} initial="hidden" animate="show" variants={pageVariants} className="relative w-full max-w-full overflow-hidden">
-      <HeroBanner />
+      <section className="relative isolate flex w-full min-w-0 flex-col items-center justify-center overflow-hidden px-4 pb-24 pt-24 text-center sm:px-6 sm:pt-28">
+        <HeroBanner />
+        <div className="hero-orb absolute left-1/2 top-[-8%] h-95 w-170 -translate-x-1/2 rounded-full bg-amber-500/10 blur-[140px]" />
+        <div className="hero-orb absolute left-[12%] top-[24%] h-65 w-65 rounded-full bg-yellow-700/10 blur-[110px]" />
+
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl min-w-0 flex-col items-center">
+          <motion.div
+            animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 1.5, 0, -1.5, 0] }}
+            transition={reduceMotion ? undefined : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+            className="mb-6 flex items-center justify-center p-0"
+          >
+            <div className="relative h-22 w-22 overflow-hidden md:h-28 md:w-28">
+              <Image src="/logo.png" alt="MC Market" fill sizes="112px" className="object-contain" priority />
+            </div>
+          </motion.div>
+
+          <Badge variant="outline" className="mb-8 flex h-auto min-h-5 max-w-full items-center justify-center gap-1 whitespace-normal border-amber-500/20 bg-amber-500/10 px-3 py-2 text-center text-[10px] font-semibold uppercase leading-relaxed tracking-[0.08em] text-amber-300 sm:text-[11px] sm:tracking-[0.3em]">
+            <Sparkles className="size-3 shrink-0" />
+            <span className="min-w-0 break-words">Recursos premium verificados para servidores serios</span>
+          </Badge>
+
+          <h1 className="w-full max-w-5xl px-1 font-outfit text-4xl font-black leading-[1.05] tracking-tight text-[#e8e4db] sm:px-0 sm:text-5xl md:text-7xl">
+            Compra recursos que hacen que tu servidor{" "}
+            <br className="hidden md:block" />
+            <span className="bg-linear-to-b from-amber-300 via-yellow-400 to-amber-600 bg-clip-text text-transparent block sm:inline mt-2 sm:mt-0">
+              cargue mejor y venda más
+            </span>
+          </h1>
+
+          <p className="mt-6 w-full max-w-3xl px-1 text-base leading-relaxed text-[#8c8278] sm:px-0 sm:text-lg md:text-xl">
+            Plugins, setups, configs, builds y webs curadas para acelerar el setup, mejorar la experiencia del jugador y dar una apariencia premium desde el primer clic.
+          </p>
+
+          <div className="mt-10 flex w-full max-w-sm flex-col gap-4 px-1 sm:w-auto sm:max-w-none sm:flex-row sm:px-0">
+            <Button
+              size="lg"
+              className="h-14 w-full sm:w-auto rounded-sm bg-linear-to-b from-amber-400 to-yellow-600 px-8 text-base font-black text-[#141311] shadow-[0_4px_0_#92400e,inset_0_1px_0_rgba(255,255,255,0.3)] hover:brightness-110"
+              onClick={() => router.push("/plugins")}
+            >
+              Ver plugins premium
+              <ArrowRight className="ml-2 size-4" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="h-14 w-full sm:w-auto rounded-sm border-[#3d3830] bg-[#1c1a17] px-8 text-base font-black text-[#e8e4db] hover:border-amber-500/30 hover:bg-[#242118]"
+              onClick={() => router.push("/membership")}
+            >
+              Ver membresía VIP+
+            </Button>
+          </div>
+
+          <div className="mt-6 flex w-full min-w-0 flex-wrap items-center justify-center gap-3 px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#a39c90] sm:text-xs sm:tracking-widest">
+            <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
+              <CheckCircle2 className="size-3.5 text-emerald-400" />
+              <span className="min-w-0 break-words">Entrega instantánea</span>
+            </span>
+            <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
+              <CheckCircle2 className="size-3.5 text-emerald-400" />
+              <span className="min-w-0 break-words">Updates vitalicios</span>
+            </span>
+            <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[#2d2a26] bg-[#1c1a17] px-3 py-1.5">
+              <CheckCircle2 className="size-3.5 text-emerald-400" />
+              <span className="min-w-0 break-words">Soporte prioritario</span>
+            </span>
+          </div>
+
+          <div className="relative z-20 mt-14 w-full isolate">
+            <MinecraftRanksShowcase />
+          </div>
+
+          <div className="mt-14 w-full border-y border-[#2d2a26] py-8">
+            <div className="mx-auto grid w-full max-w-6xl items-center gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+              <div className="text-left">
+                <Badge variant="outline" className="mb-5 border-amber-500/20 bg-amber-500/10 text-amber-300">
+                  <Sparkles className="mr-1 size-3" />
+                  Comunidad MC Market
+                </Badge>
+                <h2 className="bg-gradient-to-r from-white via-[#f2eee6] to-[#a8a19a] bg-clip-text font-outfit text-3xl font-black leading-tight text-transparent md:text-5xl">
+                  Creadores que le dan cara a la comunidad
+                </h2>
+                <p className="mt-4 max-w-xl text-base leading-relaxed text-[#8c8278]">
+                  Harlex y Onze son parte de la identidad visual de MC Market. Sus skins viven en el inicio como protagonistas de la comunidad.
+                </p>
+              </div>
+
+              <div className="grid items-end gap-6 sm:grid-cols-2">
+                <div className="group relative flex flex-col items-center">
+                  <div className="absolute bottom-16 h-44 w-44 rounded-full bg-amber-500 opacity-15 blur-3xl transition-all duration-500 ease-out group-hover:scale-110 group-hover:opacity-35" />
+                  <div className="absolute bottom-16 h-3 w-44 rounded-full bg-amber-500/25 blur-lg transition-all duration-500 ease-out group-hover:h-4 group-hover:w-52 group-hover:bg-amber-500/45" />
+                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/60 blur-md transition-all duration-500 ease-out group-hover:w-48" />
+                  <Image
+                    src="/community-creators/harlex.png"
+                    alt="Skin de Harlex"
+                    width={320}
+                    height={480}
+                    sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
+                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-105 group-hover:drop-shadow-[0_34px_42px_rgba(245,158,11,0.24)] sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                  />
+                  <div className="relative mt-3 w-full max-w-xs pt-4 text-center">
+                    <div className="absolute top-0 left-1/2 h-px w-full -translate-x-1/2 bg-gradient-to-r from-transparent via-amber-500/55 to-transparent transition-all duration-500 ease-out group-hover:via-amber-400 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
+                    <h3 className="font-outfit text-3xl font-black text-[#e8e4db] transition-all duration-500 ease-out group-hover:text-white group-hover:drop-shadow-[0_0_14px_rgba(245,158,11,0.45)]">Harlex</h3>
+                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-amber-400 transition-all duration-500 ease-out group-hover:text-amber-300 group-hover:drop-shadow-[0_0_10px_rgba(245,158,11,0.45)]">Creador de la comunidad</p>
+                  </div>
+                </div>
+
+                <div className="group relative flex flex-col items-center">
+                  <div className="absolute bottom-16 h-44 w-44 rounded-full bg-emerald-500 opacity-15 blur-3xl transition-all duration-500 ease-out group-hover:scale-110 group-hover:opacity-35" />
+                  <div className="absolute bottom-16 h-3 w-44 rounded-full bg-emerald-500/25 blur-lg transition-all duration-500 ease-out group-hover:h-4 group-hover:w-52 group-hover:bg-emerald-500/45" />
+                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/60 blur-md transition-all duration-500 ease-out group-hover:w-48" />
+                  <Image
+                    src="/community-creators/onze.png"
+                    alt="Skin de Onze"
+                    width={320}
+                    height={480}
+                    sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
+                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-105 group-hover:drop-shadow-[0_34px_42px_rgba(16,185,129,0.24)] sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                  />
+                  <div className="relative mt-3 w-full max-w-xs pt-4 text-center">
+                    <div className="absolute top-0 left-1/2 h-px w-full -translate-x-1/2 bg-gradient-to-r from-transparent via-emerald-500/55 to-transparent transition-all duration-500 ease-out group-hover:via-emerald-400 group-hover:shadow-[0_0_18px_rgba(16,185,129,0.35)]" />
+                    <h3 className="font-outfit text-3xl font-black text-[#e8e4db] transition-all duration-500 ease-out group-hover:text-white group-hover:drop-shadow-[0_0_14px_rgba(16,185,129,0.45)]">Onze</h3>
+                    <p className="mt-1 text-xs font-bold uppercase tracking-widest text-emerald-400 transition-all duration-500 ease-out group-hover:text-emerald-300 group-hover:drop-shadow-[0_0_10px_rgba(16,185,129,0.45)]">Creador de la comunidad</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
 
       <motion.section className="section-reveal mx-auto w-full max-w-7xl px-6 py-12" variants={sectionVariants}>
         <div className="mb-8 flex items-end justify-between border-b border-[#2d2a26] pb-4">
