@@ -10,6 +10,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: session } = useSession();
+  const isHome = pathname === "/";
 
   const navLinks = [
     { href: "/", label: "Inicio" },
@@ -22,7 +23,13 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full max-w-full overflow-x-clip border-b border-[#2d2a26] bg-[#141311]/90 backdrop-blur-md">
+    <nav
+      className={`top-0 z-50 w-full max-w-full overflow-x-clip border-b backdrop-blur-md ${
+        isHome
+          ? "absolute left-0 border-white/5 bg-zinc-950/40"
+          : "sticky border-[#2d2a26] bg-[#141311]/90"
+      }`}
+    >
       <div className="container mx-auto flex h-16 min-w-0 items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <Link href="/" className="group flex min-w-0 items-center gap-2 sm:gap-3">
@@ -128,7 +135,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-[#2d2a26] bg-[#141311] px-6 py-4 flex flex-col gap-4">
+        <div className="md:hidden border-t border-white/5 bg-zinc-950/80 px-6 py-4 flex flex-col gap-4 backdrop-blur-md">
           {navLinks.map((link) => (
             <Link
               key={link.href}

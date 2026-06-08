@@ -2,7 +2,7 @@ export default function HeroBanner() {
   return (
     <>
       <video
-        className="absolute inset-0 h-full w-full object-cover -z-20"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover -z-20"
         autoPlay
         loop
         muted
@@ -13,7 +13,7 @@ export default function HeroBanner() {
         <source src="/background.webm" type="video/webm" />
       </video>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-zinc-950 -z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-zinc-950 -z-10" />
     </>
   );
 }
