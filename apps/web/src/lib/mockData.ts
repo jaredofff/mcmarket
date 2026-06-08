@@ -35,6 +35,8 @@ export interface Plugin {
   price: number;
   isFree: boolean;
   tier: "vip" | "legend";
+  coverImage: string;
+  bannerImage: string;
   image: string;
   gallery: string[];
   rating: number;

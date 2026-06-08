@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Plugin } from "@/lib/mockData";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { normalizeResourceImageUrl, RESOURCE_IMAGE_FALLBACK } from "@/lib/resource-images";
 
 interface PluginCardProps {
@@ -51,13 +51,8 @@ function StarRating({ rating }: { rating: number }) {
 export default function PluginCard({ plugin }: PluginCardProps) {
   const categoryColor = CATEGORY_COLORS[plugin.category] ?? "text-amber-400 border-amber-500/30 bg-amber-500/10";
   const tierLabel = plugin.tier === "legend" ? "Legend" : "VIP";
-  const normalizedImage = useMemo(() => normalizeResourceImageUrl(plugin.image, RESOURCE_IMAGE_FALLBACK), [plugin.image]);
-  const [imageSrc, setImageSrc] = useState(normalizedImage);
+  const imageSrc = useMemo(() => normalizeResourceImageUrl(plugin.coverImage), [plugin.coverImage]);
   const creatorAvatar = plugin.creator.avatar || RESOURCE_IMAGE_FALLBACK;
-
-  useEffect(() => {
-    setImageSrc(normalizedImage);
-  }, [normalizedImage]);
 
   return (
     <Link
@@ -73,7 +68,6 @@ export default function PluginCard({ plugin }: PluginCardProps) {
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-75 group-hover:opacity-95"
-          onError={() => setImageSrc(RESOURCE_IMAGE_FALLBACK)}
         />
 
         {/* Category Badge */}

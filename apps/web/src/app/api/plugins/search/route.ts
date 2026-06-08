@@ -4,6 +4,36 @@ import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 
 export const runtime = "edge";
 
+const PLUGIN_CATALOG_SELECT = `
+  id,
+  title,
+  slug,
+  author,
+  description,
+  price,
+  version,
+  tier,
+  tested_versions,
+  dependencies,
+  categories,
+  tags,
+  cover_image,
+  cover_image_path,
+  banner_image,
+  banner_image_path,
+  file_path,
+  file_name,
+  file_size,
+  file_mime_type,
+  is_vip_only,
+  published,
+  download_count,
+  rating,
+  created_by,
+  created_at,
+  updated_at
+`;
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = getSupabaseAdminClient();
@@ -22,7 +52,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from("plugins")
-      .select("*", { count: "exact" })
+      .select(PLUGIN_CATALOG_SELECT, { count: "exact" })
       .eq("published", true)
       .limit(limit);
 
