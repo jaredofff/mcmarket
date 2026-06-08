@@ -1,3 +1,5 @@
+import { normalizeResourceImageUrl } from "@/lib/resource-images";
+
 export interface PluginRecord {
   id: string;
   title: string;
@@ -43,8 +45,8 @@ export function toPublicPlugin(plugin: PluginRecord) {
     slug: plugin.slug,
     author: getSafeAuthor(plugin.author),
     description: plugin.description,
-    coverImage: plugin.cover_image || "",
-    bannerImage: plugin.banner_image || "",
+    coverImage: normalizeResourceImageUrl(plugin.cover_image || plugin.cover_image_path),
+    bannerImage: normalizeResourceImageUrl(plugin.banner_image || plugin.banner_image_path),
     categories: plugin.categories || [],
     tags: plugin.tags || [],
     version: plugin.version,

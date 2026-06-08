@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import type { Plugin } from "@/lib/mockData";
 import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { normalizeResourceImageUrl, RESOURCE_IMAGE_FALLBACK } from "@/lib/resource-images";
 
 interface PluginCardProps {
   plugin: Plugin;
@@ -47,6 +51,13 @@ function StarRating({ rating }: { rating: number }) {
 export default function PluginCard({ plugin }: PluginCardProps) {
   const categoryColor = CATEGORY_COLORS[plugin.category] ?? "text-amber-400 border-amber-500/30 bg-amber-500/10";
   const tierLabel = plugin.tier === "legend" ? "Legend" : "VIP";
+  const normalizedImage = useMemo(() => normalizeResourceImageUrl(plugin.image, RESOURCE_IMAGE_FALLBACK), [plugin.image]);
+  const [imageSrc, setImageSrc] = useState(normalizedImage);
+  const creatorAvatar = plugin.creator.avatar || RESOURCE_IMAGE_FALLBACK;
+
+  useEffect(() => {
+    setImageSrc(normalizedImage);
+  }, [normalizedImage]);
 
   return (
     <Link
@@ -57,11 +68,12 @@ export default function PluginCard({ plugin }: PluginCardProps) {
       {/* Image */}
       <div className="relative aspect-video w-full overflow-hidden bg-[#141311] border-b border-[#2d2a26] group-hover:border-amber-500/30 transition-colors">
         <Image
-          src={plugin.image}
+          src={imageSrc || RESOURCE_IMAGE_FALLBACK}
           alt={plugin.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-75 group-hover:opacity-95"
+          onError={() => setImageSrc(RESOURCE_IMAGE_FALLBACK)}
         />
 
         {/* Category Badge */}
@@ -105,7 +117,7 @@ export default function PluginCard({ plugin }: PluginCardProps) {
         {/* Creator */}
         <div className="flex items-center gap-2">
           <Image
-            src={plugin.creator.avatar}
+            src={creatorAvatar}
             alt={plugin.creator.username}
             width={20}
             height={20}
