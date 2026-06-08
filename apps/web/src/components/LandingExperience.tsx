@@ -147,12 +147,12 @@ export default function LandingExperience() {
 
   return (
     <motion.div ref={rootRef} initial="hidden" animate="show" variants={pageVariants} className="relative w-full max-w-full overflow-hidden">
-      <section className="relative isolate flex h-[450px] w-full min-w-0 flex-col items-center justify-center overflow-hidden px-4 pb-8 pt-20 text-center sm:px-6">
+      <section className="relative isolate flex min-h-[560px] w-full min-w-0 flex-col items-center justify-center overflow-hidden px-4 text-center sm:px-6 md:min-h-[620px]">
         <HeroBanner />
         <div className="hero-orb absolute left-1/2 top-[-8%] h-95 w-170 -translate-x-1/2 rounded-full bg-amber-500/10 blur-[140px]" />
         <div className="hero-orb absolute left-[12%] top-[24%] h-65 w-65 rounded-full bg-yellow-700/10 blur-[110px]" />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-6xl min-w-0 flex-col items-center">
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl min-w-0 flex-col items-center pb-12 pt-28 md:pt-36">
           <motion.div
             animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 1.5, 0, -1.5, 0] }}
             transition={reduceMotion ? undefined : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
