@@ -2,7 +2,7 @@ export type ResourceNotificationInput = {
   title: string;
   slug: string;
   description?: string | null;
-  price?: number | null;
+  tier?: string | null;
   coverImage?: string | null;
   resourceUrl?: string;
   resourcePath?: string;
@@ -19,6 +19,7 @@ export type ResourceNotificationResult =
 const NEW_RESOURCE_COLOR = 0xf59e0b;
 const UPDATE_RESOURCE_COLOR = 0x3b82f6;
 const DESCRIPTION_LIMIT = 160;
+const DISCORD_LINK_BUTTON_STYLE = 5;
 
 function truncateDescription(value?: string | null) {
   const description = value?.replace(/\s+/g, " ").trim();
@@ -34,12 +35,18 @@ function truncateDescription(value?: string | null) {
   return `${description.slice(0, DESCRIPTION_LIMIT - 3).trimEnd()}...`;
 }
 
-function formatPrice(price?: number | null) {
-  if (!price || price <= 0) {
-    return "¡Gratis!";
+function formatTier(tier?: string | null) {
+  const normalizedTier = (tier || "free").toLowerCase();
+
+  if (normalizedTier === "legend" || normalizedTier === "elite") {
+    return "Legend";
   }
 
-  return `$${price.toFixed(2)} USD`;
+  if (normalizedTier === "vip" || normalizedTier === "premium") {
+    return "VIP";
+  }
+
+  return "Free";
 }
 
 function getProductionBaseUrl() {
@@ -65,6 +72,10 @@ function toAbsoluteUrl(value: string) {
   return `${baseUrl}${value}`;
 }
 
+function isAbsoluteHttpUrl(value: string) {
+  return /^https?:\/\//i.test(value);
+}
+
 function getThumbnailUrl(coverImage?: string | null) {
   const value = coverImage?.trim();
 
@@ -87,7 +98,7 @@ export async function sendResourceNotification({
   title,
   slug,
   description,
-  price,
+  tier,
   coverImage,
   resourceUrl,
   resourcePath,
@@ -104,6 +115,7 @@ export async function sendResourceNotification({
   try {
     const finalResourceUrl = getResourceUrl(slug, resourceUrl, resourcePath);
     const thumbnailUrl = getThumbnailUrl(coverImage);
+    const hasClickableUrl = isAbsoluteHttpUrl(finalResourceUrl);
     const embedTitle = isUpdate
       ? `🔄 ¡Recurso Actualizado: ${title}!`
       : `🚀 ¡Nuevo Recurso Publicado: ${title}!`;
@@ -114,16 +126,17 @@ export async function sendResourceNotification({
       color: isUpdate ? UPDATE_RESOURCE_COLOR : NEW_RESOURCE_COLOR,
       fields: [
         {
-          name: "💰 Precio",
-          value: formatPrice(price),
+          name: "🏷️ Rango",
+          value: formatTier(tier),
           inline: true,
         },
         {
           name: "🌐 Ver en la Web",
-          value: `[Abrir ${resourceType}](${finalResourceUrl})`,
+          value: hasClickableUrl ? finalResourceUrl : "Configura NEXT_PUBLIC_SITE_URL para activar el enlace.",
           inline: true,
         },
       ],
+      url: hasClickableUrl ? finalResourceUrl : undefined,
       thumbnail: thumbnailUrl ? { url: thumbnailUrl } : undefined,
       timestamp: new Date().toISOString(),
       footer: {
@@ -138,6 +151,21 @@ export async function sendResourceNotification({
       },
       body: JSON.stringify({
         embeds: [embed],
+        components: hasClickableUrl
+          ? [
+              {
+                type: 1,
+                components: [
+                  {
+                    type: 2,
+                    style: DISCORD_LINK_BUTTON_STYLE,
+                    label: `Abrir ${resourceType}`,
+                    url: finalResourceUrl,
+                  },
+                ],
+              },
+            ]
+          : undefined,
       }),
     });
 

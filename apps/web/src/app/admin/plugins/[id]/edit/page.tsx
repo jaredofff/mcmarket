@@ -13,7 +13,7 @@ interface PluginData {
   version: string;
   description: string;
   category: string;
-  tier: 'vip' | 'legend';
+  tier: 'free' | 'vip' | 'legend';
   testedVersions: string;
   published: boolean;
 }
@@ -51,7 +51,7 @@ export default function EditPluginPage() {
     version: string
     description: string
     category: string
-    tier: 'vip' | 'legend'
+    tier: 'free' | 'vip' | 'legend'
     testedVersions: string
     published: boolean | string
   }

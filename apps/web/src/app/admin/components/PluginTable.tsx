@@ -30,6 +30,12 @@ export default function PluginTable({
   const [deleting, setDeleting] = useState<Set<string>>(new Set());
   const [publishing, setPublishing] = useState<Set<string>>(new Set());
 
+  const getTierLabel = (tier: string) => {
+    if (tier === 'legend') return 'Legend';
+    if (tier === 'vip') return 'VIP';
+    return 'Free';
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm('¿Seguro que quieres eliminar este recurso? Esta acción no se puede deshacer.')) return;
     if (!onDelete) return;
@@ -115,7 +121,7 @@ export default function PluginTable({
               </td>
               <td className="px-4 py-3 text-[#a89968]">{plugin.author}</td>
               <td className="px-4 py-3 text-right font-bold text-amber-400 uppercase">
-                {plugin.tier === 'legend' ? 'Legend' : 'VIP'}
+                {getTierLabel(plugin.tier)}
               </td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-2">

@@ -19,8 +19,12 @@ function getResourcePath(category: string, slug: string) {
   return `/${section}/${encodeURIComponent(slug)}`;
 }
 
+function getResourceUrl(request: NextRequest, category: string, slug: string) {
+  return new URL(getResourcePath(category, slug), request.nextUrl.origin).toString();
+}
+
 export async function PATCH(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -63,9 +67,9 @@ export async function PATCH(
         title: resource.title,
         slug: resource.slug,
         description: resource.description,
-        price: Number(resource.price || 0),
+        tier: resource.tier,
         coverImage: resource.cover_image,
-        resourcePath: getResourcePath(category, resource.slug),
+        resourceUrl: getResourceUrl(request, category, resource.slug),
         resourceType: category,
       });
     }

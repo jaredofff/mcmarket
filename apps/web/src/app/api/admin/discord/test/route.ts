@@ -12,6 +12,7 @@ async function sendDiscordTest() {
     title: "Prueba de Discord",
     slug: "discord-test",
     description: "Mensaje de prueba enviado desde el runtime de MC Market.",
+    tier: "free",
     resourcePath: "/admin/plugins",
     resourceType: "Diagnostico",
   });

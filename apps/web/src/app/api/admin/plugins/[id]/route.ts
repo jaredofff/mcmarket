@@ -20,6 +20,7 @@ function getBoolean(formData: FormData, key: string) {
 
 function getAccessTier(formData: FormData, fallback = "vip") {
   const tier = getString(formData, "tier", fallback).toLowerCase();
+  if (tier === "free") return "free";
   return tier === "legend" ? "legend" : "vip";
 }
 
@@ -34,6 +35,10 @@ const RESOURCE_PATH_BY_CATEGORY: Record<string, string> = {
 function getResourcePath(category: string, slug: string) {
   const section = RESOURCE_PATH_BY_CATEGORY[category] || "plugins";
   return `/${section}/${encodeURIComponent(slug)}`;
+}
+
+function getResourceUrl(request: NextRequest, category: string, slug: string) {
+  return new URL(getResourcePath(category, slug), request.nextUrl.origin).toString();
 }
 
 async function uploadReplacement(bucket: string, folder: string, file: File | null, slug: string) {
@@ -160,7 +165,7 @@ export async function PUT(
       tested_versions: parseList(formData.get("testedVersions")),
       categories: [category].filter(Boolean),
       tags: [category].filter(Boolean),
-      is_vip_only: tier === "vip",
+      is_vip_only: tier === "vip" || tier === "legend",
       published,
     };
 
@@ -200,9 +205,9 @@ export async function PUT(
         title: updatedResource.title,
         slug: updatedResource.slug,
         description: updatedResource.description,
-        price: Number(updatedResource.price || 0),
+        tier: updatedResource.tier,
         coverImage: updatedResource.cover_image,
-        resourcePath: getResourcePath(publishedCategory, updatedResource.slug),
+        resourceUrl: getResourceUrl(request, publishedCategory, updatedResource.slug),
         resourceType: publishedCategory,
       });
     }

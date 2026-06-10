@@ -13,7 +13,7 @@ const pluginSchema = z.object({
   version: z.string().min(1, 'La versión es obligatoria'),
   description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
   category: z.string().min(1, 'La categoría es obligatoria'),
-  tier: z.enum(['vip', 'legend']),
+  tier: z.enum(['free', 'vip', 'legend']),
   testedVersions: z.string().min(1, 'Indica compatibilidad o escribe N/A'),
   coverImage: z.instanceof(FileList).optional(),
   bannerImage: z.instanceof(FileList).optional(),
@@ -53,7 +53,7 @@ export default function PluginForm({
       title: initialData?.title || '',
       version: initialData?.version || '1.0.0',
       category: initialData?.category || '',
-      tier: initialData?.tier === 'legend' ? 'legend' : 'vip',
+      tier: initialData?.tier === 'free' || initialData?.tier === 'legend' ? initialData.tier : 'vip',
       testedVersions: initialData?.testedVersions || '',
       published: initialData?.published ?? false,
       description: initialData?.description || '',
@@ -171,6 +171,7 @@ export default function PluginForm({
               {...register('tier')}
               className="w-full rounded-sm border border-[#3d3830] bg-[#11100e] px-4 py-2 text-[#e8e4db] focus:border-amber-500/50 focus:outline-none"
             >
+              <option value="free">Free</option>
               <option value="vip">VIP</option>
               <option value="legend">Legend</option>
             </select>

@@ -46,7 +46,7 @@ function StarRating({ rating }: { rating: number }) {
 
 export default function PluginCard({ plugin }: PluginCardProps) {
   const categoryColor = CATEGORY_COLORS[plugin.category] ?? "text-amber-400 border-amber-500/30 bg-amber-500/10";
-  const tierLabel = plugin.tier === "legend" ? "Legend" : "VIP";
+  const tierLabel = plugin.tier === "legend" ? "Legend" : plugin.tier === "vip" ? "VIP" : "Free";
 
   return (
     <Link

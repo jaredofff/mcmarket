@@ -34,7 +34,7 @@ export interface Plugin {
   category: Category;
   price: number;
   isFree: boolean;
-  tier: "vip" | "legend";
+  tier: "free" | "vip" | "legend";
   image: string;
   gallery: string[];
   rating: number;

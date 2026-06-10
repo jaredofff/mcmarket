@@ -21,9 +21,10 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "featured", label: "Featured" },
 ];
 
-type AccessTier = "vip" | "legend";
+type AccessTier = "free" | "vip" | "legend";
 
 const ACCESS_TIERS: { value: AccessTier; label: string }[] = [
+  { value: "free", label: "Free" },
   { value: "vip", label: "VIP" },
   { value: "legend", label: "Legend" },
 ];
@@ -89,6 +90,7 @@ function getDescriptionExcerpt(markdown: string, maxLength = 140) {
 function mapPublicPlugin(plugin: PublicPlugin): Plugin {
   const category = normalizeCategory(plugin.categories?.[0]);
   const updatedAt = plugin.updatedAt || plugin.createdAt || new Date().toISOString();
+  const tier = plugin.tier === "legend" || plugin.tier === "vip" ? plugin.tier : "free";
 
   return {
     id: plugin.id,
@@ -98,8 +100,8 @@ function mapPublicPlugin(plugin: PublicPlugin): Plugin {
     description: plugin.description,
     category,
     price: Number(plugin.price || 0),
-    isFree: false,
-    tier: plugin.tier === "legend" ? "legend" : "vip",
+    isFree: tier === "free",
+    tier,
     image: plugin.coverImage || "/logo.png",
     gallery: plugin.coverImage ? [plugin.coverImage] : ["/logo.png"],
     rating: Number(plugin.rating || 0),
@@ -467,7 +469,7 @@ export default function PluginsExplorer() {
                   onClick={() => toggleTier(tier)}
                   className="flex items-center gap-1.5 px-3 py-1 rounded-sm bg-amber-500/15 border border-amber-500/40 text-xs font-bold text-amber-400 hover:bg-amber-500/25 transition-colors"
                 >
-                  {tier === "legend" ? "Legend" : "VIP"}
+                  {tier === "legend" ? "Legend" : tier === "vip" ? "VIP" : "Free"}
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
