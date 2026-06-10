@@ -10,6 +10,12 @@ export type ResourceNotificationInput = {
   isUpdate?: boolean;
 };
 
+export type ResourceNotificationResult =
+  | { ok: true; status: number }
+  | { ok: false; reason: "missing-webhook" }
+  | { ok: false; reason: "discord-error"; status: number; message: string }
+  | { ok: false; reason: "request-error"; message: string };
+
 const NEW_RESOURCE_COLOR = 0xf59e0b;
 const UPDATE_RESOURCE_COLOR = 0x3b82f6;
 const DESCRIPTION_LIMIT = 160;
@@ -92,7 +98,7 @@ export async function sendResourceNotification({
 
   if (!webhookUrl) {
     console.warn("Discord webhook skipped: DISCORD_WEBHOOK_URL is not configured");
-    return;
+    return { ok: false, reason: "missing-webhook" } satisfies ResourceNotificationResult;
   }
 
   try {
@@ -136,9 +142,23 @@ export async function sendResourceNotification({
     });
 
     if (!response.ok) {
-      console.error(`Discord webhook failed with status ${response.status}`);
+      const message = await response.text().catch(() => "");
+      console.error(`Discord webhook failed with status ${response.status}: ${message}`);
+      return {
+        ok: false,
+        reason: "discord-error",
+        status: response.status,
+        message,
+      } satisfies ResourceNotificationResult;
     }
+
+    return { ok: true, status: response.status } satisfies ResourceNotificationResult;
   } catch (error) {
     console.error("Discord webhook request failed:", error);
+    return {
+      ok: false,
+      reason: "request-error",
+      message: error instanceof Error ? error.message : "Unknown Discord webhook error",
+    } satisfies ResourceNotificationResult;
   }
 }
