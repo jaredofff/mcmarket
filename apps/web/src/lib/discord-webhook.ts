@@ -21,8 +21,21 @@ const UPDATE_RESOURCE_COLOR = 0x3b82f6;
 const DESCRIPTION_LIMIT = 160;
 const DISCORD_LINK_BUTTON_STYLE = 5;
 
+function getPlainDescription(value?: string | null) {
+  return (value || "")
+    .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^[\s>*-]+/gm, "")
+    .replace(/[*_~|]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function truncateDescription(value?: string | null) {
-  const description = value?.replace(/\s+/g, " ").trim();
+  const description = getPlainDescription(value);
 
   if (!description) {
     return "Nuevo recurso disponible en MC Market.";
