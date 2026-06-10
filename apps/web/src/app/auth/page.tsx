@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { EmailPasswordTurnstileAuthForm } from '@/components/EmailPasswordTurnstileAuthForm';
 import { signIn, signOut, useSession } from '@/lib/auth-compat';
 import { ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
 
@@ -141,27 +142,9 @@ function AuthPageContent() {
             <span className="h-px flex-1 bg-white/10" />
           </div>
 
-          <div className="mt-6 space-y-4">
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-white/70">Email</label>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-white/35">tu@email.com</div>
-            </div>
-            <div>
-              <div className="mb-2 flex items-center justify-between text-sm font-semibold text-white/70">
-                <label>Contraseña</label>
-                <span className="text-violet-300">¿Olvidaste tu contraseña?</span>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-white/35">••••••••</div>
-            </div>
+          <div className="mt-6">
+            <EmailPasswordTurnstileAuthForm />
           </div>
-
-          <button className="mt-6 flex h-14 w-full items-center justify-center rounded-2xl bg-violet-600 px-5 text-base font-black text-white transition hover:brightness-110">
-            Iniciar sesión
-          </button>
-
-          <p className="mt-4 text-center text-xs text-white/35">
-            El acceso real ya está conectado a Discord.
-          </p>
         </div>
       </div>
     </div>

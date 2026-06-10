@@ -3,8 +3,8 @@ export interface CategoryProduct {
   title: string;
   slug: string;
   category: "Setups" | "Configs" | "Builds" | "Webs";
-  price: number;
   isFree: boolean;
+  tier: "free" | "vip" | "legend";
   rating: number;
   reviewCount: number;
   sales: number;

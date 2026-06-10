@@ -4,15 +4,20 @@ import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import { getCategoryInfo, type CategoryProduct } from "@/lib/categoryProducts";
 
-type SortOption = "trending" | "newest" | "price-asc" | "price-desc" | "rating" | "featured";
+type SortOption = "trending" | "newest" | "rating" | "featured";
+type AccessTier = CategoryProduct["tier"];
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "trending", label: "Trending" },
   { value: "newest", label: "Newest" },
   { value: "rating", label: "Highest Rated" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "price-desc", label: "Price: High to Low" },
   { value: "featured", label: "Featured" },
+];
+
+const ACCESS_TIERS: { value: AccessTier; label: string }[] = [
+  { value: "free", label: "Gratis" },
+  { value: "vip", label: "VIP" },
+  { value: "legend", label: "Legend" },
 ];
 
 interface CategoryViewProps {
@@ -31,9 +36,30 @@ interface PublicResource {
   version: string;
   downloadCount: number;
   rating: number;
-  price: number;
+  isVipOnly: boolean;
+  tier: string;
   createdAt: string;
   updatedAt: string;
+}
+
+function normalizeAccessTier(tier?: string | null, isVipOnly = false): CategoryProduct["tier"] {
+  const normalizedTier = tier?.toLowerCase();
+
+  if (normalizedTier === "legend" || normalizedTier === "elite") {
+    return "legend";
+  }
+
+  if (normalizedTier === "vip" || normalizedTier === "premium" || isVipOnly) {
+    return "vip";
+  }
+
+  return "free";
+}
+
+function getAccessLabel(tier: CategoryProduct["tier"]) {
+  if (tier === "legend") return "LEGEND";
+  if (tier === "vip") return "VIP";
+  return "GRATIS";
 }
 
 function getDescriptionExcerpt(markdown: string, maxLength = 140) {
@@ -61,14 +87,15 @@ function getDescriptionExcerpt(markdown: string, maxLength = 140) {
 
 function mapPublicResource(resource: PublicResource): CategoryProduct {
   const updatedAt = resource.updatedAt || resource.createdAt || new Date().toISOString();
+  const tier = normalizeAccessTier(resource.tier, resource.isVipOnly);
 
   return {
     id: resource.id,
     title: resource.title,
     slug: resource.slug,
     category: (resource.categories?.[0] || "Setups") as CategoryProduct["category"],
-    price: Number(resource.price || 0),
-    isFree: Number(resource.price || 0) === 0,
+    isFree: tier === "free",
+    tier,
     rating: Number(resource.rating || 0),
     reviewCount: 0,
     sales: 0,
@@ -95,8 +122,7 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
   const [allProducts, setAllProducts] = useState<(CategoryProduct & { createdAt?: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [showFreeOnly, setShowFreeOnly] = useState(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50]);
+  const [selectedTiers, setSelectedTiers] = useState<AccessTier[]>([]);
   const [sortBy, setSortBy] = useState<SortOption>("trending");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -136,14 +162,8 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
       );
     }
 
-    if (showFreeOnly) {
-      result = result.filter((p) => p.isFree);
-    }
-
-    if (!showFreeOnly) {
-      result = result.filter(
-        (p) => p.isFree || (p.price >= priceRange[0] && p.price <= priceRange[1])
-      );
+    if (selectedTiers.length > 0) {
+      result = result.filter((p) => selectedTiers.includes(p.tier));
     }
 
     result.sort((a, b) => {
@@ -152,10 +172,6 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
           return b.sales - a.sales;
         case "rating":
           return b.rating - a.rating;
-        case "price-asc":
-          return a.price - b.price;
-        case "price-desc":
-          return b.price - a.price;
         case "featured":
           return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
         case "newest":
@@ -166,16 +182,21 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
     });
 
     return result;
-  }, [search, showFreeOnly, priceRange, sortBy, allProducts]);
+  }, [search, selectedTiers, sortBy, allProducts]);
+
+  const toggleTier = (tier: AccessTier) => {
+    setSelectedTiers((prev) =>
+      prev.includes(tier) ? prev.filter((item) => item !== tier) : [...prev, tier]
+    );
+  };
 
   const clearFilters = () => {
     setSearch("");
-    setShowFreeOnly(false);
-    setPriceRange([0, 50]);
+    setSelectedTiers([]);
     setSortBy("trending");
   };
 
-  const activeFilterCount = (showFreeOnly ? 1 : 0) + (priceRange[0] > 0 || priceRange[1] < 50 ? 1 : 0);
+  const activeFilterCount = selectedTiers.length;
   const catalogIsEmpty = !loading && allProducts.length === 0;
 
   return (
@@ -244,39 +265,35 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
                 />
               </div>
 
-              {/* Price */}
+              {/* Access */}
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-xs font-bold uppercase tracking-widest text-[#6b6459]">
-                    Precio Máx
-                  </label>
-                  <span className="text-xs font-black text-amber-400">
-                    {priceRange[1] >= 50 ? "Any" : `$${priceRange[1]}`}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={50}
-                  step={1}
-                  value={priceRange[1]}
-                  onChange={(e) => setPriceRange([0, Number(e.target.value)])}
-                  className="w-full accent-amber-500 cursor-pointer"
-                  disabled={showFreeOnly}
-                />
-              </div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-[#6b6459] mb-3">
+                  Rango
+                </label>
+                <div className="flex flex-col gap-2">
+                  {ACCESS_TIERS.map((tier) => {
+                    const active = selectedTiers.includes(tier.value);
+                    const count = allProducts.filter((p) => p.tier === tier.value).length;
 
-              {/* Free only */}
-              <button
-                onClick={() => setShowFreeOnly((v) => !v)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-sm border font-bold text-sm transition-all ${
-                  showFreeOnly
-                    ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
-                    : "bg-[#1c1a17] border-[#2d2a26] text-[#6b6459] hover:text-[#a39c90]"
-                }`}
-              >
-                <span>Solo gratis</span>
-              </button>
+                    return (
+                      <button
+                        key={tier.value}
+                        onClick={() => toggleTier(tier.value)}
+                        className={`flex items-center justify-between px-3 py-2 rounded-sm text-sm font-bold transition-all ${
+                          active
+                            ? "bg-amber-500/15 border border-amber-500/40 text-amber-400"
+                            : "bg-[#1c1a17] border border-[#2d2a26] text-[#6b6459] hover:text-[#a39c90] hover:border-[#3d3830]"
+                        }`}
+                      >
+                        <span>{tier.label}</span>
+                        <span className={`text-xs ${active ? "text-amber-500" : "text-[#4a4540]"}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </aside>
 
@@ -348,7 +365,7 @@ export default function CategoryView({ categoryName }: CategoryViewProps) {
                     <p className="text-sm text-[#a39c90] mb-4 flex-1">{product.shortDescription}</p>
                     <div className="flex justify-between items-center pt-4 border-t border-[#2d2a26]">
                       <span className="font-black text-amber-400">
-                        {product.isFree ? "GRATIS" : `$${product.price.toFixed(2)}`}
+                        {getAccessLabel(product.tier)}
                       </span>
                       <span className="text-xs text-[#6b6459]">★ {product.rating.toFixed(1)}</span>
                     </div>
