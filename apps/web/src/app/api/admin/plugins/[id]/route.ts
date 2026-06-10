@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 import { parseList, toAdminPlugin, type PluginRecord } from "@/lib/plugin-records";
 import { requireAdminRoute } from "@/lib/route-auth";
+import { sendResourceNotification } from "@/lib/discord-webhook";
 
 export const runtime = "edge";
 
@@ -20,6 +21,19 @@ function getBoolean(formData: FormData, key: string) {
 function getAccessTier(formData: FormData, fallback = "vip") {
   const tier = getString(formData, "tier", fallback).toLowerCase();
   return tier === "legend" ? "legend" : "vip";
+}
+
+const RESOURCE_PATH_BY_CATEGORY: Record<string, string> = {
+  Plugins: "plugins",
+  Setups: "setups",
+  Configs: "configs",
+  Builds: "builds",
+  Webs: "webs",
+};
+
+function getResourcePath(category: string, slug: string) {
+  const section = RESOURCE_PATH_BY_CATEGORY[category] || "plugins";
+  return `/${section}/${encodeURIComponent(slug)}`;
 }
 
 async function uploadReplacement(bucket: string, folder: string, file: File | null, slug: string) {
@@ -126,6 +140,7 @@ export async function PUT(
     const current = existing as PluginRecord;
     const formData = await request.formData();
     const category = getString(formData, "category");
+    const published = getBoolean(formData, "published");
     const coverImage = await uploadReplacement(MEDIA_BUCKET, "covers", formData.get("coverImage") as File | null, current.slug);
     const bannerImage = await uploadReplacement(MEDIA_BUCKET, "banners", formData.get("bannerImage") as File | null, current.slug);
     const resourceFile = await uploadReplacement(FILES_BUCKET, "resources", formData.get("pluginFile") as File | null, current.slug);
@@ -146,7 +161,7 @@ export async function PUT(
       categories: [category].filter(Boolean),
       tags: [category].filter(Boolean),
       is_vip_only: tier === "vip",
-      published: getBoolean(formData, "published"),
+      published,
     };
 
     if (coverImage) {
@@ -175,6 +190,21 @@ export async function PUT(
 
     if (error) {
       throw new Error(error.message);
+    }
+
+    if (!current.published && published) {
+      const updatedResource = data as PluginRecord;
+      const publishedCategory = updatedResource.categories?.[0] || category || "Recurso";
+
+      await sendResourceNotification({
+        title: updatedResource.title,
+        slug: updatedResource.slug,
+        description: updatedResource.description,
+        price: Number(updatedResource.price || 0),
+        coverImage: updatedResource.cover_image,
+        resourcePath: getResourcePath(publishedCategory, updatedResource.slug),
+        resourceType: publishedCategory,
+      });
     }
 
     return NextResponse.json(toAdminPlugin(data as PluginRecord));

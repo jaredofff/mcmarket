@@ -91,49 +91,54 @@ export async function sendResourceNotification({
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
   if (!webhookUrl) {
+    console.warn("Discord webhook skipped: DISCORD_WEBHOOK_URL is not configured");
     return;
   }
 
-  const finalResourceUrl = getResourceUrl(slug, resourceUrl, resourcePath);
-  const thumbnailUrl = getThumbnailUrl(coverImage);
-  const embedTitle = isUpdate
-    ? `🔄 ¡Recurso Actualizado: ${title}!`
-    : `🚀 ¡Nuevo Recurso Publicado: ${title}!`;
+  try {
+    const finalResourceUrl = getResourceUrl(slug, resourceUrl, resourcePath);
+    const thumbnailUrl = getThumbnailUrl(coverImage);
+    const embedTitle = isUpdate
+      ? `🔄 ¡Recurso Actualizado: ${title}!`
+      : `🚀 ¡Nuevo Recurso Publicado: ${title}!`;
 
-  const embed = {
-    title: embedTitle,
-    description: truncateDescription(description),
-    color: isUpdate ? UPDATE_RESOURCE_COLOR : NEW_RESOURCE_COLOR,
-    fields: [
-      {
-        name: "💰 Precio",
-        value: formatPrice(price),
-        inline: true,
+    const embed = {
+      title: embedTitle,
+      description: truncateDescription(description),
+      color: isUpdate ? UPDATE_RESOURCE_COLOR : NEW_RESOURCE_COLOR,
+      fields: [
+        {
+          name: "💰 Precio",
+          value: formatPrice(price),
+          inline: true,
+        },
+        {
+          name: "🌐 Ver en la Web",
+          value: `[Abrir ${resourceType}](${finalResourceUrl})`,
+          inline: true,
+        },
+      ],
+      thumbnail: thumbnailUrl ? { url: thumbnailUrl } : undefined,
+      timestamp: new Date().toISOString(),
+      footer: {
+        text: "MC Market",
       },
-      {
-        name: "🌐 Ver en la Web",
-        value: `[Abrir ${resourceType}](${finalResourceUrl})`,
-        inline: true,
+    };
+
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    ],
-    thumbnail: thumbnailUrl ? { url: thumbnailUrl } : undefined,
-    timestamp: new Date().toISOString(),
-    footer: {
-      text: "MC Market",
-    },
-  };
+      body: JSON.stringify({
+        embeds: [embed],
+      }),
+    });
 
-  const response = await fetch(webhookUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      embeds: [embed],
-    }),
-  });
-
-  if (!response.ok) {
-    console.error(`Discord webhook failed with status ${response.status}`);
+    if (!response.ok) {
+      console.error(`Discord webhook failed with status ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Discord webhook request failed:", error);
   }
 }

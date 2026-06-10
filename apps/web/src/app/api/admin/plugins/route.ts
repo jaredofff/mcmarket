@@ -3,6 +3,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 import { getCurrentUser } from "@/lib/auth-supabase-server";
 import { parseList, slugify, toAdminPlugin, type PluginRecord } from "@/lib/plugin-records";
 import { requireAdminRoute } from "@/lib/route-auth";
+import { sendResourceNotification } from "@/lib/discord-webhook";
 
 export const runtime = "edge";
 
@@ -21,6 +22,19 @@ function getBoolean(formData: FormData, key: string) {
 function getAccessTier(formData: FormData, fallback = "vip") {
   const tier = getString(formData, "tier", fallback).toLowerCase();
   return tier === "legend" ? "legend" : "vip";
+}
+
+const RESOURCE_PATH_BY_CATEGORY: Record<string, string> = {
+  Plugins: "plugins",
+  Setups: "setups",
+  Configs: "configs",
+  Builds: "builds",
+  Webs: "webs",
+};
+
+function getResourcePath(category: string, slug: string) {
+  const section = RESOURCE_PATH_BY_CATEGORY[category] || "plugins";
+  return `/${section}/${encodeURIComponent(slug)}`;
 }
 
 async function uploadFile(bucket: string, folder: string, file: File | null, slug: string) {
@@ -184,6 +198,7 @@ export async function POST(request: NextRequest) {
       currentUser?.user_metadata?.username ||
       "MC Market";
 
+    const published = getBoolean(formData, "published");
     const { data, error } = await supabase
       .from("plugins")
       .insert({
@@ -206,7 +221,7 @@ export async function POST(request: NextRequest) {
         file_size: resourceFile?.size || null,
         file_mime_type: resourceFile?.type || null,
         is_vip_only: tier === "vip",
-        published: getBoolean(formData, "published"),
+        published,
         created_by: currentUser?.id || null,
       })
       .select("*")
@@ -214,6 +229,18 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       throw new Error(error.message);
+    }
+
+    if (published) {
+      await sendResourceNotification({
+        title,
+        slug: pluginSlug,
+        description,
+        price: 0,
+        coverImage: coverImage?.publicUrl,
+        resourcePath: getResourcePath(category, pluginSlug),
+        resourceType: category || "Recurso",
+      });
     }
 
     return NextResponse.json(toAdminPlugin(data as PluginRecord), { status: 201 });
