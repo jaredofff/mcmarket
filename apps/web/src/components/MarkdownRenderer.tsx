@@ -2,10 +2,54 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useMemo, useState } from "react";
 
 interface MarkdownRendererProps {
   content: string;
   emptyText?: string;
+}
+
+function getMarkdownImageSrc(src: string) {
+  if (src.includes("/storage/v1/object/public/plugin-media/markdown/")) {
+    return `/api/media/markdown?src=${encodeURIComponent(src)}`;
+  }
+
+  return src;
+}
+
+function MarkdownImage({ src, alt }: { src: string; alt?: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const imageSrc = useMemo(() => getMarkdownImageSrc(src), [src]);
+
+  return (
+    <span className="relative my-5 block min-h-40 overflow-hidden rounded-sm border border-[#2d2a26] bg-[#11100e]">
+      {!loaded && !failed ? (
+        <span className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-[#181512] to-[#0f0e0c] text-sm font-bold text-[#6b6459]">
+          Cargando imagen...
+        </span>
+      ) : null}
+
+      {failed ? (
+        <span className="flex min-h-40 items-center justify-center px-4 text-center text-sm font-bold text-red-200">
+          No se pudo cargar esta imagen. Revisa que exista en Supabase Storage.
+        </span>
+      ) : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={imageSrc}
+          alt={alt || "Imagen del recurso"}
+          className={`max-h-[520px] w-full object-contain transition-opacity duration-300 ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+        />
+      )}
+    </span>
+  );
 }
 
 export default function MarkdownRenderer({
@@ -72,19 +116,9 @@ export default function MarkdownRenderer({
             </pre>
           ),
           img: ({ src, alt }) => {
-            if (!src) return null;
+            if (typeof src !== "string" || !src) return null;
 
-            return (
-              <span className="my-5 block overflow-hidden rounded-sm border border-[#2d2a26] bg-[#11100e]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={src}
-                  alt={alt || "Imagen del recurso"}
-                  className="max-h-[520px] w-full object-contain"
-                  loading="lazy"
-                />
-              </span>
-            );
+            return <MarkdownImage src={src} alt={alt || undefined} />;
           },
           hr: () => <hr className="border-[#2d2a26]" />,
           table: ({ children }) => (

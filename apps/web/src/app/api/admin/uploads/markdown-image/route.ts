@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
 
     const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(storagePath, image, {
       contentType: image.type,
+      cacheControl: "31536000",
       upsert: false,
     });
 
