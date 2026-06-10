@@ -1,5 +1,3 @@
-import { normalizeResourceImageUrl } from "@/lib/resource-images";
-
 export type ResourceNotificationInput = {
   title: string;
   slug: string;
@@ -61,6 +59,16 @@ function toAbsoluteUrl(value: string) {
   return `${baseUrl}${value}`;
 }
 
+function getThumbnailUrl(coverImage?: string | null) {
+  const value = coverImage?.trim();
+
+  if (!value) {
+    return "";
+  }
+
+  return toAbsoluteUrl(value);
+}
+
 function getResourceUrl(slug: string, resourceUrl?: string, resourcePath?: string) {
   if (resourceUrl) {
     return toAbsoluteUrl(resourceUrl);
@@ -87,7 +95,7 @@ export async function sendResourceNotification({
   }
 
   const finalResourceUrl = getResourceUrl(slug, resourceUrl, resourcePath);
-  const thumbnailUrl = toAbsoluteUrl(normalizeResourceImageUrl(coverImage, ""));
+  const thumbnailUrl = getThumbnailUrl(coverImage);
   const embedTitle = isUpdate
     ? `🔄 ¡Recurso Actualizado: ${title}!`
     : `🚀 ¡Nuevo Recurso Publicado: ${title}!`;

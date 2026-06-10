@@ -1,10 +1,6 @@
-"use client";
-
 import Link from "next/link";
 import type { Plugin } from "@/lib/mockData";
 import Image from "next/image";
-import { useMemo } from "react";
-import { normalizeResourceImageUrl, RESOURCE_IMAGE_FALLBACK } from "@/lib/resource-images";
 
 interface PluginCardProps {
   plugin: Plugin;
@@ -51,8 +47,6 @@ function StarRating({ rating }: { rating: number }) {
 export default function PluginCard({ plugin }: PluginCardProps) {
   const categoryColor = CATEGORY_COLORS[plugin.category] ?? "text-amber-400 border-amber-500/30 bg-amber-500/10";
   const tierLabel = plugin.tier === "legend" ? "Legend" : "VIP";
-  const imageSrc = useMemo(() => normalizeResourceImageUrl(plugin.coverImage), [plugin.coverImage]);
-  const creatorAvatar = plugin.creator.avatar || RESOURCE_IMAGE_FALLBACK;
 
   return (
     <Link
@@ -63,7 +57,7 @@ export default function PluginCard({ plugin }: PluginCardProps) {
       {/* Image */}
       <div className="relative aspect-video w-full overflow-hidden bg-[#141311] border-b border-[#2d2a26] group-hover:border-amber-500/30 transition-colors">
         <Image
-          src={imageSrc || RESOURCE_IMAGE_FALLBACK}
+          src={plugin.image}
           alt={plugin.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -111,7 +105,7 @@ export default function PluginCard({ plugin }: PluginCardProps) {
         {/* Creator */}
         <div className="flex items-center gap-2">
           <Image
-            src={creatorAvatar}
+            src={plugin.creator.avatar}
             alt={plugin.creator.username}
             width={20}
             height={20}

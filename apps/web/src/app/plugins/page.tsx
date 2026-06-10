@@ -3,7 +3,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import PluginCard from "@/components/PluginCard";
-import { normalizeResourceImageUrl, RESOURCE_IMAGE_FALLBACK } from "@/lib/resource-images";
 import {
   CATEGORIES,
   MINECRAFT_VERSIONS,
@@ -36,7 +35,6 @@ interface PublicPlugin {
   author: string;
   description: string;
   coverImage: string;
-  bannerImage: string;
   categories: string[];
   tags: string[];
   version: string;
@@ -92,9 +90,6 @@ function mapPublicPlugin(plugin: PublicPlugin): Plugin {
   const category = normalizeCategory(plugin.categories?.[0]);
   const updatedAt = plugin.updatedAt || plugin.createdAt || new Date().toISOString();
 
-  const coverImage = normalizeResourceImageUrl(plugin.coverImage, RESOURCE_IMAGE_FALLBACK);
-  const bannerImage = normalizeResourceImageUrl(plugin.bannerImage, coverImage);
-
   return {
     id: plugin.id,
     slug: plugin.slug,
@@ -105,10 +100,8 @@ function mapPublicPlugin(plugin: PublicPlugin): Plugin {
     price: Number(plugin.price || 0),
     isFree: false,
     tier: plugin.tier === "legend" ? "legend" : "vip",
-    coverImage,
-    bannerImage,
-    image: coverImage,
-    gallery: [coverImage, bannerImage].filter((image, index, images) => image && images.indexOf(image) === index),
+    image: plugin.coverImage || "/logo.png",
+    gallery: plugin.coverImage ? [plugin.coverImage] : ["/logo.png"],
     rating: Number(plugin.rating || 0),
     reviewCount: 0,
     sales: 0,
