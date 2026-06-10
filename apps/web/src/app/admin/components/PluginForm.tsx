@@ -155,10 +155,6 @@ export default function PluginForm({
               <option value="Setups">Setups</option>
               <option value="Configs">Configs</option>
               <option value="Builds">Builds</option>
-              <option value="Webs">Webs</option>
-              <option value="Models">Modelos 3D</option>
-              <option value="Textures">Texturas</option>
-              <option value="Utilities">Utilidades</option>
             </select>
             {errors.category && (
               <p className="text-red-400 text-sm mt-1">{errors.category.message}</p>
