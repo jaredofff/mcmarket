@@ -244,8 +244,8 @@ export default function LandingExperience() {
                   <Image
                     src="/community-creators/harlex.png"
                     alt="Skin de Harlex"
-                    width={310}
-                    height={372}
+                    width={1024}
+                    height={1536}
                     sizes="(max-width: 640px) 255px, (max-width: 1280px) 315px, 350px"
                     className="relative h-auto w-[255px] transform-gpu object-contain opacity-100 drop-shadow-[0_34px_30px_rgba(0,0,0,0.72)] transition-all duration-700 ease-out [transform:rotateY(-5deg)_rotateX(2deg)] group-hover:-translate-y-4 group-hover:scale-[1.045] group-hover:drop-shadow-[0_42px_42px_rgba(245,158,11,0.28)] sm:w-[285px] lg:w-[315px] xl:w-[350px]"
                   />
