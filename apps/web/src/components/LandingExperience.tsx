@@ -236,18 +236,18 @@ export default function LandingExperience() {
                 </p>
               </div>
 
-              <div className="grid items-end gap-6 sm:grid-cols-2">
+              <div className="grid items-end gap-5 [perspective:900px] sm:grid-cols-2 sm:gap-4 lg:justify-items-end">
                 <div className="group relative flex flex-col items-center">
-                  <div className="absolute bottom-16 h-44 w-44 rounded-full bg-amber-500 opacity-15 blur-3xl transition-all duration-500 ease-out group-hover:scale-110 group-hover:opacity-35" />
-                  <div className="absolute bottom-16 h-3 w-44 rounded-full bg-amber-500/25 blur-lg transition-all duration-500 ease-out group-hover:h-4 group-hover:w-52 group-hover:bg-amber-500/45" />
-                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/60 blur-md transition-all duration-500 ease-out group-hover:w-48" />
+                  <div className="absolute bottom-20 h-56 w-56 rounded-full bg-amber-400/20 blur-3xl transition-all duration-700 ease-out group-hover:scale-110 group-hover:bg-amber-300/30" />
+                  <div className="absolute bottom-14 h-4 w-56 rounded-full bg-amber-300/25 blur-xl transition-all duration-700 ease-out group-hover:h-5 group-hover:w-64 group-hover:bg-amber-300/40" />
+                  <div className="absolute bottom-14 h-2.5 w-48 rounded-full bg-black/70 blur-md transition-all duration-700 ease-out group-hover:w-56 group-hover:bg-black/80" />
                   <Image
                     src="/community-creators/harlex.png"
                     alt="Skin de Harlex"
-                    width={320}
-                    height={480}
-                    sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
-                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-105 group-hover:drop-shadow-[0_34px_42px_rgba(245,158,11,0.24)] sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                    width={310}
+                    height={372}
+                    sizes="(max-width: 640px) 255px, (max-width: 1280px) 315px, 350px"
+                    className="relative h-auto w-[255px] transform-gpu object-contain opacity-100 drop-shadow-[0_34px_30px_rgba(0,0,0,0.72)] transition-all duration-700 ease-out [transform:rotateY(-5deg)_rotateX(2deg)] group-hover:-translate-y-4 group-hover:scale-[1.045] group-hover:drop-shadow-[0_42px_42px_rgba(245,158,11,0.28)] sm:w-[285px] lg:w-[315px] xl:w-[350px]"
                   />
                   <div className="relative mt-3 w-full max-w-xs pt-4 text-center">
                     <div className="absolute top-0 left-1/2 h-px w-full -translate-x-1/2 bg-gradient-to-r from-transparent via-amber-500/55 to-transparent transition-all duration-500 ease-out group-hover:via-amber-400 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
@@ -257,16 +257,16 @@ export default function LandingExperience() {
                 </div>
 
                 <div className="group relative flex flex-col items-center">
-                  <div className="absolute bottom-16 h-44 w-44 rounded-full bg-emerald-500 opacity-15 blur-3xl transition-all duration-500 ease-out group-hover:scale-110 group-hover:opacity-35" />
-                  <div className="absolute bottom-16 h-3 w-44 rounded-full bg-emerald-500/25 blur-lg transition-all duration-500 ease-out group-hover:h-4 group-hover:w-52 group-hover:bg-emerald-500/45" />
-                  <div className="absolute bottom-16 h-2 w-40 rounded-full bg-black/60 blur-md transition-all duration-500 ease-out group-hover:w-48" />
+                  <div className="absolute bottom-20 h-56 w-56 rounded-full bg-emerald-400/20 blur-3xl transition-all duration-700 ease-out group-hover:scale-110 group-hover:bg-emerald-300/30" />
+                  <div className="absolute bottom-14 h-4 w-56 rounded-full bg-emerald-300/25 blur-xl transition-all duration-700 ease-out group-hover:h-5 group-hover:w-64 group-hover:bg-emerald-300/40" />
+                  <div className="absolute bottom-14 h-2.5 w-48 rounded-full bg-black/70 blur-md transition-all duration-700 ease-out group-hover:w-56 group-hover:bg-black/80" />
                   <Image
                     src="/community-creators/onze.png"
                     alt="Skin de Onze"
-                    width={320}
-                    height={480}
-                    sizes="(max-width: 640px) 220px, (max-width: 1280px) 280px, 320px"
-                    className="relative h-auto w-[220px] object-contain opacity-100 drop-shadow-[0_28px_34px_rgba(0,0,0,0.65)] transition-all duration-500 ease-out group-hover:-translate-y-3 group-hover:scale-105 group-hover:drop-shadow-[0_34px_42px_rgba(16,185,129,0.24)] sm:w-[250px] lg:w-[280px] xl:w-[320px]"
+                    width={478}
+                    height={629}
+                    sizes="(max-width: 640px) 235px, (max-width: 1280px) 300px, 335px"
+                    className="relative h-auto w-[235px] transform-gpu object-contain opacity-100 drop-shadow-[0_34px_30px_rgba(0,0,0,0.72)] transition-all duration-700 ease-out [transform:rotateY(5deg)_rotateX(2deg)] group-hover:-translate-y-4 group-hover:scale-[1.045] group-hover:drop-shadow-[0_42px_42px_rgba(16,185,129,0.28)] sm:w-[270px] lg:w-[300px] xl:w-[335px]"
                   />
                   <div className="relative mt-3 w-full max-w-xs pt-4 text-center">
                     <div className="absolute top-0 left-1/2 h-px w-full -translate-x-1/2 bg-gradient-to-r from-transparent via-emerald-500/55 to-transparent transition-all duration-500 ease-out group-hover:via-emerald-400 group-hover:shadow-[0_0_18px_rgba(16,185,129,0.35)]" />
