@@ -1,7 +1,6 @@
 # Dependencies
 node_modules/
 .pnpm-store/
-pnpm-lock.yaml
 package-lock.json
 
 # Build outputs
@@ -39,12 +38,30 @@ logs/
 Thumbs.db
 .DS_Store
 
-# Environment files (but keep examples)
+# Environment files (but keep safe templates)
 .env
-.env.local
-.env.*.local
+.env.*
 !.env.example
+!.env.*.example
 !.env.development.example
+
+# Credentials and private keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+credentials.json
+service-account*.json
+
+# Local databases, dumps, and backups
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+*.bak
+*.backup
 
 # pnpm specific
 *.pnpm-debug.log*
