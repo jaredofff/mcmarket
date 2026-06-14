@@ -30,7 +30,7 @@
     "passport-jwt": "^4.0.1"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.35",
+    "@types/cheerio": "^1.0.0",
     "jest-environment-jsdom": "^30.4.1",
     "jsdom": "^29.1.1"
   }
